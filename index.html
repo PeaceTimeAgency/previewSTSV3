@@ -3,170 +3,343 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>South Texas Shine Mobile Detailing</title>
-<link rel="stylesheet" href="styles.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<title>SATCORP × PEACE TIME AGENCY — TACTICAL ONBOARDING</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ── THEME VARIABLES ── */
+:root {
+  --black:   #03050a;
+  --deep:    #080d14;
+  --panel:   #0c1520;
+  --glass:   rgba(12,21,32,0.85);
+  --border:  #162030;
+  --border2: #1e3048;
+  --cyan:    #00e5ff;
+  --green:   #00ffb3;
+  --amber:   #ffb800;
+  --red:     #ff3c5a;
+  --text:    #8badc8;
+  --bright:  #cde4f5;
+  --white:   #f0f8ff;
+}
+
+/* ── BASE RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; cursor: none !important; }
+html, body { height: 100%; overflow: hidden; background: var(--black); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 300; }
+
+/* ── TACTICAL HUD ELEMENTS ── */
+#cursor { position: fixed; z-index: 9999; pointer-events: none; width: 10px; height: 10px; border: 1px solid var(--cyan); transform: translate(-50%,-50%); transition: width .15s, height .15s; mix-blend-mode: screen; }
+#cursor-ring { position: fixed; z-index: 9998; pointer-events: none; width: 36px; height: 36px; border: 1px solid rgba(0,229,255,0.25); border-radius: 50%; transform: translate(-50%,-50%); transition: all .3s ease; }
+
+.input-focus-bracket {
+  position: fixed; pointer-events: none; border: 1px solid var(--cyan); z-index: 1000;
+  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1); opacity: 0;
+  box-shadow: inset 0 0 10px rgba(0, 229, 255, 0.1);
+}
+
+/* ── BACKGROUND ENGINE ── */
+#bgCanvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.5; }
+.noise { position: fixed; inset: 0; z-index: 1; pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); opacity: 0.4; }
+
+/* ── BOOT SCREEN ── */
+#boot { position: fixed; inset: 0; z-index: 200; background: var(--black); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 40px; }
+.boot-name { font-family: 'Bebas Neue', sans-serif; font-size: 72px; letter-spacing: 0.15em; color: var(--white); }
+.boot-name span { color: var(--cyan); }
+.boot-seq { width: 480px; font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--text); line-height: 2; }
+.boot-bar-wrap { width: 480px; }
+.boot-bar-track { width: 100%; height: 2px; background: var(--border); overflow: hidden; }
+.boot-bar-fill { height: 100%; width: 0%; background: var(--cyan); transition: width 0.5s ease; box-shadow: 0 0 8px var(--cyan); }
+
+/* ── APP LAYOUT ── */
+#app { position: fixed; inset: 0; z-index: 10; display: flex; flex-direction: column; opacity: 0; transition: opacity 1s ease; }
+#app.visible { opacity: 1; }
+
+.hdr { display: flex; justify-content: space-between; align-items: center; padding: 0 40px; height: 60px; border-bottom: 1px solid var(--border); background: var(--glass); backdrop-filter: blur(20px); z-index: 50; }
+.hdr-logo { font-family: 'Bebas Neue', sans-serif; font-size: 26px; color: var(--white); letter-spacing: 0.18em; }
+.hdr-logo em { font-style: normal; color: var(--cyan); }
+
+.layout { display: flex; flex: 1; overflow: hidden; }
+
+/* ── SIDEBAR ── */
+.sidebar { width: 220px; border-right: 1px solid var(--border); background: rgba(8,13,20,0.9); display: flex; flex-direction: column; padding: 32px 0; position: relative; }
+.side-step { padding: 14px 24px; display: flex; gap: 14px; align-items: center; opacity: 0.5; transition: 0.3s; }
+.side-step.active { opacity: 1; background: rgba(0, 229, 255, 0.05); border-left: 2px solid var(--cyan); }
+.side-step.done { opacity: 0.8; }
+.step-ico { width: 28px; height: 28px; border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; font-family: 'Share Tech Mono', monospace; font-size: 10px; transition: 0.5s; }
+.side-step.done .step-ico { background: var(--green); color: var(--black); border-color: var(--green); transform: rotate(360deg); }
+
+#radarCanvas { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 80px; height: 80px; opacity: 0.4; }
+
+/* ── CONTENT ── */
+.content { flex: 1; overflow-y: auto; padding: 48px 56px; }
+.page { display: none; }
+.page.active { display: block; }
+
+.q { margin-bottom: 40px; opacity: 0; transform: translateY(20px); transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
+.q.revealed { opacity: 1; transform: translateY(0); }
+
+.q-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--bright); margin-bottom: 8px; }
+.q-desc { font-size: 13px; margin-bottom: 16px; opacity: 0.7; }
+
+/* ── INPUTS ── */
+input, textarea { width: 100%; background: var(--panel); border: 1px solid var(--border2); color: var(--white); padding: 14px; outline: none; font-family: 'DM Sans'; transition: 0.3s; }
+input:focus, textarea:focus { border-color: var(--cyan); background: rgba(0,229,255,0.02); }
+
+/* ── NAVIGATION ── */
+.bottom-nav { position: fixed; bottom: 0; right: 0; left: 220px; height: 64px; background: var(--glass); backdrop-filter: blur(20px); border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 56px; }
+.btn { font-family: 'Bebas Neue', sans-serif; padding: 10px 24px; letter-spacing: 0.1em; border: none; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+.btn-primary { background: var(--cyan); color: var(--black); }
+.btn-ghost { background: transparent; border: 1px solid var(--border2); color: var(--text); }
+
+/* ── SUCCESS ── */
+#success { display: none; padding: 60px 0; }
+#success.active { display: block; animation: fadeIn 1s; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+@media (max-width: 768px) { .sidebar { display: none; } .bottom-nav { left: 0; } }
+</style>
 </head>
 <body>
 
-<!-- Sticky Mobile Call Bar -->
-<div class="callbar">
-  <a href="tel:+12105199030">📞 Call</a>
-  <a href="sms:+12105199030">💬 Text</a>
-</div>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+<canvas id="bgCanvas"></canvas>
+<div class="noise"></div>
 
-<!-- HERO -->
-<header class="hero">
-  <div class="overlay"></div>
-  <div class="hero-content">
-    <h1>We Bring The Shine To You</h1>
-    <p>Mobile Car Detailing in Falls City & Surrounding Areas</p>
-    <a href="tel:+12105199030" class="cta">Get A Fast Quote</a>
-    <div class="rating">⭐ 5.0 Local Rated Service</div>
-  </div>
-</header>
-
-<!-- PRICE ESTIMATOR -->
-<section class="price-estimator">
-  <h2>Estimate Your Detail</h2>
-  <div class="estimator-form">
-    <select id="vehicle">
-      <option value="">Select Vehicle</option>
-      <option value="car">Car</option>
-      <option value="truck">Truck</option>
-      <option value="suv">SUV</option>
-    </select>
-    <select id="service">
-      <option value="">Select Service</option>
-      <option value="full">Full Detail</option>
-      <option value="interior">Interior</option>
-      <option value="exterior">Exterior</option>
-    </select>
-    <select id="condition">
-      <option value="">Condition</option>
-      <option value="light">Light</option>
-      <option value="medium">Medium</option>
-      <option value="heavy">Heavy</option>
-    </select>
-    <button onclick="calculatePrice()">Get Price</button>
-    <div class="price-output" id="price-output"></div>
-  </div>
-</section>
-
-<!-- SERVICE AREA CHECKER -->
-<section class="service-area">
-  <h2>Check If We Service Your Area</h2>
-  <input type="text" id="zip-input" placeholder="Enter ZIP Code">
-  <button onclick="checkZip()">Check</button>
-  <div id="zip-output"></div>
-</section>
-
-<!-- PHOTO GALLERY -->
-<section class="gallery">
-  <h2>Before & After Gallery</h2>
-  <div class="photo-grid">
-    <img src="https://images.unsplash.com/photo-1618401478233-b8c2b9e1dcf2?q=80&w=800&auto=format&fit=crop" alt="Before">
-    <img src="https://images.unsplash.com/photo-1618401478233-5b8a5ed8a57f?q=80&w=800&auto=format&fit=crop" alt="After">
-    <img src="https://images.unsplash.com/photo-1583267746340-1a1c1827c1b2?q=80&w=800&auto=format&fit=crop" alt="Interior">
-    <img src="https://images.unsplash.com/photo-1592878891412-95bde4b62d91?q=80&w=800&auto=format&fit=crop" alt="Exterior">
-  </div>
-</section>
-
-<!-- PACKAGES / WHAT'S INCLUDED -->
-<section class="services">
-<h2>Detail Packages & What's Included</h2>
-<div class="cards">
-  <div class="card highlight">
-    <h3>Full Detail — $120</h3>
-    <ul>
-      <li>Vacuum carpets & seats</li>
-      <li>Wipe dashboards & panels</li>
-      <li>Windows cleaned inside & out</li>
-      <li>Hand wash & tire shine</li>
-      <li>Odor removal & stain treatment</li>
-    </ul>
-  </div>
-  <div class="card">
-    <h3>Interior Detail — $80</h3>
-    <ul>
-      <li>Deep clean seats, carpets, panels</li>
-      <li>Dashboard & vents wipe down</li>
-      <li>Windows cleaned inside</li>
-    </ul>
-  </div>
-  <div class="card">
-    <h3>Exterior Detail — $50</h3>
-    <ul>
-      <li>Hand wash & polish</li>
-      <li>Tire shine & trim restoration</li>
-    </ul>
+<div id="boot">
+  <div class="boot-name">SAT<span>CORP</span></div>
+  <div class="boot-seq" id="bootSeq"></div>
+  <div class="boot-bar-wrap">
+    <div class="boot-bar-track"><div class="boot-bar-fill" id="bootBar"></div></div>
   </div>
 </div>
-</section>
 
-<!-- PREPARATION INSTRUCTIONS -->
-<section class="prep">
-  <h2>Before Your Appointment</h2>
-  <ul>
-    <li>Remove personal items from vehicle</li>
-    <li>Provide water access if needed</li>
-    <li>Unlock vehicle for detailing</li>
-  </ul>
-</section>
+<div id="app">
+  <div class="hdr">
+    <div class="hdr-logo">SAT<em>CORP</em></div>
+    <div style="font-family:'Share Tech Mono'; font-size: 10px; color: var(--cyan);" id="hudTime"></div>
+  </div>
 
-<!-- WEATHER POLICY -->
-<section class="weather">
-  <h2>Weather Policy</h2>
-  <p>Appointments are rescheduled at no charge in case of rain.</p>
-</section>
+  <div class="layout">
+    <div class="sidebar">
+      <div class="side-step active" id="ss1">
+        <div class="step-ico">01</div>
+        <div class="step-text"><div style="font-size:9px">SECTION</div><div style="font-family:'Bebas Neue'">IDENTITY</div></div>
+      </div>
+      <div class="side-step" id="ss2">
+        <div class="step-ico">02</div>
+        <div class="step-text"><div style="font-size:9px">SECTION</div><div style="font-family:'Bebas Neue'">STRUCTURE</div></div>
+      </div>
+      <div class="side-step" id="ss3">
+        <div class="step-ico">03</div>
+        <div class="step-text"><div style="font-size:9px">SECTION</div><div style="font-family:'Bebas Neue'">LOGISTICS</div></div>
+      </div>
+      <canvas id="radarCanvas"></canvas>
+    </div>
 
-<!-- FAQ SECTION -->
-<section class="faq">
-<h2>Frequently Asked Questions</h2>
-<div class="accordion">
-  <button class="accordion-btn">How long does a full detail take?</button>
-  <div class="panel">Full detail usually takes 2–3 hours depending on vehicle size.</div>
-  <button class="accordion-btn">Do you bring water and power?</button>
-  <div class="panel">Yes, we bring all necessary equipment to your location.</div>
-  <button class="accordion-btn">Can you remove tough stains?</button>
-  <div class="panel">We handle most stains, with professional products and techniques.</div>
-  <button class="accordion-btn">Do you travel outside Falls City?</button>
-  <div class="panel">We service surrounding areas — contact us if your ZIP is not listed.</div>
-  <button class="accordion-btn">Can I book multiple vehicles?</button>
-  <div class="panel">Yes! We offer fleet or multiple vehicle services.</div>
+    <div class="content" id="scrollArea">
+      <div class="page active" id="page1">
+        <div class="q">
+          <div class="q-title">01 // THE ELEVATOR PITCH</div>
+          <div class="q-desc">Define the core mission of Peace Time Agency.</div>
+          <textarea rows="4" placeholder="Type transmission..."></textarea>
+        </div>
+        <div class="q">
+          <div class="q-title">02 // BRAND VOICE</div>
+          <div class="q-desc">How should the agency communicate with the world?</div>
+          <input type="text" placeholder="e.g. Minimalist, Authority, Calm">
+        </div>
+      </div>
+
+      <div class="page" id="page2">
+        <div class="q">
+          <div class="q-title">03 // CORE CONVERSION</div>
+          <div class="q-desc">The single most important action for a visitor.</div>
+          <input type="text" placeholder="e.g. Booking a discovery call">
+        </div>
+      </div>
+
+      <div class="page" id="page3">
+        <div class="q">
+          <div class="q-title">04 // DOMAIN STATUS</div>
+          <div class="q-desc">Do you currently hold the URL credentials?</div>
+          <input type="text" placeholder="Enter URL or 'None'">
+        </div>
+      </div>
+
+      <div id="success">
+        <h1 style="font-family:'Bebas Neue'; font-size: 64px; color: var(--green);">TRANSMISSION COMPLETE</h1>
+        <p style="margin-top: 20px;">Brief received. SATCORP analysts are processing your data.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-nav" id="bottomNav">
+    <div style="font-family:'Share Tech Mono'; font-size: 10px;">
+      SEC <span id="npCurrent">1</span> / 3 <div style="width: 100px; height: 1px; background: var(--border2); margin-top: 4px;"><div id="npFill" style="width: 33%; height: 100%; background: var(--cyan);"></div></div>
+    </div>
+    <div style="display: flex; gap: 10px;">
+      <button class="btn btn-ghost" id="btnBack" onclick="changePage(-1)" style="display:none">BACK</button>
+      <button class="btn btn-primary" id="btnNext" onclick="changePage(1)">NEXT STEP</button>
+      <button class="btn btn-primary" id="btnSubmit" onclick="finalize()" style="display:none; background: var(--green);">TRANSMIT</button>
+    </div>
+  </div>
 </div>
-</section>
 
-<!-- TEMPORARY DISCOUNT -->
-<section class="promo">
-<h2>Limited Time Offer!</h2>
-<p>Get $20 off Full Detail this month!</p>
-<div id="countdown"></div>
-</section>
+<script>
+let currentPage = 1;
+const totalPages = 3;
 
-<!-- REVIEW SECTION -->
-<section class="review-cta">
-<h2>Love Your Detail?</h2>
-<p>Your review helps local customers find us!</p>
-<a class="review-btn" href="https://search.google.com/local/writereview?placeid=YOUR_PLACE_ID" target="_blank">Leave a Google Review</a>
-</section>
+// ── CURSOR LOGIC ──
+const cur = document.getElementById('cursor');
+const curR = document.getElementById('cursor-ring');
+document.addEventListener('mousemove', e => {
+  cur.style.left = e.clientX + 'px'; cur.style.top = e.clientY + 'px';
+  curR.style.left = e.clientX + 'px'; curR.style.top = e.clientY + 'px';
+});
 
-<!-- BOOKING REQUEST -->
-<section class="booking">
-<h2>Book Your Detail</h2>
-<form onsubmit="sendBooking(); return false;">
-<input type="text" placeholder="Your Name" required>
-<input type="text" placeholder="Vehicle Type" required>
-<input type="tel" placeholder="Phone Number" required>
-<input type="text" placeholder="Preferred Date/Time" required>
-<button type="submit">Request Detail</button>
-</form>
-</section>
+// ── BACKGROUND ENGINE ──
+const canvas = document.getElementById('bgCanvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+function initBG() {
+  canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+  particles = Array.from({length: 50}, () => ({
+    x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+    s: Math.random() * 2, v: Math.random() * 0.5 + 0.1
+  }));
+}
+function drawBG() {
+  ctx.clearRect(0,0, canvas.width, canvas.height);
+  ctx.fillStyle = "rgba(0, 229, 255, 0.2)";
+  particles.forEach(p => {
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI*2); ctx.fill();
+    p.y -= p.v; if(p.y < 0) p.y = canvas.height;
+  });
+  requestAnimationFrame(drawBG);
+}
+initBG(); drawBG();
 
-<footer>
-<p>South Texas Shine Mobile Detailing • Falls City, Texas • (210) 519-9030</p>
-</footer>
+// ── BOOT SEQUENCE ──
+const bootLines = ["LOADING KERNEL...", "ESTABLISHING SECURE TUNNEL...", "HANDSHAKE: PEACE TIME AGENCY", "INTERFACE READY."];
+let lineIdx = 0;
+function runBoot() {
+  const seq = document.getElementById('bootSeq');
+  const bar = document.getElementById('bootBar');
+  if(lineIdx < bootLines.length) {
+    const p = document.createElement('div'); p.textContent = "> " + bootLines[lineIdx];
+    seq.appendChild(p);
+    lineIdx++;
+    bar.style.width = (lineIdx / bootLines.length * 100) + "%";
+    setTimeout(runBoot, 400);
+  } else {
+    setTimeout(() => {
+      document.getElementById('boot').style.opacity = 0;
+      setTimeout(() => {
+        document.getElementById('boot').style.display = 'none';
+        document.getElementById('app').classList.add('visible');
+        revealQuestions();
+        initTargeting();
+      }, 600);
+    }, 500);
+  }
+}
+runBoot();
 
-<script src="script.js"></script>
+// ── HUD CLOCK ──
+setInterval(() => {
+  document.getElementById('hudTime').textContent = new Date().toISOString().replace('T', ' // ').slice(0, 22);
+}, 1000);
+
+// ── NAVIGATION & STAGGERED REVEAL ──
+function revealQuestions() {
+  const activePage = document.querySelector('.page.active');
+  const qs = activePage.querySelectorAll('.q');
+  qs.forEach((q, i) => {
+    q.classList.remove('revealed');
+    setTimeout(() => q.classList.add('revealed'), i * 150 + 200);
+  });
+}
+
+function changePage(dir) {
+  const newPage = currentPage + dir;
+  if(newPage < 1 || newPage > totalPages) return;
+  
+  // Update sidebar icons for "Done" state
+  if(dir > 0) document.getElementById('ss' + currentPage).classList.add('done');
+  
+  document.getElementById('page' + currentPage).classList.remove('active');
+  document.getElementById('ss' + currentPage).classList.remove('active');
+  
+  currentPage = newPage;
+  
+  document.getElementById('page' + currentPage).classList.add('active');
+  document.getElementById('ss' + currentPage).classList.add('active');
+  document.getElementById('ss' + currentPage).classList.remove('done');
+  
+  // Progress UI
+  document.getElementById('npFill').style.width = (currentPage/totalPages*100) + "%";
+  document.getElementById('npCurrent').textContent = currentPage;
+  
+  // Nav buttons
+  document.getElementById('btnBack').style.display = currentPage > 1 ? 'flex' : 'none';
+  document.getElementById('btnNext').style.display = currentPage < 3 ? 'flex' : 'none';
+  document.getElementById('btnSubmit').style.display = currentPage === 3 ? 'flex' : 'none';
+  
+  document.getElementById('scrollArea').scrollTop = 0;
+  revealQuestions();
+}
+
+// ── TARGETING RETICLE ──
+function initTargeting() {
+  const bracket = document.createElement('div');
+  bracket.className = 'input-focus-bracket';
+  document.body.appendChild(bracket);
+
+  document.querySelectorAll('input, textarea').forEach(el => {
+    el.addEventListener('focus', () => {
+      const r = el.getBoundingClientRect();
+      bracket.style.opacity = '1';
+      bracket.style.top = (r.top - 6) + 'px'; bracket.style.left = (r.left - 6) + 'px';
+      bracket.style.width = (r.width + 12) + 'px'; bracket.style.height = (r.height + 12) + 'px';
+    });
+    el.addEventListener('blur', () => bracket.style.opacity = '0');
+  });
+}
+
+// ── RADAR SYSTEM ──
+const rx = document.getElementById('radarCanvas').getContext('2d');
+let rAngle = 0;
+function drawRadar() {
+  rx.clearRect(0,0,80,80);
+  rx.strokeStyle = "rgba(0, 229, 255, 0.2)";
+  rx.beginPath(); rx.arc(40,40,38,0,Math.PI*2); rx.stroke();
+  rx.save(); rx.translate(40,40); rx.rotate(rAngle);
+  const g = rx.createLinearGradient(0,0,38,0);
+  g.addColorStop(0, "rgba(0,229,255,0.4)"); g.addColorStop(1, "transparent");
+  rx.fillStyle = g; rx.beginPath(); rx.moveTo(0,0); rx.arc(0,0,38,0,Math.PI/2); rx.fill();
+  rx.restore(); rAngle += 0.04;
+  requestAnimationFrame(drawRadar);
+}
+drawRadar();
+
+// ── FINALIZE ──
+function finalize() {
+  const flash = document.createElement('div');
+  flash.style.cssText = "position:fixed;inset:0;background:var(--cyan);z-index:1000;opacity:0;transition:0.1s;pointer-events:none;";
+  document.body.appendChild(flash);
+  
+  setTimeout(() => {
+    flash.style.opacity = "0.5";
+    setTimeout(() => {
+      flash.style.opacity = "0";
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('success').classList.add('active');
+      document.getElementById('bottomNav').style.display = 'none';
+      document.getElementById('ss3').classList.add('done');
+    }, 100);
+  }, 1000);
+}
+</script>
 </body>
 </html>
