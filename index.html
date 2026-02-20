@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SATCORP × PEACE TIME AGENCY — TACTICAL ONBOARDING</title>
+<title>SATCORP × PEACE TIME AGENCY — ONBOARDING</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-/* ── THEME VARIABLES ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
 :root {
   --black:   #03050a;
   --deep:    #080d14;
@@ -23,323 +24,2071 @@
   --white:   #f0f8ff;
 }
 
-/* ── BASE RESET ── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; cursor: none !important; }
-html, body { height: 100%; overflow: hidden; background: var(--black); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 300; }
+/* ── CURSOR ── */
+*, *::before, *::after { cursor: none !important; }
 
-/* ── TACTICAL HUD ELEMENTS ── */
-#cursor { position: fixed; z-index: 9999; pointer-events: none; width: 10px; height: 10px; border: 1px solid var(--cyan); transform: translate(-50%,-50%); transition: width .15s, height .15s; mix-blend-mode: screen; }
-#cursor-ring { position: fixed; z-index: 9998; pointer-events: none; width: 36px; height: 36px; border: 1px solid rgba(0,229,255,0.25); border-radius: 50%; transform: translate(-50%,-50%); transition: all .3s ease; }
-
-.input-focus-bracket {
-  position: fixed; pointer-events: none; border: 1px solid var(--cyan); z-index: 1000;
-  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1); opacity: 0;
-  box-shadow: inset 0 0 10px rgba(0, 229, 255, 0.1);
+#cursor {
+  position: fixed; z-index: 9999; pointer-events: none;
+  width: 10px; height: 10px;
+  border: 1px solid var(--cyan);
+  transform: translate(-50%,-50%);
+  transition: width .15s, height .15s, opacity .15s;
+  mix-blend-mode: screen;
 }
 
-/* ── BACKGROUND ENGINE ── */
-#bgCanvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.5; }
-.noise { position: fixed; inset: 0; z-index: 1; pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); opacity: 0.4; }
+#cursor-ring {
+  position: fixed; z-index: 9998; pointer-events: none;
+  width: 36px; height: 36px;
+  border: 1px solid rgba(0,229,255,0.25);
+  border-radius: 50%;
+  transform: translate(-50%,-50%);
+  transition: all .3s ease;
+}
+
+body:has(button:hover) #cursor, body:has(a:hover) #cursor,
+body:has(input:hover) #cursor, body:has(label:hover) #cursor,
+body:has(textarea:hover) #cursor {
+  width: 6px; height: 6px; background: var(--cyan);
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--border2); }
+
+/* ── BASE ── */
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  background: var(--black);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+}
+
+/* ── CANVAS BG ── */
+#bgCanvas {
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none; opacity: 0.6;
+}
+
+/* ── NOISE OVERLAY ── */
+.noise {
+  position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: 0.4;
+}
 
 /* ── BOOT SCREEN ── */
-#boot { position: fixed; inset: 0; z-index: 200; background: var(--black); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 40px; }
-.boot-name { font-family: 'Bebas Neue', sans-serif; font-size: 72px; letter-spacing: 0.15em; color: var(--white); }
+#boot {
+  position: fixed; inset: 0; z-index: 200;
+  background: var(--black);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 40px;
+}
+
+.boot-logo {
+  display: flex; align-items: center; gap: 20px;
+  animation: bootFadeIn .5s ease forwards;
+}
+
+.boot-emblem { position: relative; }
+
+.boot-emblem svg { filter: drop-shadow(0 0 20px rgba(0,229,255,0.4)); }
+
+.boot-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 72px; letter-spacing: 0.15em;
+  color: var(--white); line-height: 1;
+}
+
 .boot-name span { color: var(--cyan); }
-.boot-seq { width: 480px; font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--text); line-height: 2; }
-.boot-bar-wrap { width: 480px; }
-.boot-bar-track { width: 100%; height: 2px; background: var(--border); overflow: hidden; }
-.boot-bar-fill { height: 100%; width: 0%; background: var(--cyan); transition: width 0.5s ease; box-shadow: 0 0 8px var(--cyan); }
 
-/* ── APP LAYOUT ── */
-#app { position: fixed; inset: 0; z-index: 10; display: flex; flex-direction: column; opacity: 0; transition: opacity 1s ease; }
-#app.visible { opacity: 1; }
+.boot-seq {
+  width: 480px; max-width: 90vw;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px; color: var(--text);
+  letter-spacing: 0.06em; line-height: 2;
+}
 
-.hdr { display: flex; justify-content: space-between; align-items: center; padding: 0 40px; height: 60px; border-bottom: 1px solid var(--border); background: var(--glass); backdrop-filter: blur(20px); z-index: 50; }
-.hdr-logo { font-family: 'Bebas Neue', sans-serif; font-size: 26px; color: var(--white); letter-spacing: 0.18em; }
+.boot-line { opacity: 0; animation: bootLine .2s ease forwards; }
+.boot-line.ok::after { content: ' [OK]'; color: var(--green); }
+.boot-line.warn::after { content: ' [READY]'; color: var(--amber); }
+
+.boot-bar-wrap { width: 480px; max-width: 90vw; }
+.boot-bar-label {
+  font-family: 'Share Tech Mono', monospace; font-size: 10px;
+  color: var(--cyan); letter-spacing: 0.1em; margin-bottom: 8px;
+}
+
+.boot-bar-track {
+  width: 100%; height: 2px; background: var(--border);
+  position: relative; overflow: hidden;
+}
+
+.boot-bar-fill {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--cyan), var(--green));
+  transition: width 2.5s cubic-bezier(0.23,1,0.32,1);
+  box-shadow: 0 0 8px var(--cyan);
+}
+
+@keyframes bootFadeIn { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:none} }
+@keyframes bootLine   { from{opacity:0;transform:translateX(-8px)} to{opacity:1;transform:none} }
+
+/* ── APP ── */
+#app {
+  position: fixed; inset: 0; z-index: 10;
+  display: flex; flex-direction: column;
+  opacity: 0; pointer-events: none;
+  transition: opacity .8s ease;
+  overflow: hidden;
+}
+
+#app.visible { opacity: 1; pointer-events: all; }
+
+/* ── HEADER ── */
+.hdr {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0 40px; height: 60px;
+  border-bottom: 1px solid var(--border);
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  flex-shrink: 0; position: relative; z-index: 50;
+}
+
+.hdr-left { display: flex; align-items: center; gap: 16px; }
+
+.hdr-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px; letter-spacing: 0.18em;
+  color: var(--white); line-height: 1;
+}
 .hdr-logo em { font-style: normal; color: var(--cyan); }
 
-.layout { display: flex; flex: 1; overflow: hidden; }
+.hdr-sep { width: 1px; height: 22px; background: var(--border2); }
+
+.hdr-doc {
+  font-family: 'Share Tech Mono', monospace; font-size: 10px;
+  color: var(--text); letter-spacing: 0.1em; text-transform: uppercase;
+}
+
+.hdr-right { display: flex; align-items: center; gap: 16px; }
+
+.hdr-client {
+  font-family: 'Share Tech Mono', monospace; font-size: 9px;
+  color: var(--text); letter-spacing: 0.12em; text-align: right;
+}
+
+.hdr-badge {
+  font-family: 'Bebas Neue', sans-serif; font-size: 14px;
+  letter-spacing: 0.2em; color: var(--black);
+  background: var(--green); padding: 5px 14px;
+  animation: badgePulse 3s infinite;
+}
+
+@keyframes badgePulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(0,255,179,0.3); }
+  50%      { box-shadow: 0 0 0 6px rgba(0,255,179,0); }
+}
 
 /* ── SIDEBAR ── */
-.sidebar { width: 220px; border-right: 1px solid var(--border); background: rgba(8,13,20,0.9); display: flex; flex-direction: column; padding: 32px 0; position: relative; }
-.side-step { padding: 14px 24px; display: flex; gap: 14px; align-items: center; opacity: 0.5; transition: 0.3s; }
-.side-step.active { opacity: 1; background: rgba(0, 229, 255, 0.05); border-left: 2px solid var(--cyan); }
-.side-step.done { opacity: 0.8; }
-.step-ico { width: 28px; height: 28px; border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; font-family: 'Share Tech Mono', monospace; font-size: 10px; transition: 0.5s; }
-.side-step.done .step-ico { background: var(--green); color: var(--black); border-color: var(--green); transform: rotate(360deg); }
+.layout { display: flex; flex: 1; overflow: hidden; }
 
-#radarCanvas { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 80px; height: 80px; opacity: 0.4; }
+.sidebar {
+  width: 220px; flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  background: rgba(8,13,20,0.9);
+  display: flex; flex-direction: column;
+  padding: 32px 0; gap: 0; position: relative;
+  overflow: hidden;
+}
 
-/* ── CONTENT ── */
-.content { flex: 1; overflow-y: auto; padding: 48px 56px; }
-.page { display: none; }
+.sidebar::before {
+  content: '';
+  position: absolute; left: 0; top: 0; bottom: 0; width: 1px;
+  background: linear-gradient(180deg, transparent, var(--cyan), transparent);
+  animation: sideGlow 4s ease-in-out infinite;
+}
+
+@keyframes sideGlow {
+  0%,100% { opacity: 0; transform: translateY(-100%); }
+  50%      { opacity: 1; transform: translateY(100%); }
+}
+
+.side-label {
+  font-family: 'Share Tech Mono', monospace; font-size: 9px;
+  color: var(--text); letter-spacing: 0.2em; text-transform: uppercase;
+  padding: 0 24px 16px;
+  border-bottom: 1px solid var(--border); margin-bottom: 16px;
+}
+
+.side-step {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 14px 24px; cursor: pointer;
+  transition: background .2s; position: relative;
+  border-left: 2px solid transparent;
+}
+
+.side-step::after {
+  content: ''; position: absolute;
+  left: 0; top: 0; bottom: 0; width: 2px;
+  background: var(--cyan); opacity: 0;
+  transition: opacity .3s;
+}
+
+.side-step.active::after { opacity: 1; }
+.side-step.active { background: rgba(0,229,255,0.04); }
+
+.side-step.done .step-ico { border-color: var(--green); background: rgba(0,255,179,0.08); }
+.side-step.done .step-ico::after {
+  content: '✓'; color: var(--green);
+  font-family: 'Share Tech Mono', monospace; font-size: 11px;
+}
+
+.step-ico {
+  width: 28px; height: 28px; border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all .3s;
+  font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--text);
+}
+
+.side-step.active .step-ico {
+  border-color: var(--cyan); color: var(--cyan); background: rgba(0,229,255,0.06);
+}
+
+.step-info { display: flex; flex-direction: column; gap: 3px; padding-top: 2px; }
+
+.step-num-label {
+  font-family: 'Share Tech Mono', monospace; font-size: 9px;
+  color: var(--text); letter-spacing: 0.1em; opacity: 0.5;
+}
+
+.step-title {
+  font-family: 'Bebas Neue', sans-serif; font-size: 13px;
+  letter-spacing: 0.1em; color: var(--text); transition: color .3s;
+  line-height: 1.2;
+}
+
+.side-step.active .step-title { color: var(--bright); }
+.side-step.done  .step-title  { color: var(--green); }
+
+.step-sub {
+  font-size: 10px; color: var(--text); opacity: 0.4; line-height: 1.4;
+  margin-top: 2px;
+}
+
+.side-footer {
+  margin-top: auto; padding: 24px 24px 0;
+  border-top: 1px solid var(--border);
+}
+
+.side-stat {
+  font-family: 'Share Tech Mono', monospace; font-size: 9px;
+  color: var(--text); letter-spacing: 0.1em; line-height: 1.8; opacity: 0.5;
+}
+
+/* ── CONTENT AREA ── */
+.content {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  position: relative;
+}
+
+/* ── PAGES ── */
+.page {
+  display: none; min-height: 100%;
+  padding: 48px 56px 80px;
+  animation: pageSlide .4s ease forwards;
+}
+
 .page.active { display: block; }
 
-.q { margin-bottom: 40px; opacity: 0; transform: translateY(20px); transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
-.q.revealed { opacity: 1; transform: translateY(0); }
+@keyframes pageSlide {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: none; }
+}
 
-.q-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--bright); margin-bottom: 8px; }
-.q-desc { font-size: 13px; margin-bottom: 16px; opacity: 0.7; }
+/* ── PAGE HEADER ── */
+.ph {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 48px; padding-bottom: 32px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+
+.ph::after {
+  content: ''; position: absolute; bottom: -1px; left: 0;
+  width: 80px; height: 1px; background: var(--cyan);
+}
+
+.ph-left { display: flex; flex-direction: column; gap: 8px; }
+
+.ph-tag {
+  font-family: 'Share Tech Mono', monospace; font-size: 10px;
+  color: var(--cyan); letter-spacing: 0.15em; text-transform: uppercase;
+  display: flex; align-items: center; gap: 10px;
+}
+
+.ph-tag::before {
+  content: ''; width: 16px; height: 1px; background: var(--cyan);
+}
+
+.ph-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(36px, 4vw, 52px);
+  letter-spacing: 0.04em; color: var(--white); line-height: 1;
+}
+
+.ph-title em { font-style: normal; color: var(--cyan); }
+
+.ph-sub {
+  font-size: 13px; color: var(--text); line-height: 1.6; max-width: 420px;
+}
+
+.ph-right {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 6px;
+  flex-shrink: 0;
+}
+
+.ph-doc-id {
+  font-family: 'Share Tech Mono', monospace; font-size: 10px;
+  color: var(--text); letter-spacing: 0.1em; opacity: 0.4;
+}
+
+.ph-stamp {
+  font-family: 'Share Tech Mono', monospace; font-size: 9px;
+  letter-spacing: 0.12em; color: var(--amber); text-transform: uppercase;
+  padding: 4px 10px; border: 1px solid rgba(255,184,0,0.25);
+  background: rgba(255,184,0,0.05);
+}
+
+/* ── QUESTION BLOCKS ── */
+.q {
+  margin-bottom: 40px;
+  animation: qFade .3s ease forwards;
+}
+
+@keyframes qFade { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+
+.q-header {
+  display: flex; align-items: baseline; gap: 14px; margin-bottom: 12px;
+}
+
+.q-id {
+  font-family: 'Share Tech Mono', monospace; font-size: 10px;
+  color: var(--cyan); letter-spacing: 0.1em;
+  flex-shrink: 0;
+}
+
+.q-title {
+  font-family: 'Bebas Neue', sans-serif; font-size: 20px;
+  letter-spacing: 0.06em; color: var(--bright); line-height: 1;
+}
+
+.q-desc {
+  font-size: 12px; color: var(--text); line-height: 1.65;
+  margin-bottom: 16px; padding-left: 0;
+  max-width: 560px;
+}
 
 /* ── INPUTS ── */
-input, textarea { width: 100%; background: var(--panel); border: 1px solid var(--border2); color: var(--white); padding: 14px; outline: none; font-family: 'DM Sans'; transition: 0.3s; }
-input:focus, textarea:focus { border-color: var(--cyan); background: rgba(0,229,255,0.02); }
+.input-wrap { position: relative; }
 
-/* ── NAVIGATION ── */
-.bottom-nav { position: fixed; bottom: 0; right: 0; left: 220px; height: 64px; background: var(--glass); backdrop-filter: blur(20px); border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 56px; }
-.btn { font-family: 'Bebas Neue', sans-serif; padding: 10px 24px; letter-spacing: 0.1em; border: none; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
-.btn-primary { background: var(--cyan); color: var(--black); }
-.btn-ghost { background: transparent; border: 1px solid var(--border2); color: var(--text); }
+.input-wrap input,
+.input-wrap textarea {
+  width: 100%; background: var(--panel);
+  border: 1px solid var(--border2); color: var(--bright);
+  font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 300;
+  padding: 14px 18px; outline: none; transition: all .25s;
+  resize: vertical;
+}
+
+.input-wrap textarea { min-height: 100px; line-height: 1.65; }
+
+.input-wrap input::placeholder,
+.input-wrap textarea::placeholder { color: rgba(139,173,200,0.3); font-size: 13px; font-style: italic; }
+
+.input-wrap input:focus,
+.input-wrap textarea:focus {
+  border-color: var(--cyan);
+  background: rgba(0,229,255,0.03);
+  box-shadow: 0 0 0 1px rgba(0,229,255,0.1), inset 0 0 20px rgba(0,229,255,0.02);
+}
+
+.input-wrap::after {
+  content: ''; position: absolute;
+  bottom: 0; left: 0; width: 0; height: 1px;
+  background: var(--cyan); transition: width .3s;
+}
+
+.input-wrap:focus-within::after { width: 100%; }
+
+/* ── OPTION CARDS ── */
+.opt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.opt-grid.full { grid-template-columns: 1fr; }
+
+.opt-card {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 18px; border: 1px solid var(--border2);
+  background: var(--panel); cursor: pointer;
+  transition: all .2s; user-select: none; position: relative;
+  overflow: hidden;
+}
+
+.opt-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, rgba(0,229,255,0.06), transparent);
+  transform: translateX(-100%); transition: transform .3s;
+}
+
+.opt-card:hover::before { transform: translateX(0); }
+.opt-card:hover { border-color: rgba(0,229,255,0.3); }
+
+.opt-card input { display: none; }
+
+.opt-mark {
+  width: 18px; height: 18px; border: 1px solid var(--border2);
+  flex-shrink: 0; transition: all .2s; display: flex;
+  align-items: center; justify-content: center; position: relative;
+}
+
+.opt-mark::after {
+  content: ''; width: 8px; height: 8px;
+  background: var(--cyan); display: none;
+}
+
+.opt-card.radio .opt-mark { border-radius: 50%; }
+.opt-card.radio .opt-mark::after { border-radius: 50%; }
+
+.opt-card input:checked ~ .opt-mark { border-color: var(--cyan); background: rgba(0,229,255,0.08); }
+.opt-card input:checked ~ .opt-mark::after { display: block; }
+.opt-card input:checked ~ .opt-text { color: var(--bright); }
+
+.opt-card:has(input:checked) { border-color: rgba(0,229,255,0.4); background: rgba(0,229,255,0.04); }
+.opt-card:has(input:checked)::before { transform: translateX(0); }
+
+.opt-text { font-size: 13px; color: var(--text); flex: 1; transition: color .2s; letter-spacing: 0.02em; }
+.opt-sub  { font-size: 11px; color: var(--text); opacity: 0.5; display: block; margin-top: 2px; }
+
+/* Other input inline */
+.other-field {
+  display: flex; align-items: center; gap: 8px; flex: 1;
+}
+
+.other-inline {
+  flex: 1; background: transparent;
+  border: none; border-bottom: 1px solid var(--border2);
+  color: var(--bright); font-family: 'DM Sans', sans-serif;
+  font-size: 13px; padding: 2px 6px; outline: none;
+  transition: border-color .2s;
+}
+
+.other-inline:focus { border-bottom-color: var(--cyan); }
+.other-inline::placeholder { color: rgba(139,173,200,0.3); font-style: italic; }
+
+/* ── DRAG RANK ── */
+.rank-list { display: flex; flex-direction: column; gap: 6px; }
+
+.rank-card {
+  display: flex; align-items: center; gap: 0;
+  border: 1px solid var(--border2); background: var(--panel);
+  cursor: grab; user-select: none; transition: all .2s;
+  position: relative; overflow: hidden;
+}
+
+.rank-card:active { cursor: grabbing; }
+.rank-card.dragging { opacity: 0.4; border-color: var(--cyan); }
+.rank-card.over { border-color: var(--green); background: rgba(0,255,179,0.04); transform: scale(1.01); }
+
+.rank-pos {
+  font-family: 'Share Tech Mono', monospace; font-size: 13px;
+  color: var(--cyan); width: 44px; text-align: center;
+  padding: 16px 0; border-right: 1px solid var(--border2);
+  flex-shrink: 0; font-weight: 400;
+}
+
+.rank-grip {
+  padding: 16px 14px; color: rgba(139,173,200,0.3);
+  border-right: 1px solid var(--border2); flex-shrink: 0;
+  display: flex; align-items: center;
+}
+
+.rank-body { flex: 1; padding: 14px 18px; }
+
+.rank-name {
+  font-size: 13px; color: var(--bright); font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+.rank-desc { font-size: 11px; color: var(--text); opacity: 0.5; margin-top: 2px; }
+
+.rank-toggle {
+  padding: 16px 18px; border-left: 1px solid var(--border2);
+  flex-shrink: 0; display: flex; gap: 0;
+}
+
+.rtgl-btn {
+  font-family: 'Share Tech Mono', monospace; font-size: 10px;
+  letter-spacing: 0.1em; padding: 5px 10px; border: 1px solid var(--border2);
+  background: transparent; color: var(--text); transition: all .2s;
+  cursor: pointer;
+}
+
+.rtgl-btn:first-child { border-right: none; }
+.rtgl-btn.on-yes { background: rgba(0,255,179,0.08); border-color: var(--green); color: var(--green); }
+.rtgl-btn.on-no  { background: rgba(255,60,90,0.08);  border-color: var(--red);   color: var(--red);   }
+
+/* ── ASSET GRID ── */
+.asset-grid { display: flex; flex-direction: column; gap: 6px; }
+
+.asset-row {
+  display: flex; align-items: center; gap: 0;
+  border: 1px solid var(--border2); background: var(--panel);
+  transition: border-color .2s;
+}
+
+.asset-row:has(.atgl-btn.on-yes) { border-color: rgba(0,255,179,0.25); }
+.asset-row:has(.atgl-btn.on-no)  { border-color: rgba(255,60,90,0.2); }
+
+.asset-info { flex: 1; padding: 15px 20px; }
+
+.asset-name { font-size: 13px; color: var(--bright); font-weight: 400; }
+.asset-desc { font-size: 11px; color: var(--text); opacity: 0.5; margin-top: 2px; }
+
+.asset-toggle { display: flex; border-left: 1px solid var(--border2); flex-shrink: 0; }
+
+.atgl-btn {
+  font-family: 'Share Tech Mono', monospace; font-size: 10px;
+  letter-spacing: 0.1em; padding: 0 16px; border: none;
+  border-left: 1px solid var(--border2); background: transparent;
+  color: var(--text); transition: all .2s; cursor: pointer; height: 52px;
+}
+
+.atgl-btn:first-child { border-left: none; }
+.atgl-btn.on-yes { background: rgba(0,255,179,0.08); color: var(--green); }
+.atgl-btn.on-no  { background: rgba(255,60,90,0.08);  color: var(--red);   }
+
+/* ── DIVIDER ── */
+.section-div {
+  display: flex; align-items: center; gap: 16px;
+  margin: 32px 0; font-family: 'Share Tech Mono', monospace;
+  font-size: 9px; color: var(--text); letter-spacing: 0.2em;
+  text-transform: uppercase; opacity: 0.4;
+}
+.section-div::before, .section-div::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ── PRO TIP ── */
+.pro-tip {
+  display: flex; gap: 16px; padding: 18px 22px; margin-top: 36px;
+  border: 1px solid rgba(255,184,0,0.2);
+  background: rgba(255,184,0,0.04); position: relative;
+}
+
+.pro-tip::before {
+  content: ''; position: absolute;
+  left: 0; top: 0; bottom: 0; width: 2px;
+  background: var(--amber);
+}
+
+.pro-tip-label {
+  font-family: 'Share Tech Mono', monospace; font-size: 9px;
+  color: var(--amber); letter-spacing: 0.15em; flex-shrink: 0; padding-top: 2px;
+}
+
+.pro-tip-body { font-size: 12px; color: var(--text); line-height: 1.65; }
+.pro-tip-body strong { color: var(--bright); font-weight: 500; }
+
+/* ── BOTTOM NAV ── */
+.bottom-nav {
+  position: fixed; bottom: 0; right: 0;
+  left: 220px;
+  height: 64px;
+  background: var(--glass); backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 56px; z-index: 40;
+}
+
+.nav-progress {
+  display: flex; align-items: center; gap: 16px;
+}
+
+.np-track {
+  width: 120px; height: 1px; background: var(--border);
+  position: relative; overflow: visible;
+}
+
+.np-fill {
+  height: 100%; background: var(--cyan);
+  transition: width .6s cubic-bezier(0.23,1,0.32,1);
+  position: relative;
+}
+
+.np-fill::after {
+  content: ''; position: absolute;
+  right: -3px; top: -3px;
+  width: 7px; height: 7px;
+  background: var(--cyan); border: 1px solid var(--black);
+  box-shadow: 0 0 8px var(--cyan);
+}
+
+.np-label {
+  font-family: 'Share Tech Mono', monospace; font-size: 10px;
+  color: var(--text); letter-spacing: 0.1em;
+}
+
+.np-label span { color: var(--cyan); }
+
+.nav-buttons { display: flex; align-items: center; gap: 10px; }
+
+.btn {
+  font-family: 'Bebas Neue', sans-serif; font-size: 14px;
+  letter-spacing: 0.18em; padding: 12px 28px;
+  cursor: pointer; border: none; transition: all .25s;
+  display: flex; align-items: center; gap: 10px;
+  position: relative; overflow: hidden;
+}
+
+.btn::before {
+  content: ''; position: absolute; inset: 0;
+  background: rgba(255,255,255,0.06);
+  transform: translateX(-100%); transition: transform .25s;
+}
+
+.btn:hover::before { transform: translateX(0); }
+
+.btn-ghost {
+  background: transparent; color: var(--text);
+  border: 1px solid var(--border2);
+}
+
+.btn-ghost:hover { border-color: var(--cyan); color: var(--cyan); }
+
+.btn-primary {
+  background: var(--cyan); color: var(--black);
+  box-shadow: 0 0 24px rgba(0,229,255,0.2);
+}
+
+.btn-primary:hover { box-shadow: 0 0 32px rgba(0,229,255,0.4); }
+
+.btn-success {
+  background: var(--green); color: var(--black);
+  box-shadow: 0 0 24px rgba(0,255,179,0.2);
+}
+
+.btn-success:hover { box-shadow: 0 0 32px rgba(0,255,179,0.4); }
 
 /* ── SUCCESS ── */
-#success { display: none; padding: 60px 0; }
-#success.active { display: block; animation: fadeIn 1s; }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+#success {
+  display: none; padding: 80px 56px;
+  flex-direction: column; align-items: flex-start;
+}
 
-@media (max-width: 768px) { .sidebar { display: none; } .bottom-nav { left: 0; } }
+#success.active { display: flex; }
+
+.success-eyebrow {
+  font-family: 'Share Tech Mono', monospace; font-size: 10px;
+  color: var(--green); letter-spacing: 0.2em; text-transform: uppercase;
+  display: flex; align-items: center; gap: 12px; margin-bottom: 24px;
+}
+
+.success-eyebrow::before {
+  content: ''; display: inline-block; width: 24px; height: 1px; background: var(--green);
+}
+
+.success-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(48px, 6vw, 80px);
+  letter-spacing: 0.04em; color: var(--white);
+  line-height: 1; margin-bottom: 24px;
+}
+
+.success-title em { font-style: normal; color: var(--green); }
+
+.success-body {
+  font-size: 14px; color: var(--text); line-height: 1.7;
+  max-width: 480px; margin-bottom: 40px;
+}
+
+.success-ref {
+  font-family: 'Share Tech Mono', monospace; font-size: 13px;
+  color: var(--cyan); padding: 16px 28px;
+  border: 1px solid rgba(0,229,255,0.25); background: rgba(0,229,255,0.04);
+  display: inline-block; letter-spacing: 0.1em; margin-bottom: 48px;
+  animation: refPulse 3s ease-in-out infinite;
+}
+
+@keyframes refPulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(0,229,255,0.2); }
+  50%      { box-shadow: 0 0 0 8px rgba(0,229,255,0); }
+}
+
+.success-grid {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 1px;
+  width: 100%; max-width: 520px; border: 1px solid var(--border);
+}
+
+.sg-cell {
+  background: var(--panel); padding: 16px 20px;
+  border-right: 1px solid var(--border);
+}
+
+.sg-cell:last-child { border-right: none; }
+.sg-label { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--text); letter-spacing: 0.15em; opacity: 0.5; margin-bottom: 6px; }
+.sg-value { font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 0.1em; }
+.sg-value.cyan  { color: var(--cyan); }
+.sg-value.green { color: var(--green); }
+.sg-value.amber { color: var(--amber); }
+
+/* ── GLITCH ── */
+.glitch {
+  position: relative;
+  animation: glitch 8s infinite;
+}
+
+@keyframes glitch {
+  0%,94%,100% { text-shadow: none; clip-path: none; }
+  95% { text-shadow: -2px 0 var(--cyan), 2px 0 var(--red); clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%); }
+  96% { text-shadow: 2px 0 var(--green); clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%); }
+  97% { text-shadow: none; clip-path: none; }
+}
+
+/* ── EXTRA ANIMATION CSS ── */
+@keyframes bootFlicker {
+  0%,100% { opacity:1; }
+  92%      { opacity:1; }
+  93%      { opacity:0.2; }
+  94%      { opacity:1; }
+  96%      { opacity:0.4; }
+  97%      { opacity:1; }
+}
+
+.signal-bars { display:flex; gap:2px; align-items:flex-end; margin-top:10px; }
+.sig-bar { width:4px; background:var(--cyan); opacity:0.5; animation:sigPulse 1.5s ease-in-out infinite; }
+.sig-bar:nth-child(1){height:4px;animation-delay:0s}
+.sig-bar:nth-child(2){height:7px;animation-delay:.15s}
+.sig-bar:nth-child(3){height:10px;animation-delay:.3s}
+.sig-bar:nth-child(4){height:13px;animation-delay:.45s}
+.sig-bar:nth-child(5){height:10px;animation-delay:.6s}
+@keyframes sigPulse{0%,100%{opacity:0.25}50%{opacity:0.8}}
+
+.ticker-wrap{overflow:hidden;white-space:nowrap;font-family:'Share Tech Mono',monospace;font-size:9px;color:rgba(0,229,255,0.3);letter-spacing:.1em;border-top:1px solid var(--border);padding:6px 40px;}
+.ticker-inner{display:inline-block;animation:tickerScroll 28s linear infinite;}
+@keyframes tickerScroll{from{transform:translateX(60vw)}to{transform:translateX(-100%)}}
+
+.opt-card:has(input:checked){box-shadow:inset 0 0 20px rgba(0,229,255,0.04),0 0 0 1px rgba(0,229,255,0.15);}
+.rank-card:hover{box-shadow:0 0 16px rgba(0,229,255,0.06);}
+
+.sg-cell{animation:sgReveal .4s ease forwards;opacity:0;}
+.sg-cell:nth-child(1){animation-delay:.2s}
+.sg-cell:nth-child(2){animation-delay:.35s}
+.sg-cell:nth-child(3){animation-delay:.5s}
+@keyframes sgReveal{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .bottom-nav { left: 0; padding: 0 20px; }
+  .page, #success { padding: 32px 20px 80px; }
+  .ph { flex-direction: column; gap: 16px; }
+  .opt-grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
 
+<!-- CURSOR -->
 <div id="cursor"></div>
 <div id="cursor-ring"></div>
 <canvas id="bgCanvas"></canvas>
 <div class="noise"></div>
 
+<!-- ═══ BOOT SCREEN ═══ -->
 <div id="boot">
-  <div class="boot-name">SAT<span>CORP</span></div>
+  <div class="boot-logo">
+    <div class="boot-emblem">
+      <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+        <rect x="1" y="1" width="62" height="62" stroke="#00e5ff" stroke-width="1.2"/>
+        <rect x="8" y="8" width="48" height="48" stroke="#162030" stroke-width="1"/>
+        <path d="M32 10 L54 52 L10 52 Z" stroke="#00e5ff" stroke-width="1.4" fill="rgba(0,229,255,0.06)"/>
+        <line x1="32" y1="26" x2="32" y2="40" stroke="#00e5ff" stroke-width="1.5"/>
+        <circle cx="32" cy="44" r="2" fill="#00e5ff"/>
+        <line x1="32" y1="1"  x2="32" y2="7"  stroke="#00e5ff" stroke-width="1"/>
+        <line x1="32" y1="57" x2="32" y2="63" stroke="#00e5ff" stroke-width="1"/>
+        <line x1="1"  y1="32" x2="7"  y2="32" stroke="#00e5ff" stroke-width="1"/>
+        <line x1="57" y1="32" x2="63" y2="32" stroke="#00e5ff" stroke-width="1"/>
+        <line x1="1"  y1="1"  x2="6"  y2="6"  stroke="#00e5ff" stroke-width="1" opacity=".4"/>
+        <line x1="63" y1="1"  x2="58" y2="6"  stroke="#00e5ff" stroke-width="1" opacity=".4"/>
+        <line x1="1"  y1="63" x2="6"  y2="58" stroke="#00e5ff" stroke-width="1" opacity=".4"/>
+        <line x1="63" y1="63" x2="58" y2="58" stroke="#00e5ff" stroke-width="1" opacity=".4"/>
+      </svg>
+    </div>
+    <div>
+      <div class="boot-name glitch">SAT<span>CORP</span></div>
+    </div>
+  </div>
+
   <div class="boot-seq" id="bootSeq"></div>
+
   <div class="boot-bar-wrap">
+    <div class="boot-bar-label" id="bootBarLabel">INITIALIZING SECURE SESSION…</div>
     <div class="boot-bar-track"><div class="boot-bar-fill" id="bootBar"></div></div>
   </div>
 </div>
 
+<!-- ═══ APP ═══ -->
 <div id="app">
+
+  <!-- HEADER -->
   <div class="hdr">
-    <div class="hdr-logo">SAT<em>CORP</em></div>
-    <div style="font-family:'Share Tech Mono'; font-size: 10px; color: var(--cyan);" id="hudTime"></div>
+    <div class="hdr-left">
+      <div class="hdr-logo">SAT<em>CORP</em></div>
+      <div class="hdr-sep"></div>
+      <div class="hdr-doc">CLIENT ONBOARDING // DOC-PTA-2025</div>
+    </div>
+    <div class="hdr-right">
+      <div class="hdr-client">ASSIGNED CLIENT<br><span style="color:var(--bright)">PEACE TIME AGENCY</span></div>
+      <div class="hdr-badge">ACTIVE</div>
+    </div>
   </div>
 
+  <!-- LAYOUT -->
   <div class="layout">
+
+    <!-- SIDEBAR -->
     <div class="sidebar">
-      <div class="side-step active" id="ss1">
-        <div class="step-ico">01</div>
-        <div class="step-text"><div style="font-size:9px">SECTION</div><div style="font-family:'Bebas Neue'">IDENTITY</div></div>
+      <div class="side-label">// MISSION BRIEF</div>
+
+      <div class="side-step active" id="ss1" onclick="goTo(1)">
+        <div class="step-ico" id="si1">01</div>
+        <div class="step-info">
+          <div class="step-num-label">SECTION 01</div>
+          <div class="step-title">BRAND IDENTITY<br>& VISION</div>
+          <div class="step-sub">The Who & Why</div>
+        </div>
       </div>
-      <div class="side-step" id="ss2">
-        <div class="step-ico">02</div>
-        <div class="step-text"><div style="font-size:9px">SECTION</div><div style="font-family:'Bebas Neue'">STRUCTURE</div></div>
+
+      <div class="side-step" id="ss2" onclick="goTo(2)">
+        <div class="step-ico" id="si2">02</div>
+        <div class="step-info">
+          <div class="step-num-label">SECTION 02</div>
+          <div class="step-title">LANDING PAGE<br>STRUCTURE</div>
+          <div class="step-sub">The What & How</div>
+        </div>
       </div>
-      <div class="side-step" id="ss3">
-        <div class="step-ico">03</div>
-        <div class="step-text"><div style="font-size:9px">SECTION</div><div style="font-family:'Bebas Neue'">LOGISTICS</div></div>
+
+      <div class="side-step" id="ss3" onclick="goTo(3)">
+        <div class="step-ico" id="si3">03</div>
+        <div class="step-info">
+          <div class="step-num-label">SECTION 03</div>
+          <div class="step-title">TECHNICAL<br>LOGISTICS</div>
+          <div class="step-sub">The Where & When</div>
+        </div>
       </div>
-      <canvas id="radarCanvas"></canvas>
+
+      <div class="side-footer">
+        <div class="side-stat">
+          ISSUED BY // SATCORP<br>
+          RECIPIENT // PTA<br>
+          CLEARANCE // CONFIDENTIAL<br>
+          REV // 2025.01<br>SIGNAL // LIVE
+        </div>
+        <div class="signal-bars"><div class="sig-bar"></div><div class="sig-bar"></div><div class="sig-bar"></div><div class="sig-bar"></div><div class="sig-bar"></div></div>
+      </div>
     </div>
 
-    <div class="content" id="scrollArea">
+    <!-- CONTENT -->
+    <div class="content" id="contentArea">
+
+      <!-- ──────────────────────────────
+           PAGE 1: BRAND IDENTITY
+      ─────────────────────────────────── -->
       <div class="page active" id="page1">
-        <div class="q">
-          <div class="q-title">01 // THE ELEVATOR PITCH</div>
-          <div class="q-desc">Define the core mission of Peace Time Agency.</div>
-          <textarea rows="4" placeholder="Type transmission..."></textarea>
+        <div class="ph">
+          <div class="ph-left">
+            <div class="ph-tag">PAGE 01 OF 03</div>
+            <div class="ph-title glitch">BRAND IDENTITY<br>& <em>VISION</em></div>
+            <div class="ph-sub">The "Who" and "Why" behind Peace Time. Complete all fields — this information directly shapes SATCORP's strategy for your build.</div>
+          </div>
+          <div class="ph-right">
+            <div class="ph-doc-id">DOC-PTA-2025 // SEC-01</div>
+            <div class="ph-stamp">CONFIDENTIAL</div>
+          </div>
         </div>
-        <div class="q">
-          <div class="q-title">02 // BRAND VOICE</div>
-          <div class="q-desc">How should the agency communicate with the world?</div>
-          <input type="text" placeholder="e.g. Minimalist, Authority, Calm">
+
+        <!-- Q1 -->
+        <div class="q" style="animation-delay:.05s">
+          <div class="q-header">
+            <div class="q-id">// Q.01</div>
+            <div class="q-title">THE ELEVATOR PITCH</div>
+          </div>
+          <div class="q-desc">In 2–3 sentences, what does Peace Time Agency do, and what is the primary problem you solve for your clients?</div>
+          <div class="input-wrap">
+            <textarea id="q1" rows="4" placeholder="e.g. Peace Time Agency removes the operational chaos from a creator's world — handling strategy, partnerships, and growth so founders can focus on what they do best…"></textarea>
+          </div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="q" style="animation-delay:.1s">
+          <div class="q-header">
+            <div class="q-id">// Q.02</div>
+            <div class="q-title">BRAND PERSONALITY</div>
+          </div>
+          <div class="q-desc">If your agency were a person, how would they speak? Select 3–4 traits that define Peace Time Agency's voice.</div>
+          <div class="opt-grid">
+            <label class="opt-card">
+              <input type="checkbox" class="bp" value="Calm & Reassuring">
+              <span class="opt-mark"></span>
+              <span class="opt-text">Calm & Reassuring</span>
+            </label>
+            <label class="opt-card">
+              <input type="checkbox" class="bp" value="Minimalist & Modern">
+              <span class="opt-mark"></span>
+              <span class="opt-text">Minimalist & Modern</span>
+            </label>
+            <label class="opt-card">
+              <input type="checkbox" class="bp" value="High-Energy & Bold">
+              <span class="opt-mark"></span>
+              <span class="opt-text">High-Energy & Bold</span>
+            </label>
+            <label class="opt-card">
+              <input type="checkbox" class="bp" value="Wise & Experienced">
+              <span class="opt-mark"></span>
+              <span class="opt-text">Wise & Experienced</span>
+            </label>
+            <label class="opt-card" style="grid-column:1/-1">
+              <input type="checkbox" class="bp" value="Other" id="bpOther">
+              <span class="opt-mark"></span>
+              <span class="opt-text">
+                <div class="other-field">
+                  Other:
+                  <input type="text" class="other-inline" id="bpOtherTxt" placeholder="Describe your brand voice…" onclick="document.getElementById('bpOther').checked=true">
+                </div>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="q" style="animation-delay:.15s">
+          <div class="q-header">
+            <div class="q-id">// Q.03</div>
+            <div class="q-title">VISUAL PREFERENCES</div>
+          </div>
+          <div class="q-desc" style="margin-bottom:8px"><strong style="color:var(--bright);font-weight:400">Colors —</strong> Do you have an existing palette, or should SATCORP explore "peaceful" tones (blues, greens, neutrals)?</div>
+          <div class="input-wrap" style="margin-bottom:24px">
+            <input type="text" id="q3colors" placeholder="e.g. We have navy + gold  —  or  —  explore peaceful tones for us">
+          </div>
+          <div class="q-desc" style="margin-bottom:12px"><strong style="color:var(--bright);font-weight:400">Imagery —</strong> Which visual direction feels right for Peace Time?</div>
+          <div class="opt-grid">
+            <label class="opt-card radio">
+              <input type="radio" name="img" value="Photography — real people / office">
+              <span class="opt-mark"></span>
+              <span class="opt-text">Photography<span class="opt-sub">Real people / office environments</span></span>
+            </label>
+            <label class="opt-card radio">
+              <input type="radio" name="img" value="Abstract Art">
+              <span class="opt-mark"></span>
+              <span class="opt-text">Abstract Art<span class="opt-sub">Mood-driven, conceptual visuals</span></span>
+            </label>
+            <label class="opt-card radio">
+              <input type="radio" name="img" value="Clean 3D Illustrations">
+              <span class="opt-mark"></span>
+              <span class="opt-text">Clean 3D Illustrations<span class="opt-sub">Modern, polished, product-style</span></span>
+            </label>
+            <label class="opt-card radio">
+              <input type="radio" name="img" value="Mix / Open to direction">
+              <span class="opt-mark"></span>
+              <span class="opt-text">Mix / Open to Direction<span class="opt-sub">Trust SATCORP to decide</span></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="q" style="animation-delay:.2s">
+          <div class="q-header">
+            <div class="q-id">// Q.04</div>
+            <div class="q-title">THE "PEACE" FACTOR</div>
+          </div>
+          <div class="q-desc">What does "Peace Time" mean in the context of your business? Does it mean you handle the stress so the client doesn't have to?</div>
+          <div class="input-wrap">
+            <textarea id="q4" rows="4" placeholder="Describe what 'peace' represents — for your agency and for your clients…"></textarea>
+          </div>
         </div>
       </div>
 
+      <!-- ──────────────────────────────
+           PAGE 2: LANDING PAGE STRUCTURE
+      ─────────────────────────────────── -->
       <div class="page" id="page2">
-        <div class="q">
-          <div class="q-title">03 // CORE CONVERSION</div>
-          <div class="q-desc">The single most important action for a visitor.</div>
-          <input type="text" placeholder="e.g. Booking a discovery call">
+        <div class="ph">
+          <div class="ph-left">
+            <div class="ph-tag">PAGE 02 OF 03</div>
+            <div class="ph-title glitch">LANDING PAGE<br><em>STRUCTURE</em></div>
+            <div class="ph-sub">The "What" and "How" of the first phase. Define the architecture and priority of the Peace Time landing page build.</div>
+          </div>
+          <div class="ph-right">
+            <div class="ph-doc-id">DOC-PTA-2025 // SEC-02</div>
+            <div class="ph-stamp">CONFIDENTIAL</div>
+          </div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="q" style="animation-delay:.05s">
+          <div class="q-header">
+            <div class="q-id">// Q.05</div>
+            <div class="q-title">THE PRIMARY GOAL — THE "ONE BIG THING"</div>
+          </div>
+          <div class="q-desc">When a visitor lands on this page, what is the single most important action they should take?</div>
+          <div class="opt-grid full">
+            <label class="opt-card radio">
+              <input type="radio" name="goal" value="Book a consultation">
+              <span class="opt-mark"></span>
+              <span class="opt-text">Book a consultation</span>
+            </label>
+            <label class="opt-card radio">
+              <input type="radio" name="goal" value="Sign up for newsletter / waitlist">
+              <span class="opt-mark"></span>
+              <span class="opt-text">Sign up for a newsletter / waitlist</span>
+            </label>
+            <label class="opt-card radio">
+              <input type="radio" name="goal" value="Download a portfolio / guide">
+              <span class="opt-mark"></span>
+              <span class="opt-text">Download a portfolio / guide</span>
+            </label>
+            <label class="opt-card radio">
+              <input type="radio" name="goal" value="Fill out a contact form">
+              <span class="opt-mark"></span>
+              <span class="opt-text">Fill out a contact form</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Q6 -->
+        <div class="q" style="animation-delay:.1s">
+          <div class="q-header">
+            <div class="q-id">// Q.06</div>
+            <div class="q-title">KEY CONTENT SECTIONS</div>
+          </div>
+          <div class="q-desc">Which sections are essential for launch? <strong style="color:var(--bright);font-weight:400">Drag to rank by priority.</strong> Toggle IN / OUT to include or exclude.</div>
+          <div class="rank-list" id="rankList">
+            <div class="rank-card" draggable="true" data-section="Hero Section">
+              <div class="rank-pos">1</div>
+              <div class="rank-grip">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" opacity=".5">
+                  <rect x="3" y="2" width="8" height="1.5" rx=".5"/>
+                  <rect x="3" y="6" width="8" height="1.5" rx=".5"/>
+                  <rect x="3" y="10" width="8" height="1.5" rx=".5"/>
+                </svg>
+              </div>
+              <div class="rank-body">
+                <div class="rank-name">Hero Section</div>
+                <div class="rank-desc">High-impact headline and sub-headline</div>
+              </div>
+              <div class="rank-toggle">
+                <button class="rtgl-btn on-yes" onclick="toggleRank(this,'yes')">IN</button>
+                <button class="rtgl-btn" onclick="toggleRank(this,'no')">OUT</button>
+              </div>
+            </div>
+            <div class="rank-card" draggable="true" data-section="The Process">
+              <div class="rank-pos">2</div>
+              <div class="rank-grip"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" opacity=".5"><rect x="3" y="2" width="8" height="1.5" rx=".5"/><rect x="3" y="6" width="8" height="1.5" rx=".5"/><rect x="3" y="10" width="8" height="1.5" rx=".5"/></svg></div>
+              <div class="rank-body">
+                <div class="rank-name">The Process</div>
+                <div class="rank-desc">A 1-2-3 step breakdown of how you work</div>
+              </div>
+              <div class="rank-toggle">
+                <button class="rtgl-btn on-yes" onclick="toggleRank(this,'yes')">IN</button>
+                <button class="rtgl-btn" onclick="toggleRank(this,'no')">OUT</button>
+              </div>
+            </div>
+            <div class="rank-card" draggable="true" data-section="Social Proof">
+              <div class="rank-pos">3</div>
+              <div class="rank-grip"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" opacity=".5"><rect x="3" y="2" width="8" height="1.5" rx=".5"/><rect x="3" y="6" width="8" height="1.5" rx=".5"/><rect x="3" y="10" width="8" height="1.5" rx=".5"/></svg></div>
+              <div class="rank-body">
+                <div class="rank-name">Social Proof</div>
+                <div class="rank-desc">Client logos or testimonial placeholder</div>
+              </div>
+              <div class="rank-toggle">
+                <button class="rtgl-btn on-yes" onclick="toggleRank(this,'yes')">IN</button>
+                <button class="rtgl-btn" onclick="toggleRank(this,'no')">OUT</button>
+              </div>
+            </div>
+            <div class="rank-card" draggable="true" data-section="Services">
+              <div class="rank-pos">4</div>
+              <div class="rank-grip"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" opacity=".5"><rect x="3" y="2" width="8" height="1.5" rx=".5"/><rect x="3" y="6" width="8" height="1.5" rx=".5"/><rect x="3" y="10" width="8" height="1.5" rx=".5"/></svg></div>
+              <div class="rank-body">
+                <div class="rank-name">Services</div>
+                <div class="rank-desc">A brief "menu" of what you offer</div>
+              </div>
+              <div class="rank-toggle">
+                <button class="rtgl-btn on-yes" onclick="toggleRank(this,'yes')">IN</button>
+                <button class="rtgl-btn" onclick="toggleRank(this,'no')">OUT</button>
+              </div>
+            </div>
+            <div class="rank-card" draggable="true" data-section="About / Founder">
+              <div class="rank-pos">5</div>
+              <div class="rank-grip"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" opacity=".5"><rect x="3" y="2" width="8" height="1.5" rx=".5"/><rect x="3" y="6" width="8" height="1.5" rx=".5"/><rect x="3" y="10" width="8" height="1.5" rx=".5"/></svg></div>
+              <div class="rank-body">
+                <div class="rank-name">About / Founder</div>
+                <div class="rank-desc">A brief bio to build trust</div>
+              </div>
+              <div class="rank-toggle">
+                <button class="rtgl-btn on-yes" onclick="toggleRank(this,'yes')">IN</button>
+                <button class="rtgl-btn" onclick="toggleRank(this,'no')">OUT</button>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:10px;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text);opacity:.4;letter-spacing:.1em">
+            // DRAG TO REORDER · TOGGLE IN/OUT TO INCLUDE OR EXCLUDE EACH SECTION
+          </div>
+        </div>
+
+        <!-- Q7 -->
+        <div class="q" style="animation-delay:.15s">
+          <div class="q-header">
+            <div class="q-id">// Q.07</div>
+            <div class="q-title">TARGET AUDIENCE</div>
+          </div>
+          <div class="q-desc">Who is the ideal visitor? (e.g., Stressed-out startup founders, corporate HR departments, creative freelancers?) Be as specific as possible.</div>
+          <div class="input-wrap">
+            <textarea id="q7" rows="4" placeholder="Describe your ideal visitor — their role, industry, pain points, and mindset when they discover Peace Time Agency…"></textarea>
+          </div>
         </div>
       </div>
 
+      <!-- ──────────────────────────────
+           PAGE 3: TECHNICAL LOGISTICS
+      ─────────────────────────────────── -->
       <div class="page" id="page3">
-        <div class="q">
-          <div class="q-title">04 // DOMAIN STATUS</div>
-          <div class="q-desc">Do you currently hold the URL credentials?</div>
-          <input type="text" placeholder="Enter URL or 'None'">
+        <div class="ph">
+          <div class="ph-left">
+            <div class="ph-tag">PAGE 03 OF 03</div>
+            <div class="ph-title glitch">TECHNICAL<br><em>LOGISTICS</em></div>
+            <div class="ph-sub">The "Where" and "When" of the build. Final information SATCORP needs before initiating Phase 1.</div>
+          </div>
+          <div class="ph-right">
+            <div class="ph-doc-id">DOC-PTA-2025 // SEC-03</div>
+            <div class="ph-stamp">CONFIDENTIAL</div>
+          </div>
+        </div>
+
+        <!-- Q8 -->
+        <div class="q" style="animation-delay:.05s">
+          <div class="q-header">
+            <div class="q-id">// Q.08</div>
+            <div class="q-title">INVENTORY OF ASSETS</div>
+          </div>
+          <div class="q-desc">Do you currently have the following ready to go? Mark each asset as available or not.</div>
+          <div class="asset-grid">
+            <div class="asset-row">
+              <div class="asset-info">
+                <div class="asset-name">Logo</div>
+                <div class="asset-desc">High-resolution / vector file (.ai, .svg, .eps)</div>
+              </div>
+              <div class="asset-toggle">
+                <button class="atgl-btn" onclick="setAsset(this,'yes')">YES</button>
+                <button class="atgl-btn" onclick="setAsset(this,'no')">NO</button>
+              </div>
+            </div>
+            <div class="asset-row">
+              <div class="asset-info">
+                <div class="asset-name">Brand Style Guide</div>
+                <div class="asset-desc">Fonts, color codes, usage rules document</div>
+              </div>
+              <div class="asset-toggle">
+                <button class="atgl-btn" onclick="setAsset(this,'yes')">YES</button>
+                <button class="atgl-btn" onclick="setAsset(this,'no')">NO</button>
+              </div>
+            </div>
+            <div class="asset-row">
+              <div class="asset-info">
+                <div class="asset-name">Professional Headshots</div>
+                <div class="asset-desc">High-res photography of founder / team</div>
+              </div>
+              <div class="asset-toggle">
+                <button class="atgl-btn" onclick="setAsset(this,'yes')">YES</button>
+                <button class="atgl-btn" onclick="setAsset(this,'no')">NO</button>
+              </div>
+            </div>
+            <div class="asset-row">
+              <div class="asset-info">
+                <div class="asset-name">Written Copy / Text</div>
+                <div class="asset-desc">Headlines, body copy, and CTAs already drafted</div>
+              </div>
+              <div class="asset-toggle">
+                <button class="atgl-btn" onclick="setAsset(this,'yes')">YES</button>
+                <button class="atgl-btn" onclick="setAsset(this,'no')">NO</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q9 -->
+        <div class="q" style="animation-delay:.1s">
+          <div class="q-header">
+            <div class="q-id">// Q.09</div>
+            <div class="q-title">TECHNICAL REQUIREMENTS</div>
+          </div>
+          <div class="q-desc" style="margin-bottom:10px"><strong style="color:var(--bright);font-weight:400">Domain —</strong> Do you already own the URL? Enter it below if so.</div>
+          <div class="input-wrap" style="margin-bottom:28px">
+            <input type="text" id="q9domain" placeholder="e.g. peacetimeagency.com  —  or leave blank if not yet purchased">
+          </div>
+
+          <div class="q-desc" style="margin-bottom:14px"><strong style="color:var(--bright);font-weight:400">Integrations —</strong> Do you need to connect the page to a specific tool?</div>
+          <div class="opt-grid">
+            <label class="opt-card">
+              <input type="checkbox" class="intg" value="Calendly">
+              <span class="opt-mark"></span>
+              <span class="opt-text">Calendly</span>
+            </label>
+            <label class="opt-card">
+              <input type="checkbox" class="intg" value="Mailchimp">
+              <span class="opt-mark"></span>
+              <span class="opt-text">Mailchimp</span>
+            </label>
+            <label class="opt-card">
+              <input type="checkbox" class="intg" value="HubSpot">
+              <span class="opt-mark"></span>
+              <span class="opt-text">HubSpot</span>
+            </label>
+            <label class="opt-card">
+              <input type="checkbox" class="intg" value="Typeform">
+              <span class="opt-mark"></span>
+              <span class="opt-text">Typeform</span>
+            </label>
+            <label class="opt-card" style="grid-column:1/-1">
+              <input type="checkbox" class="intg" value="Other" id="intgOther">
+              <span class="opt-mark"></span>
+              <span class="opt-text">
+                <div class="other-field">
+                  Other:
+                  <input type="text" class="other-inline" id="intgOtherTxt" placeholder="Specify tool name…" onclick="document.getElementById('intgOther').checked=true">
+                </div>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Q10 -->
+        <div class="q" style="animation-delay:.15s">
+          <div class="q-header">
+            <div class="q-id">// Q.10</div>
+            <div class="q-title">SUCCESS METRICS</div>
+          </div>
+          <div class="q-desc">Six months from now, how will we know this landing page was a success? Be specific — numbers, outcomes, milestones.</div>
+          <div class="input-wrap">
+            <textarea id="q10" rows="4" placeholder="e.g. 500+ unique monthly visitors, 50 consultation bookings, 3 brand deal inquiries/month, featured in industry media…"></textarea>
+          </div>
+        </div>
+
+        <div class="pro-tip">
+          <div class="pro-tip-label">// SATCORP NOTE</div>
+          <div class="pro-tip-body">
+            <strong>Keep the "Peace Time" vibe consistent.</strong> If the agency promises tranquility, the website must have generous white space and a layout that never feels cluttered or frantic. SATCORP applies this principle at every design decision — from typography scale to animation speed.
+          </div>
         </div>
       </div>
 
+      <!-- ──────────────────────────────
+           SUCCESS
+      ─────────────────────────────────── -->
       <div id="success">
-        <h1 style="font-family:'Bebas Neue'; font-size: 64px; color: var(--green);">TRANSMISSION COMPLETE</h1>
-        <p style="margin-top: 20px;">Brief received. SATCORP analysts are processing your data.</p>
+        <div class="success-eyebrow">TRANSMISSION CONFIRMED</div>
+        <div class="success-title glitch">BRIEF<br><em>RECEIVED</em></div>
+        <div class="success-body">SATCORP has successfully received the Peace Time Agency onboarding brief. A SATCORP strategist will review your responses and reach out within <strong style="color:var(--bright)">48 business hours</strong> to confirm next steps and schedule your strategy call.</div>
+        <div class="success-ref" id="refCode">REF // SATCORP-000000-PTA</div>
+        <div class="success-grid">
+          <div class="sg-cell">
+            <div class="sg-label">CLIENT</div>
+            <div class="sg-value green">PTA</div>
+          </div>
+          <div class="sg-cell">
+            <div class="sg-label">STATUS</div>
+            <div class="sg-value cyan">ACTIVE</div>
+          </div>
+          <div class="sg-cell">
+            <div class="sg-label">ETA</div>
+            <div class="sg-value amber">48 HRS</div>
+          </div>
+        </div>
       </div>
+
+    </div><!-- /content -->
+  </div><!-- /layout -->
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav" id="bottomNav">
+    <div class="nav-progress">
+      <div class="np-track"><div class="np-fill" id="npFill" style="width:33%"></div></div>
+      <div class="np-label">SECTION <span id="npCurrent">1</span> OF 3</div>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn btn-ghost" id="btnBack" onclick="goTo(currentPage-1)" style="display:none">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M10 7H4M6 4L3 7l3 3" stroke="currentColor" stroke-width="1.3"/></svg>
+        BACK
+      </button>
+      <button class="btn btn-primary" id="btnNext" onclick="goTo(currentPage+1)">
+        NEXT
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 7h6M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.3"/></svg>
+      </button>
+      <button class="btn btn-success" id="btnSubmit" onclick="submitForm()" style="display:none">
+        TRANSMIT TO SATCORP
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 7h6M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.3"/></svg>
+      </button>
     </div>
   </div>
 
-  <div class="bottom-nav" id="bottomNav">
-    <div style="font-family:'Share Tech Mono'; font-size: 10px;">
-      SEC <span id="npCurrent">1</span> / 3 <div style="width: 100px; height: 1px; background: var(--border2); margin-top: 4px;"><div id="npFill" style="width: 33%; height: 100%; background: var(--cyan);"></div></div>
-    </div>
-    <div style="display: flex; gap: 10px;">
-      <button class="btn btn-ghost" id="btnBack" onclick="changePage(-1)" style="display:none">BACK</button>
-      <button class="btn btn-primary" id="btnNext" onclick="changePage(1)">NEXT STEP</button>
-      <button class="btn btn-primary" id="btnSubmit" onclick="finalize()" style="display:none; background: var(--green);">TRANSMIT</button>
-    </div>
-  </div>
-</div>
+<div class="ticker-wrap"><div class="ticker-inner">// SATCORP SECURE CHANNEL ACTIVE &nbsp;&nbsp;&nbsp; PTA-ONBOARDING-DOC v3.0 &nbsp;&nbsp;&nbsp; ENCRYPTION: AES-256 &nbsp;&nbsp;&nbsp; STATUS: AWAITING TRANSMISSION &nbsp;&nbsp;&nbsp; CLEARANCE: CONFIDENTIAL &nbsp;&nbsp;&nbsp; ISSUED BY SATCORP STRATEGIC DIVISION &nbsp;&nbsp;&nbsp; ALL DATA ENCRYPTED IN TRANSIT &nbsp;&nbsp;&nbsp; UNAUTHORIZED ACCESS PROHIBITED &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;</div></div>
+</div><!-- /app -->
 
 <script>
-let currentPage = 1;
-const totalPages = 3;
-
-// ── CURSOR LOGIC ──
+/* ── CURSOR ── */
 const cur = document.getElementById('cursor');
 const curR = document.getElementById('cursor-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
 document.addEventListener('mousemove', e => {
-  cur.style.left = e.clientX + 'px'; cur.style.top = e.clientY + 'px';
-  curR.style.left = e.clientX + 'px'; curR.style.top = e.clientY + 'px';
+  mx = e.clientX; my = e.clientY;
+  cur.style.left  = mx + 'px';
+  cur.style.top   = my + 'px';
 });
 
-// ── BACKGROUND ENGINE ──
+(function animRing() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  curR.style.left = rx + 'px';
+  curR.style.top  = ry + 'px';
+  requestAnimationFrame(animRing);
+})();
+
+/* ── CANVAS PARTICLE BG ── */
 const canvas = document.getElementById('bgCanvas');
 const ctx = canvas.getContext('2d');
-let particles = [];
-function initBG() {
-  canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-  particles = Array.from({length: 50}, () => ({
-    x: Math.random() * canvas.width, y: Math.random() * canvas.height,
-    s: Math.random() * 2, v: Math.random() * 0.5 + 0.1
-  }));
-}
-function drawBG() {
-  ctx.clearRect(0,0, canvas.width, canvas.height);
-  ctx.fillStyle = "rgba(0, 229, 255, 0.2)";
-  particles.forEach(p => {
-    ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI*2); ctx.fill();
-    p.y -= p.v; if(p.y < 0) p.y = canvas.height;
-  });
-  requestAnimationFrame(drawBG);
-}
-initBG(); drawBG();
+let W, H, particles = [];
 
-// ── BOOT SEQUENCE ──
-const bootLines = ["LOADING KERNEL...", "ESTABLISHING SECURE TUNNEL...", "HANDSHAKE: PEACE TIME AGENCY", "INTERFACE READY."];
-let lineIdx = 0;
-function runBoot() {
-  const seq = document.getElementById('bootSeq');
-  const bar = document.getElementById('bootBar');
-  if(lineIdx < bootLines.length) {
-    const p = document.createElement('div'); p.textContent = "> " + bootLines[lineIdx];
-    seq.appendChild(p);
-    lineIdx++;
-    bar.style.width = (lineIdx / bootLines.length * 100) + "%";
-    setTimeout(runBoot, 400);
-  } else {
-    setTimeout(() => {
-      document.getElementById('boot').style.opacity = 0;
-      setTimeout(() => {
-        document.getElementById('boot').style.display = 'none';
-        document.getElementById('app').classList.add('visible');
-        revealQuestions();
-        initTargeting();
-      }, 600);
-    }, 500);
+function resize() {
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+
+resize();
+window.addEventListener('resize', resize);
+
+class Particle {
+  constructor() { this.reset(true); }
+  reset(init = false) {
+    this.x  = Math.random() * W;
+    this.y  = init ? Math.random() * H : H + 10;
+    this.vx = (Math.random() - .5) * .3;
+    this.vy = -Math.random() * .6 - .1;
+    this.size  = Math.random() * 1.2 + .3;
+    this.alpha = Math.random() * .5 + .1;
+    this.life  = Math.random() * 400 + 200;
+    this.maxLife = this.life;
+    this.color = Math.random() > .6 ? '#00e5ff' : Math.random() > .5 ? '#00ffb3' : '#8badc8';
+  }
+  update() {
+    this.x += this.vx; this.y += this.vy; this.life--;
+    if (this.life < 0 || this.y < -10) this.reset();
+  }
+  draw() {
+    ctx.save();
+    ctx.globalAlpha = (this.life / this.maxLife) * this.alpha;
+    ctx.fillStyle = this.color;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
   }
 }
+
+for (let i = 0; i < 120; i++) particles.push(new Particle());
+
+// Grid lines
+function drawGrid() {
+  ctx.clearRect(0, 0, W, H);
+  ctx.strokeStyle = 'rgba(22,32,48,0.6)';
+  ctx.lineWidth = 1;
+  const gs = 60;
+  for (let x = 0; x < W; x += gs) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+  }
+  for (let y = 0; y < H; y += gs) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+}
+
+function animCanvas() {
+  drawGrid();
+  particles.forEach(p => { p.update(); p.draw(); });
+  requestAnimationFrame(animCanvas);
+}
+animCanvas();
+
+/* ── BOOT SEQUENCE ── */
+const bootLines = [
+  { text: 'SATCORP OS v4.1.2 — KERNEL LOADED', cls: 'ok' },
+  { text: 'SECURE CHANNEL ESTABLISHED', cls: 'ok' },
+  { text: 'CLIENT PROFILE: PEACE TIME AGENCY', cls: 'ok' },
+  { text: 'DOCUMENT CLASS: CONFIDENTIAL ONBOARDING', cls: 'warn' },
+  { text: 'LOADING INTAKE MODULES…', cls: '' },
+  { text: 'ENCRYPTION: AES-256 ACTIVE', cls: 'ok' },
+];
+
+const bootSeq = document.getElementById('bootSeq');
+const bootBar = document.getElementById('bootBar');
+const bootLabel = document.getElementById('bootBarLabel');
+
+function runBoot() {
+  let i = 0;
+  function nextLine() {
+    if (i >= bootLines.length) {
+      bootBar.style.width = '100%';
+      bootLabel.textContent = 'SESSION READY — LOADING INTERFACE';
+      setTimeout(launchApp, 800);
+      return;
+    }
+    const div = document.createElement('div');
+    div.className = 'boot-line ' + bootLines[i].cls;
+    div.style.animationDelay = '0s';
+    div.textContent = '> ' + bootLines[i].text;
+    bootSeq.appendChild(div);
+    bootBar.style.width = ((i + 1) / bootLines.length * 85) + '%';
+    i++;
+    setTimeout(nextLine, 300 + Math.random() * 200);
+  }
+  setTimeout(nextLine, 400);
+}
+
+function launchApp() {
+  const boot = document.getElementById('boot');
+  boot.style.transition = 'opacity .6s ease';
+  boot.style.opacity = '0';
+  setTimeout(() => {
+    boot.style.display = 'none';
+    document.getElementById('app').classList.add('visible');
+  }, 600);
+}
+
 runBoot();
 
-// ── HUD CLOCK ──
-setInterval(() => {
-  document.getElementById('hudTime').textContent = new Date().toISOString().replace('T', ' // ').slice(0, 22);
-}, 1000);
+/* ── PAGE NAVIGATION ── */
+let currentPage = 1;
 
-// ── NAVIGATION & STAGGERED REVEAL ──
-function revealQuestions() {
-  const activePage = document.querySelector('.page.active');
-  const qs = activePage.querySelectorAll('.q');
-  qs.forEach((q, i) => {
-    q.classList.remove('revealed');
-    setTimeout(() => q.classList.add('revealed'), i * 150 + 200);
+function goTo(page) {
+  if (page < 1 || page > 3) return;
+
+  document.getElementById('page' + currentPage)?.classList.remove('active');
+  document.getElementById('page' + page)?.classList.add('active');
+
+  currentPage = page;
+  document.getElementById('contentArea').scrollTop = 0;
+
+  // Sidebar
+  [1,2,3].forEach(i => {
+    const ss = document.getElementById('ss' + i);
+    const si = document.getElementById('si' + i);
+    ss.classList.remove('active','done');
+    si.textContent = i < page ? '' : i;
+    if (i < page) {
+      ss.classList.add('done');
+      si.textContent = '';
+    }
+    if (i === page) ss.classList.add('active');
+  });
+
+  // Progress
+  const pct = { 1: 33, 2: 66, 3: 100 };
+  document.getElementById('npFill').style.width = pct[page] + '%';
+  document.getElementById('npCurrent').textContent = page;
+
+  // Buttons
+  document.getElementById('btnBack').style.display  = page > 1 ? 'flex' : 'none';
+  document.getElementById('btnNext').style.display   = page < 3 ? 'flex' : 'none';
+  document.getElementById('btnSubmit').style.display = page === 3 ? 'flex' : 'none';
+}
+
+/* ── RANK DRAG ── */
+let dragSrc = null;
+
+document.querySelectorAll('.rank-card').forEach(card => {
+  card.addEventListener('dragstart', e => {
+    dragSrc = card; card.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+  });
+  card.addEventListener('dragend', () => {
+    card.classList.remove('dragging');
+    document.querySelectorAll('.rank-card').forEach(c => c.classList.remove('over'));
+    reorderNums();
+  });
+  card.addEventListener('dragover', e => {
+    e.preventDefault();
+    if (card !== dragSrc) {
+      document.querySelectorAll('.rank-card').forEach(c => c.classList.remove('over'));
+      card.classList.add('over');
+    }
+  });
+  card.addEventListener('drop', e => {
+    e.preventDefault();
+    if (dragSrc && dragSrc !== card) {
+      const list = card.parentNode;
+      const items = [...list.querySelectorAll('.rank-card')];
+      const si = items.indexOf(dragSrc);
+      const ti = items.indexOf(card);
+      list.insertBefore(dragSrc, si < ti ? card.nextSibling : card);
+    }
+  });
+});
+
+function reorderNums() {
+  document.querySelectorAll('#rankList .rank-card').forEach((c, i) => {
+    c.querySelector('.rank-pos').textContent = i + 1;
   });
 }
 
-function changePage(dir) {
-  const newPage = currentPage + dir;
-  if(newPage < 1 || newPage > totalPages) return;
-  
-  // Update sidebar icons for "Done" state
-  if(dir > 0) document.getElementById('ss' + currentPage).classList.add('done');
-  
-  document.getElementById('page' + currentPage).classList.remove('active');
-  document.getElementById('ss' + currentPage).classList.remove('active');
-  
-  currentPage = newPage;
-  
-  document.getElementById('page' + currentPage).classList.add('active');
-  document.getElementById('ss' + currentPage).classList.add('active');
-  document.getElementById('ss' + currentPage).classList.remove('done');
-  
-  // Progress UI
-  document.getElementById('npFill').style.width = (currentPage/totalPages*100) + "%";
-  document.getElementById('npCurrent').textContent = currentPage;
-  
-  // Nav buttons
-  document.getElementById('btnBack').style.display = currentPage > 1 ? 'flex' : 'none';
-  document.getElementById('btnNext').style.display = currentPage < 3 ? 'flex' : 'none';
-  document.getElementById('btnSubmit').style.display = currentPage === 3 ? 'flex' : 'none';
-  
-  document.getElementById('scrollArea').scrollTop = 0;
-  revealQuestions();
+function toggleRank(btn, val) {
+  const wrap = btn.closest('.rank-toggle');
+  wrap.querySelectorAll('.rtgl-btn').forEach(b => b.classList.remove('on-yes','on-no'));
+  btn.classList.add(val === 'yes' ? 'on-yes' : 'on-no');
 }
 
-// ── TARGETING RETICLE ──
-function initTargeting() {
-  const bracket = document.createElement('div');
-  bracket.className = 'input-focus-bracket';
-  document.body.appendChild(bracket);
+/* ── ASSET TOGGLES ── */
+function setAsset(btn, val) {
+  const wrap = btn.closest('.asset-toggle');
+  wrap.querySelectorAll('.atgl-btn').forEach(b => b.classList.remove('on-yes','on-no'));
+  btn.classList.add(val === 'yes' ? 'on-yes' : 'on-no');
+  btn.closest('.asset-row').style.transition = 'border-color .3s';
+}
 
-  document.querySelectorAll('input, textarea').forEach(el => {
-    el.addEventListener('focus', () => {
-      const r = el.getBoundingClientRect();
-      bracket.style.opacity = '1';
-      bracket.style.top = (r.top - 6) + 'px'; bracket.style.left = (r.left - 6) + 'px';
-      bracket.style.width = (r.width + 12) + 'px'; bracket.style.height = (r.height + 12) + 'px';
+/* ── SUBMIT ── */
+function submitForm() {
+  const ref = 'REF // SATCORP-' + Math.floor(100000 + Math.random() * 900000) + '-PTA';
+
+  // Trigger transmission burst animation
+  triggerTransmission(() => {
+    document.getElementById('refCode').textContent = ref;
+    [1,2,3].forEach(i => document.getElementById('page' + i)?.classList.remove('active'));
+    document.getElementById('success').classList.add('active');
+    [1,2,3].forEach(i => {
+      const ss = document.getElementById('ss' + i);
+      const si = document.getElementById('si' + i);
+      ss.classList.remove('active');
+      ss.classList.add('done');
+      si.textContent = '';
     });
-    el.addEventListener('blur', () => bracket.style.opacity = '0');
+    document.getElementById('bottomNav').style.display = 'none';
+    document.getElementById('npFill').style.width = '100%';
+    document.getElementById('contentArea').scrollTop = 0;
+    // Animate success text in
+    typewriterEl(document.querySelector('.success-eyebrow'), 'TRANSMISSION CONFIRMED', 40);
+    startSuccessParticles();
   });
 }
 
-// ── RADAR SYSTEM ──
-const rx = document.getElementById('radarCanvas').getContext('2d');
-let rAngle = 0;
-function drawRadar() {
-  rx.clearRect(0,0,80,80);
-  rx.strokeStyle = "rgba(0, 229, 255, 0.2)";
-  rx.beginPath(); rx.arc(40,40,38,0,Math.PI*2); rx.stroke();
-  rx.save(); rx.translate(40,40); rx.rotate(rAngle);
-  const g = rx.createLinearGradient(0,0,38,0);
-  g.addColorStop(0, "rgba(0,229,255,0.4)"); g.addColorStop(1, "transparent");
-  rx.fillStyle = g; rx.beginPath(); rx.moveTo(0,0); rx.arc(0,0,38,0,Math.PI/2); rx.fill();
-  rx.restore(); rAngle += 0.04;
-  requestAnimationFrame(drawRadar);
-}
-drawRadar();
+/* ══════════════════════════════════════════
+   SATCORP ANIMATION LAYER
+═══════════════════════════════════════════ */
 
-// ── FINALIZE ──
-function finalize() {
-  const flash = document.createElement('div');
-  flash.style.cssText = "position:fixed;inset:0;background:var(--cyan);z-index:1000;opacity:0;transition:0.1s;pointer-events:none;";
-  document.body.appendChild(flash);
-  
-  setTimeout(() => {
-    flash.style.opacity = "0.5";
+/* ── 1. RADAR SWEEP (sidebar canvas) ── */
+function initRadar() {
+  const c = document.createElement('canvas');
+  c.id = 'radarCanvas';
+  c.style.cssText = `
+    position:absolute; bottom:20px; right:16px;
+    width:80px; height:80px; opacity:0.35; pointer-events:none; z-index:2;
+  `;
+  document.querySelector('.sidebar').appendChild(c);
+  const r = c.getContext('2d');
+  c.width = 80; c.height = 80;
+  const cx = 40, cy = 40, radius = 34;
+  let angle = 0;
+
+  function drawRadar() {
+    r.clearRect(0,0,80,80);
+
+    // Background circles
+    r.strokeStyle = 'rgba(0,229,255,0.12)';
+    r.lineWidth = 1;
+    [34,22,11].forEach(rad => {
+      r.beginPath(); r.arc(cx,cy,rad,0,Math.PI*2); r.stroke();
+    });
+
+    // Cross hairs
+    r.strokeStyle = 'rgba(0,229,255,0.08)';
+    r.beginPath(); r.moveTo(cx-radius,cy); r.lineTo(cx+radius,cy); r.stroke();
+    r.beginPath(); r.moveTo(cx,cy-radius); r.lineTo(cx,cy+radius); r.stroke();
+
+    // Sweep trail
+    const trail = r.createConicalGradient ? null : null;
+    for (let i = 0; i < 60; i++) {
+      const a = angle - (i * Math.PI / 180);
+      const alpha = (1 - i/60) * 0.3;
+      r.beginPath();
+      r.moveTo(cx, cy);
+      r.arc(cx, cy, radius, a, a + 0.03);
+      r.closePath();
+      r.fillStyle = `rgba(0,229,255,${alpha})`;
+      r.fill();
+    }
+
+    // Sweep line
+    r.strokeStyle = 'rgba(0,229,255,0.8)';
+    r.lineWidth = 1;
+    r.beginPath();
+    r.moveTo(cx, cy);
+    r.lineTo(cx + Math.cos(angle)*radius, cy + Math.sin(angle)*radius);
+    r.stroke();
+
+    // Blip dots (static targets)
+    const blips = [{a:0.8,d:18},{a:2.4,d:26},{a:4.1,d:14}];
+    blips.forEach(b => {
+      const bx = cx + Math.cos(b.a)*b.d;
+      const by = cy + Math.sin(b.a)*b.d;
+      const diff = ((angle - b.a) % (Math.PI*2) + Math.PI*2) % (Math.PI*2);
+      const fade = diff < Math.PI ? Math.max(0, 1 - diff/Math.PI) : 0;
+      if (fade > 0) {
+        r.beginPath(); r.arc(bx,by,2,0,Math.PI*2);
+        r.fillStyle = `rgba(0,255,179,${fade * 0.9})`;
+        r.fill();
+        r.beginPath(); r.arc(bx,by,4+fade*2,0,Math.PI*2);
+        r.strokeStyle = `rgba(0,255,179,${fade*0.3})`;
+        r.lineWidth = 1; r.stroke();
+      }
+    });
+
+    angle += 0.025;
+    if (angle > Math.PI*2) angle -= Math.PI*2;
+    requestAnimationFrame(drawRadar);
+  }
+  drawRadar();
+}
+
+/* ── 2. HUD CORNER BRACKETS ── */
+function initHUDCorners() {
+  const corners = [
+    { top:'0', left:'0',  borderTop:'1px solid', borderLeft:'1px solid' },
+    { top:'0', right:'0', borderTop:'1px solid', borderRight:'1px solid' },
+    { bottom:'0', left:'0',  borderBottom:'1px solid', borderLeft:'1px solid' },
+    { bottom:'0', right:'0', borderBottom:'1px solid', borderRight:'1px solid' },
+  ];
+  const app = document.getElementById('app');
+  corners.forEach((s, i) => {
+    const el = document.createElement('div');
+    el.style.cssText = `
+      position:fixed; z-index:200; pointer-events:none;
+      width:24px; height:24px; opacity:0;
+      transition: opacity .4s ease ${0.8 + i*0.1}s;
+    `;
+    Object.assign(el.style, s);
+    Object.assign(el.style, {
+      borderColor: 'rgba(0,229,255,0.3)',
+      borderTop: s.borderTop ? '1px solid rgba(0,229,255,0.3)' : 'none',
+      borderBottom: s.borderBottom ? '1px solid rgba(0,229,255,0.3)' : 'none',
+      borderLeft: s.borderLeft ? '1px solid rgba(0,229,255,0.3)' : 'none',
+      borderRight: s.borderRight ? '1px solid rgba(0,229,255,0.3)' : 'none',
+    });
+    app.appendChild(el);
+    setTimeout(() => el.style.opacity = '1', 50);
+    // Animate corners expanding
+    el.style.width = '4px'; el.style.height = '4px';
     setTimeout(() => {
-      flash.style.opacity = "0";
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.getElementById('success').classList.add('active');
-      document.getElementById('bottomNav').style.display = 'none';
-      document.getElementById('ss3').classList.add('done');
+      el.style.transition = `width .5s ease ${0.8+i*0.1}s, height .5s ease ${0.8+i*0.1}s, opacity .4s ease ${0.8+i*0.1}s`;
+      el.style.width = '24px'; el.style.height = '24px'; el.style.opacity = '1';
+    }, 50);
+  });
+}
+
+/* ── 3. DATA STREAM LINES (canvas overlay) ── */
+function initDataStreams() {
+  const sc = document.createElement('canvas');
+  sc.id = 'streamCanvas';
+  sc.style.cssText = 'position:fixed;inset:0;z-index:2;pointer-events:none;opacity:0.18;';
+  document.body.insertBefore(sc, document.body.firstChild);
+  const sx = sc.getContext('2d');
+
+  function resizeStream() { sc.width = window.innerWidth; sc.height = window.innerHeight; }
+  resizeStream();
+  window.addEventListener('resize', resizeStream);
+
+  const streams = Array.from({length: 8}, () => ({
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight,
+    speed: Math.random() * 1.5 + 0.5,
+    length: Math.random() * 120 + 40,
+    opacity: Math.random() * 0.6 + 0.2,
+    width: Math.random() > 0.7 ? 2 : 1,
+    color: Math.random() > 0.5 ? '#00e5ff' : '#00ffb3',
+    horizontal: Math.random() > 0.6,
+  }));
+
+  function drawStreams() {
+    sx.clearRect(0, 0, sc.width, sc.height);
+    streams.forEach(s => {
+      const grad = s.horizontal
+        ? sx.createLinearGradient(s.x, s.y, s.x + s.length, s.y)
+        : sx.createLinearGradient(s.x, s.y, s.x, s.y + s.length);
+      grad.addColorStop(0, 'transparent');
+      grad.addColorStop(0.5, s.color.replace(')', `,${s.opacity})`).replace('rgb','rgba') || s.color);
+      grad.addColorStop(1, 'transparent');
+      sx.strokeStyle = grad;
+      sx.lineWidth = s.width;
+      sx.beginPath();
+      if (s.horizontal) {
+        sx.moveTo(s.x, s.y); sx.lineTo(s.x + s.length, s.y);
+      } else {
+        sx.moveTo(s.x, s.y); sx.lineTo(s.x, s.y + s.length);
+      }
+      sx.stroke();
+
+      // Move
+      if (s.horizontal) { s.x += s.speed; if (s.x > sc.width + 100) s.x = -s.length; }
+      else { s.y += s.speed; if (s.y > sc.height + 100) s.y = -s.length; }
+    });
+    requestAnimationFrame(drawStreams);
+  }
+  drawStreams();
+}
+
+/* ── 4. TARGET LOCK RETICLE on focused inputs ── */
+function initReticles() {
+  const reticle = document.createElement('div');
+  reticle.id = 'reticle';
+  reticle.style.cssText = `
+    position:fixed; z-index:300; pointer-events:none;
+    width:0; height:0; opacity:0;
+    transition: opacity .2s;
+  `;
+  reticle.innerHTML = `
+    <svg id="reticleSVG" width="200" height="60" viewBox="0 0 200 60" fill="none" style="overflow:visible">
+      <line id="rt" x1="0" y1="0" x2="0" y2="0" stroke="#00e5ff" stroke-width="1" opacity="0"/>
+      <line id="rb" x1="0" y1="0" x2="0" y2="0" stroke="#00e5ff" stroke-width="1" opacity="0"/>
+    </svg>
+  `;
+  document.body.appendChild(reticle);
+
+  // Corner bracket SVGs at each corner of focused input
+  let brackets = [];
+  function clearBrackets() { brackets.forEach(b => b.remove()); brackets = []; }
+
+  function showBrackets(el) {
+    clearBrackets();
+    const rect = el.getBoundingClientRect();
+    const pad = 6;
+    const size = 12;
+    const positions = [
+      { top: rect.top - pad, left: rect.left - pad, bt:'1px solid', bl:'1px solid' },
+      { top: rect.top - pad, left: rect.right + pad - size, bt:'1px solid', br:'1px solid' },
+      { top: rect.bottom + pad - size, left: rect.left - pad, bb:'1px solid', bl:'1px solid' },
+      { top: rect.bottom + pad - size, left: rect.right + pad - size, bb:'1px solid', br:'1px solid' },
+    ];
+    positions.forEach((p, i) => {
+      const b = document.createElement('div');
+      b.style.cssText = `
+        position:fixed; z-index:500; pointer-events:none;
+        width:${size}px; height:${size}px;
+        border-top:${p.bt||'none'};
+        border-bottom:${p.bb||'none'};
+        border-left:${p.bl||'none'};
+        border-right:${p.br||'none'};
+        border-color: rgba(0,229,255,0.7);
+        top:${p.top}px; left:${p.left}px;
+        opacity:0; transform:scale(1.3);
+        transition: opacity .15s ease ${i*0.04}s, transform .2s ease ${i*0.04}s;
+      `;
+      document.body.appendChild(b);
+      brackets.push(b);
+      requestAnimationFrame(() => { b.style.opacity='1'; b.style.transform='scale(1)'; });
+    });
+  }
+
+  document.addEventListener('focusin', e => {
+    if (e.target.matches('input,textarea,select')) showBrackets(e.target);
+  });
+  document.addEventListener('focusout', () => {
+    brackets.forEach(b => { b.style.opacity='0'; b.style.transform='scale(1.3)'; });
+    setTimeout(clearBrackets, 200);
+  });
+  window.addEventListener('scroll', () => {
+    if (document.activeElement?.matches('input,textarea,select')) showBrackets(document.activeElement);
+  }, true);
+}
+
+/* ── 5. TYPEWRITER EFFECT ── */
+function typewriterEl(el, text, speed = 50) {
+  el.textContent = '';
+  let i = 0;
+  const orig = el.style.minWidth;
+  el.style.borderRight = '1px solid currentColor';
+  function type() {
+    if (i < text.length) {
+      el.textContent += text[i++];
+      setTimeout(type, speed + Math.random()*20);
+    } else {
+      el.style.borderRight = 'none';
+    }
+  }
+  type();
+}
+
+/* ── 6. SIGNAL INTERFERENCE on page transitions ── */
+function glitchTransition(cb) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = `
+    position:fixed; inset:0; z-index:150; pointer-events:none;
+    background: var(--black); opacity:0;
+  `;
+  document.body.appendChild(overlay);
+
+  let frame = 0;
+  const frames = [
+    { op:0.9, tx:-3, ty:1 }, { op:0.0, tx:0, ty:0 },
+    { op:0.7, tx:4, ty:-2 }, { op:0.0, tx:0, ty:0 },
+    { op:0.95, tx:-2, ty:2 }, { op:0.0, tx:0, ty:0 },
+    { op:0.0, tx:0, ty:0 },
+  ];
+
+  function doFrame() {
+    if (frame >= frames.length) {
+      overlay.remove();
+      if (cb) cb();
+      return;
+    }
+    const f = frames[frame++];
+    overlay.style.opacity = f.op;
+    overlay.style.transform = `translate(${f.tx}px,${f.ty}px)`;
+    setTimeout(doFrame, 45);
+  }
+  doFrame();
+}
+
+/* ── 7. TRANSMISSION BURST (submit animation) ── */
+function triggerTransmission(cb) {
+  const burst = document.createElement('div');
+  burst.style.cssText = `
+    position:fixed; inset:0; z-index:500; pointer-events:none;
+    display:flex; align-items:center; justify-content:center;
+    background: rgba(3,5,10,0.97);
+    opacity:0; transition: opacity .3s;
+  `;
+  burst.innerHTML = `
+    <div style="text-align:center; position:relative;">
+      <canvas id="burstCanvas" width="300" height="300" style="display:block;margin:0 auto 24px;"></canvas>
+      <div style="
+        font-family:'Share Tech Mono',monospace; font-size:11px;
+        color:var(--cyan); letter-spacing:.2em; text-transform:uppercase;
+        opacity:0; animation: burstTxt .4s ease .6s forwards;
+      " id="burstTxt">TRANSMITTING TO SATCORP…</div>
+    </div>
+  `;
+  const style = document.createElement('style');
+  style.textContent = '@keyframes burstTxt{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}';
+  document.head.appendChild(style);
+  document.body.appendChild(burst);
+
+  requestAnimationFrame(() => burst.style.opacity = '1');
+
+  // Animate burst canvas
+  const bc = document.getElementById('burstCanvas');
+  const bx = bc.getContext('2d');
+  const bcx = 150, bcy = 150;
+  let bFrame = 0;
+  const totalFrames = 90;
+
+  // Animate typewriter on the text
+  const burstTxt = document.getElementById('burstTxt');
+  setTimeout(() => typewriterEl(burstTxt, 'TRANSMITTING TO SATCORP…', 45), 600);
+
+  function drawBurst() {
+    bx.clearRect(0,0,300,300);
+    const progress = bFrame / totalFrames;
+
+    // Expanding rings
+    for (let r = 0; r < 4; r++) {
+      const rad = (progress * 130 + r * 28) % 140;
+      const alpha = Math.max(0, 0.7 - rad/140);
+      bx.beginPath();
+      bx.arc(bcx, bcy, rad, 0, Math.PI*2);
+      bx.strokeStyle = `rgba(0,229,255,${alpha})`;
+      bx.lineWidth = r === 0 ? 1.5 : 1;
+      bx.stroke();
+    }
+
+    // Rotating dashes
+    for (let i = 0; i < 12; i++) {
+      const a = (i / 12) * Math.PI*2 + progress * Math.PI * 4;
+      const r1 = 50 + Math.sin(progress*Math.PI*6 + i) * 8;
+      const r2 = r1 + 14;
+      bx.beginPath();
+      bx.moveTo(bcx + Math.cos(a)*r1, bcy + Math.sin(a)*r1);
+      bx.lineTo(bcx + Math.cos(a)*r2, bcy + Math.sin(a)*r2);
+      bx.strokeStyle = `rgba(0,255,179,${0.5 + Math.sin(progress*Math.PI*3+i)*0.3})`;
+      bx.lineWidth = 1;
+      bx.stroke();
+    }
+
+    // Center reticle
+    const crossSize = 16 + Math.sin(progress * Math.PI * 8) * 4;
+    bx.strokeStyle = 'rgba(0,229,255,0.9)';
+    bx.lineWidth = 1.5;
+    bx.beginPath(); bx.moveTo(bcx-crossSize,bcy); bx.lineTo(bcx+crossSize,bcy); bx.stroke();
+    bx.beginPath(); bx.moveTo(bcx,bcy-crossSize); bx.lineTo(bcx,bcy+crossSize); bx.stroke();
+
+    // Corner brackets on reticle
+    const br = 24;
+    const bl = 8;
+    const corners2 = [[-1,-1],[1,-1],[1,1],[-1,1]];
+    corners2.forEach(([sx,sy]) => {
+      bx.strokeStyle = `rgba(0,229,255,${0.6+Math.sin(progress*Math.PI*4)*0.3})`;
+      bx.lineWidth = 1.5;
+      bx.beginPath(); bx.moveTo(bcx+sx*br, bcy+sy*(br-bl)); bx.lineTo(bcx+sx*br, bcy+sy*br); bx.lineTo(bcx+sx*(br-bl), bcy+sy*br); bx.stroke();
+    });
+
+    // Data particles shooting outward
+    for (let i = 0; i < 6; i++) {
+      const a = (i/6)*Math.PI*2 + progress*Math.PI*2;
+      const d = progress * 120;
+      const alpha = Math.max(0, 0.8 - d/120);
+      bx.beginPath();
+      bx.arc(bcx + Math.cos(a)*d, bcy + Math.sin(a)*d, 2, 0, Math.PI*2);
+      bx.fillStyle = `rgba(0,255,179,${alpha})`;
+      bx.fill();
+    }
+
+    bFrame++;
+    if (bFrame < totalFrames) {
+      requestAnimationFrame(drawBurst);
+    } else {
+      // Flash white then transition
+      burst.style.background = 'rgba(0,229,255,0.08)';
+      setTimeout(() => {
+        burst.style.opacity = '0';
+        burst.style.transition = 'opacity .5s';
+        setTimeout(() => { burst.remove(); style.remove(); if(cb) cb(); }, 500);
+      }, 400);
+    }
+  }
+  drawBurst();
+}
+
+/* ── 8. SCAN LINE EFFECT on hover over option cards ── */
+function initScanlines() {
+  document.addEventListener('mousemove', e => {
+    const card = e.target.closest('.opt-card, .rank-card, .asset-row');
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    const pct = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
+    card.style.setProperty('--scan-y', pct + '%');
+  });
+
+  const scanStyle = document.createElement('style');
+  scanStyle.textContent = `
+    .opt-card, .rank-card, .asset-row {
+      --scan-y: 50%;
+    }
+    .opt-card:hover::after, .rank-card:hover::after, .asset-row:hover::after {
+      content:'';
+      position:absolute; left:0; right:0;
+      top: var(--scan-y);
+      height:1px;
+      background: linear-gradient(90deg, transparent, rgba(0,229,255,0.15), transparent);
+      pointer-events:none;
+    }
+  `;
+  document.head.appendChild(scanStyle);
+}
+
+/* ── 9. LIVE CLOCK + COORDS in header ── */
+function initHUDStats() {
+  const statsEl = document.createElement('div');
+  statsEl.style.cssText = `
+    font-family:'Share Tech Mono',monospace; font-size:9px;
+    color:rgba(139,173,200,0.4); letter-spacing:.1em;
+    display:flex; gap:16px; align-items:center;
+  `;
+  statsEl.id = 'hudStats';
+  document.querySelector('.hdr-left').appendChild(statsEl);
+
+  function updateStats() {
+    const now = new Date();
+    const time = now.toTimeString().slice(0,8);
+    const date = now.toISOString().slice(0,10).replace(/-/g,'.');
+    statsEl.textContent = `${date} // ${time} UTC`;
+  }
+  updateStats();
+  setInterval(updateStats, 1000);
+}
+
+/* ── 10. STAGGERED QUESTION REVEAL on page load ── */
+function animateQuestionsIn(pageEl) {
+  const qs = pageEl.querySelectorAll('.q');
+  qs.forEach((q, i) => {
+    q.style.opacity = '0';
+    q.style.transform = 'translateY(12px)';
+    q.style.transition = `opacity .4s ease ${i * 0.08}s, transform .4s ease ${i * 0.08}s`;
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      q.style.opacity = '1';
+      q.style.transform = 'none';
+    }));
+  });
+}
+
+/* ── 11. HEADER HEIGHT FLICKER on boot ── */
+function initHdrFlicker() {
+  const hdr = document.querySelector('.hdr-logo');
+  let flicks = 0;
+  function flick() {
+    if (flicks++ > 6) return;
+    hdr.style.opacity = Math.random() > 0.5 ? '0.4' : '1';
+    setTimeout(flick, 60 + Math.random() * 80);
+  }
+  setTimeout(flick, 200);
+}
+
+/* ── ENHANCED PAGE NAVIGATION with glitch ── */
+const _origGoTo = goTo;
+function goToAnimated(page) {
+  if (page === currentPage) return;
+  const prevPage = currentPage;
+  glitchTransition(() => {
+    _origGoTo(page);
+    const pageEl = document.getElementById('page' + page);
+    if (pageEl) animateQuestionsIn(pageEl);
+  });
+}
+
+// Override button handlers
+document.getElementById('btnBack').onclick = () => goToAnimated(currentPage - 1);
+document.getElementById('btnNext').onclick = () => goToAnimated(currentPage + 1);
+
+/* ── INIT ALL ANIMATIONS AFTER APP LAUNCHES ── */
+const origLaunchApp = launchApp;
+function launchApp() {
+  const boot = document.getElementById('boot');
+  boot.style.transition = 'opacity .6s ease';
+  boot.style.opacity = '0';
+  setTimeout(() => {
+    boot.style.display = 'none';
+    document.getElementById('app').classList.add('visible');
+    // Init all effects
+    setTimeout(() => {
+      initRadar();
+      initHUDCorners();
+      initDataStreams();
+      initReticles();
+      initScanlines();
+      initHUDStats();
+      initHdrFlicker();
+      animateQuestionsIn(document.getElementById('page1'));
+      // Typewriter on first page title
+      setTimeout(() => {
+        const tag = document.querySelector('#page1 .ph-tag');
+        if (tag) typewriterEl(tag, 'PAGE 01 OF 03', 55);
+      }, 200);
     }, 100);
-  }, 1000);
+  }, 600);
 }
 </script>
 </body>
-</html>
+  </html>
