@@ -15,7 +15,6 @@
 const FORMSPREE_ID = 'xvzbbqlj';
 const FORMSPREE_URL = 'https://formspree.io/f/xvzbbqlj';
 const FORMSPREE_URL = `https://formspree.io/f/${xvzbbqlj}`;
-
 /* ─────────────────────────────────────────────────────
    INPUT TRACKER
    Collects all answers in real-time as the user types.
@@ -421,6 +420,12 @@ async function sendToFormspree(ref) {
     console.warn('Formspree submission failed (offline or unconfigured):', err.message);
   }
 }
+
+
+/* ─────────────────────────────────────────────────────
+   INIT — wait for DOM before touching any elements
+───────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
 
 /* ─────────────────────────────────────────────────────
    CURSOR
@@ -997,3 +1002,5 @@ function launchApp() {
 
 /* Boot */
 runBoot();
+
+}); // end DOMContentLoaded
