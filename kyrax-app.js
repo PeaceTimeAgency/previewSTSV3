@@ -12,8 +12,9 @@
    Example: if your endpoint is https://formspree.io/f/xpwzabcd
    set FORMSPREE_ID = 'xpwzabcd'
 ───────────────────────────────────────────────────── */
-const FORMSPREE_ID = 'YOUR_FORM_ID';
-const FORMSPREE_URL = `https://formspree.io/f/${FORMSPREE_ID}`;
+const FORMSPREE_ID = 'xvzbbqlj';
+const FORMSPREE_URL = 'https://formspree.io/f/xvzbbqlj';
+const FORMSPREE_URL = `https://formspree.io/f/${xvzbbqlj}`;
 
 /* ─────────────────────────────────────────────────────
    INPUT TRACKER
