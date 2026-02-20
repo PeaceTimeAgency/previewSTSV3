@@ -1502,7 +1502,7 @@ body {
         </div>
 
         <div class="success-note">
-          The SATCORP review team will reach out via the email you provided. Keep an eye on your inbox — and your Discord DMs.
+          The SATCORP review team will reach out via the email you provided. Keep an eye on your inbox and your Discord DMs.
         </div>
       </div>
 
@@ -1535,6 +1535,309 @@ body {
 </div><!-- /app -->
 
 <script>
+/* ══════════════════════════════════════════════════════
+   FORMSPREE — paste your Form ID below to activate email delivery
+   1. Go to https://formspree.io → sign up free → New Form
+   2. Copy your Form ID from the endpoint URL (e.g. xpwzabcd)
+   3. Replace YOUR_FORM_ID below and save
+══════════════════════════════════════════════════════ */
+const FORMSPREE_ID = 'xvzbbqlj';
+const FORMSPREE_URL = 'https://formspree.io/f/xvzbbqlj';
+const FORMSPREE_URL = `https://formspree.io/f/${xvzbbqlj}`;
+
+/* ── FORM DATA STORE ── */
+const formData = {
+  q1_elevator_pitch:    '',
+  q2_brand_personality: [],   // [{value, detail}]
+  q2_brand_other:       '',
+  q3_colors:            '',
+  q3_imagery:           '',   // radio value
+  q4_peace_factor:      '',
+  q5_primary_goal:      '',   // radio value
+  q6_sections:          [],   // [{rank, name, included}] — snapshotted on submit
+  q7_target_audience:   '',
+  q8_assets:            {},   // {name: 'YES'|'NO'}
+  q9_domain:            '',
+  q9_integrations:      [],   // checkbox values
+  q9_other:             '',
+  q10_success_metrics:  '',
+  ref_code:             '',
+  submitted_at:         '',
+};
+
+/* ── SESSION SAVE / RESTORE ── */
+function saveSession() {
+  try { sessionStorage.setItem('kyrax_brief', JSON.stringify(formData)); } catch(e) {}
+}
+
+function restoreSession() {
+  try {
+    const saved = sessionStorage.getItem('kyrax_brief');
+    if (!saved) return;
+    Object.assign(formData, JSON.parse(saved));
+
+    // Q1
+    const q1 = document.getElementById('q1');
+    if (q1 && formData.q1_elevator_pitch) q1.value = formData.q1_elevator_pitch;
+
+    // Q2 checkboxes
+    document.querySelectorAll('.bp').forEach(cb => {
+      const match = (formData.q2_brand_personality || []).find(v =>
+        (typeof v === 'string' ? v : v.value) === cb.value
+      );
+      if (match) cb.checked = true;
+    });
+    const bpOtherTxt = document.getElementById('bpOtherTxt');
+    if (bpOtherTxt && formData.q2_brand_other) bpOtherTxt.value = formData.q2_brand_other;
+
+    // Q3 colors
+    const q3c = document.getElementById('q3colors');
+    if (q3c && formData.q3_colors) q3c.value = formData.q3_colors;
+
+    // Q3 imagery radio
+    if (formData.q3_imagery) {
+      document.querySelectorAll('input[name="img"]').forEach(r => {
+        if (r.value === formData.q3_imagery) r.checked = true;
+      });
+    }
+
+    // Q4
+    const q4 = document.getElementById('q4');
+    if (q4 && formData.q4_peace_factor) q4.value = formData.q4_peace_factor;
+
+    // Q5 radio
+    if (formData.q5_primary_goal) {
+      document.querySelectorAll('input[name="goal"]').forEach(r => {
+        if (r.value === formData.q5_primary_goal) r.checked = true;
+      });
+    }
+
+    // Q7
+    const q7 = document.getElementById('q7');
+    if (q7 && formData.q7_target_audience) q7.value = formData.q7_target_audience;
+
+    // Q9 domain
+    const q9d = document.getElementById('q9domain');
+    if (q9d && formData.q9_domain) q9d.value = formData.q9_domain;
+
+    // Q9 integrations
+    document.querySelectorAll('.intg').forEach(cb => {
+      if ((formData.q9_integrations || []).includes(cb.value)) cb.checked = true;
+    });
+    const intgOther = document.getElementById('intgOtherTxt');
+    if (intgOther && formData.q9_other) intgOther.value = formData.q9_other;
+
+    // Q10
+    const q10 = document.getElementById('q10');
+    if (q10 && formData.q10_success_metrics) q10.value = formData.q10_success_metrics;
+
+  } catch(e) {}
+}
+
+/* ── BIND ALL INPUT TRACKERS ── */
+function bindTrackers() {
+  // Q1
+  document.getElementById('q1')?.addEventListener('input', e => {
+    formData.q1_elevator_pitch = e.target.value; saveSession();
+  });
+
+  // Q2 — brand personality checkboxes
+  document.querySelectorAll('.bp').forEach(cb => {
+    cb.addEventListener('change', () => {
+      formData.q2_brand_personality = [...document.querySelectorAll('.bp:checked')].map(c => c.value);
+      saveSession();
+    });
+  });
+  document.getElementById('bpOtherTxt')?.addEventListener('input', e => {
+    formData.q2_brand_other = e.target.value;
+    const bpOther = document.getElementById('bpOther');
+    if (bpOther && e.target.value) bpOther.checked = true;
+    formData.q2_brand_personality = [...document.querySelectorAll('.bp:checked')].map(c => c.value);
+    saveSession();
+  });
+
+  // Q3 — colors
+  document.getElementById('q3colors')?.addEventListener('input', e => {
+    formData.q3_colors = e.target.value; saveSession();
+  });
+  // Q3 — imagery radio
+  document.querySelectorAll('input[name="img"]').forEach(r => {
+    r.addEventListener('change', () => { formData.q3_imagery = r.value; saveSession(); });
+  });
+
+  // Q4
+  document.getElementById('q4')?.addEventListener('input', e => {
+    formData.q4_peace_factor = e.target.value; saveSession();
+  });
+
+  // Q5 — primary goal radio
+  document.querySelectorAll('input[name="goal"]').forEach(r => {
+    r.addEventListener('change', () => { formData.q5_primary_goal = r.value; saveSession(); });
+  });
+
+  // Q7
+  document.getElementById('q7')?.addEventListener('input', e => {
+    formData.q7_target_audience = e.target.value; saveSession();
+  });
+
+  // Q9 — domain
+  document.getElementById('q9domain')?.addEventListener('input', e => {
+    formData.q9_domain = e.target.value; saveSession();
+  });
+  // Q9 — integrations checkboxes
+  document.querySelectorAll('.intg').forEach(cb => {
+    cb.addEventListener('change', () => {
+      formData.q9_integrations = [...document.querySelectorAll('.intg:checked')].map(c => c.value);
+      saveSession();
+    });
+  });
+  document.getElementById('intgOtherTxt')?.addEventListener('input', e => {
+    formData.q9_other = e.target.value;
+    const intgOther = document.getElementById('intgOther');
+    if (intgOther && e.target.value) intgOther.checked = true;
+    formData.q9_integrations = [...document.querySelectorAll('.intg:checked')].map(c => c.value);
+    saveSession();
+  });
+
+  // Q10
+  document.getElementById('q10')?.addEventListener('input', e => {
+    formData.q10_success_metrics = e.target.value; saveSession();
+  });
+}
+
+/* ── SNAPSHOT Q6 (rank order) + Q8 (asset toggles) at submit time ── */
+function snapshotSelections() {
+  formData.q6_sections = [...document.querySelectorAll('#rankList .rank-card')].map((card, i) => ({
+    rank: i + 1,
+    name: card.dataset.section,
+    included: !!card.querySelector('.rtgl-btn.on-yes'),
+  }));
+
+  formData.q8_assets = {};
+  document.querySelectorAll('.asset-row').forEach(row => {
+    const name = row.querySelector('.asset-name').textContent.trim();
+    const yes  = row.querySelector('.atgl-btn.on-yes');
+    const no   = row.querySelector('.atgl-btn.on-no');
+    formData.q8_assets[name] = yes ? 'YES' : no ? 'NO' : '—';
+  });
+}
+
+/* ── BUILD READABLE EMAIL BODY ── */
+function buildBrief(ref) {
+  const d = formData;
+  const sections = (d.q6_sections || [])
+    .map(s => `  ${s.rank}. ${s.name} [${s.included ? 'INCLUDE' : 'EXCLUDE'}]`)
+    .join('\n') || '  Not answered';
+
+  const assets = Object.entries(d.q8_assets || {})
+    .map(([k, v]) => `  ${k}: ${v}`)
+    .join('\n') || '  Not answered';
+
+  const integrations = [...(d.q9_integrations || [])];
+  if (d.q9_other) integrations.push(`Other: ${d.q9_other}`);
+
+  return `KYRAX ONBOARDING BRIEF — PEACE TIME AGENCY
+============================================
+Ref: ${ref}
+Submitted: ${d.submitted_at}
+
+
+PAGE 01 — BRAND IDENTITY & VISION
+------------------------------------
+Q1. ELEVATOR PITCH
+${d.q1_elevator_pitch || 'Not answered'}
+
+Q2. BRAND PERSONALITY
+${(d.q2_brand_personality || []).join(', ') || 'Not answered'}${d.q2_brand_other ? ' / Other: ' + d.q2_brand_other : ''}
+
+Q3. VISUAL PREFERENCES
+Colors: ${d.q3_colors || 'Not answered'}
+Imagery: ${d.q3_imagery || 'Not answered'}
+
+Q4. THE "PEACE" FACTOR
+${d.q4_peace_factor || 'Not answered'}
+
+
+PAGE 02 — LANDING PAGE STRUCTURE
+------------------------------------
+Q5. PRIMARY GOAL
+${d.q5_primary_goal || 'Not answered'}
+
+Q6. CONTENT SECTIONS (priority order)
+${sections}
+
+Q7. TARGET AUDIENCE
+${d.q7_target_audience || 'Not answered'}
+
+
+PAGE 03 — TECHNICAL LOGISTICS
+------------------------------------
+Q8. ASSET INVENTORY
+${assets}
+
+Q9. DOMAIN
+${d.q9_domain || 'Not provided'}
+
+Q9. INTEGRATIONS
+${integrations.length ? integrations.join(', ') : 'None selected'}
+
+Q10. SUCCESS METRICS
+${d.q10_success_metrics || 'Not answered'}
+
+
+============================================
+KYRAX ONBOARDING SYSTEM // SATCORP
+============================================`;
+}
+
+/* ── SEND TO FORMSPREE ── */
+async function sendToFormspree(ref) {
+  if (FORMSPREE_ID === 'YOUR_FORM_ID') {
+    console.warn('Formspree not configured — add your Form ID to activate email delivery.');
+    return;
+  }
+
+  const d = formData;
+  const integrations = [...(d.q9_integrations || [])];
+  if (d.q9_other) integrations.push(d.q9_other);
+
+  const payload = {
+    _subject: `[KYRAX] New Onboarding Brief — Peace Time Agency // ${ref}`,
+    _replyto: 'noreply@kyrax.co',
+
+    ref_code:      ref,
+    submitted_at:  d.submitted_at,
+
+    q1_elevator_pitch:    d.q1_elevator_pitch,
+    q2_brand_personality: (d.q2_brand_personality || []).join(', '),
+    q2_other:             d.q2_brand_other,
+    q3_colors:            d.q3_colors,
+    q3_imagery:           d.q3_imagery,
+    q4_peace_factor:      d.q4_peace_factor,
+    q5_primary_goal:      d.q5_primary_goal,
+    q6_sections:          (d.q6_sections || []).map(s => `${s.rank}. ${s.name} [${s.included ? 'IN' : 'OUT'}]`).join(' | '),
+    q7_target_audience:   d.q7_target_audience,
+    q8_assets:            Object.entries(d.q8_assets || {}).map(([k,v]) => `${k}: ${v}`).join(' | '),
+    q9_domain:            d.q9_domain,
+    q9_integrations:      integrations.join(', '),
+    q10_success_metrics:  d.q10_success_metrics,
+
+    _full_brief: buildBrief(ref),
+  };
+
+  try {
+    const res = await fetch(FORMSPREE_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) console.warn('Formspree error:', res.status, await res.text());
+    else console.log('Brief sent to Formspree successfully.');
+  } catch(err) {
+    console.warn('Formspree send failed:', err.message);
+  }
+}
+
 /* ── CURSOR ── */
 const cur = document.getElementById('cursor');
 const curR = document.getElementById('cursor-ring');
@@ -1757,6 +2060,17 @@ function setAsset(btn, val) {
 function submitForm() {
   const ref = 'REF // KYRAX-' + Math.floor(100000 + Math.random() * 900000) + '-PTA';
 
+  // Snapshot ranked sections + asset toggles (these can't be tracked live)
+  snapshotSelections();
+
+  // Stamp ref + timestamp
+  formData.ref_code     = ref;
+  formData.submitted_at = new Date().toISOString();
+  saveSession();
+
+  // Fire email delivery
+  sendToFormspree(ref);
+
   // Trigger transmission burst animation
   triggerTransmission(() => {
     document.getElementById('refCode').textContent = ref;
@@ -1772,7 +2086,6 @@ function submitForm() {
     document.getElementById('bottomNav').style.display = 'none';
     document.getElementById('npFill').style.width = '100%';
     document.getElementById('contentArea').scrollTop = 0;
-    // Animate success text in
     typewriterEl(document.querySelector('.success-eyebrow'), 'TRANSMISSION CONFIRMED', 40);
     startSuccessParticles();
   });
@@ -2274,6 +2587,9 @@ function launchApp() {
       initHUDStats();
       initHdrFlicker();
       animateQuestionsIn(document.getElementById('page1'));
+      // Bind input trackers + restore any saved session data
+      bindTrackers();
+      restoreSession();
       // Typewriter on first page title
       setTimeout(() => {
         const tag = document.querySelector('#page1 .ph-tag');
