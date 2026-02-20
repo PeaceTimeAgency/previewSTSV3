@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SATCORP × PEACE TIME AGENCY — ONBOARDING</title>
+<title>KYRAX × PEACE TIME AGENCY — ONBOARDING</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -786,62 +786,6 @@ body {
 .sg-cell:nth-child(3){animation-delay:.5s}
 @keyframes sgReveal{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-/* ── NEW ANIMATIONS ── */
-@keyframes pulse-glow {
-  0%, 100% { filter: drop-shadow(0 0 5px var(--cyan)); }
-  50% { filter: drop-shadow(0 0 15px var(--cyan)); }
-}
-
-@keyframes data-flow {
-  0% { background-position: 0% 0%; }
-  100% { background-position: 200% 0%; }
-}
-
-@keyframes scan-line {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100vh); }
-}
-
-@keyframes flicker {
-  0%, 100% { opacity: 1; }
-  92% { opacity: 1; }
-  93% { opacity: 0.3; }
-  94% { opacity: 1; }
-  96% { opacity: 0.6; }
-  97% { opacity: 1; }
-}
-
-@keyframes pulse-border {
-  0%, 100% { border-color: var(--border2); }
-  50% { border-color: var(--cyan); }
-}
-
-@keyframes float-up {
-  0% { transform: translateY(0); opacity: 1; }
-  100% { transform: translateY(-20px); opacity: 0; }
-}
-
-@keyframes rotate-slow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-/* ── ANIMATION CLASSES ── */
-.pulse-glow { animation: pulse-glow 2s infinite; }
-.flicker { animation: flicker 3s infinite; }
-.pulse-border { animation: pulse-border 2s infinite; }
-
-.hover-glow:hover {
-  filter: drop-shadow(0 0 10px var(--cyan));
-  transition: filter 0.3s;
-}
-
-.data-bg {
-  background: linear-gradient(90deg, transparent, rgba(0,229,255,0.1), transparent);
-  background-size: 200% 100%;
-  animation: data-flow 3s infinite;
-}
-
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
   .sidebar { display: none; }
@@ -849,6 +793,87 @@ body {
   .page, #success { padding: 32px 20px 80px; }
   .ph { flex-direction: column; gap: 16px; }
   .opt-grid { grid-template-columns: 1fr; }
+}
+
+/* ── SUCCESS EXTRAS ── */
+.success-divider {
+  display: flex; align-items: center; gap: 16px;
+  margin: 36px 0 28px; width: 100%; max-width: 580px;
+  font-family: 'Share Tech Mono', monospace; font-size: 9px;
+  color: var(--muted); letter-spacing: 0.18em; text-transform: uppercase;
+  opacity: 0.5;
+}
+.success-divider::before, .success-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+.discord-block {
+  display: flex; align-items: center; gap: 20px;
+  width: 100%; max-width: 580px;
+  padding: 22px 24px;
+  border: 1px solid rgba(88,101,242,0.35);
+  background: rgba(88,101,242,0.05);
+  position: relative; overflow: hidden;
+  animation: discordReveal .5s ease .6s both;
+}
+
+@keyframes discordReveal {
+  from { opacity:0; transform:translateY(12px); }
+  to   { opacity:1; transform:none; }
+}
+
+.discord-block::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 2px; background: #5865F2;
+}
+
+.discord-icon {
+  flex-shrink: 0;
+  width: 48px; height: 48px;
+  border: 1px solid rgba(88,101,242,0.3);
+  background: rgba(88,101,242,0.08);
+  display: flex; align-items: center; justify-content: center;
+}
+
+.discord-content { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+
+.discord-label {
+  font-family: 'Share Tech Mono', monospace; font-size: 9px;
+  color: #5865F2; letter-spacing: 0.15em; text-transform: uppercase;
+}
+
+.discord-heading {
+  font-size: 13px; color: var(--bright); font-weight: 400;
+  line-height: 1.5;
+}
+
+.discord-sub {
+  font-size: 11px; color: var(--text); opacity: 0.6; line-height: 1.5;
+}
+
+.discord-btn {
+  flex-shrink: 0;
+  font-family: 'Bebas Neue', sans-serif; font-size: 13px;
+  letter-spacing: 0.18em; padding: 12px 20px;
+  background: #5865F2; color: #fff;
+  text-decoration: none; border: none; cursor: pointer;
+  display: flex; align-items: center; gap: 8px;
+  transition: all .2s; white-space: nowrap;
+}
+
+.discord-btn:hover {
+  background: #4752c4;
+  box-shadow: 0 0 20px rgba(88,101,242,0.4);
+}
+
+.discord-btn svg { transition: transform .2s; }
+.discord-btn:hover svg { transform: translateX(3px); }
+
+.success-note {
+  margin-top: 20px;
+  font-family: 'Share Tech Mono', monospace; font-size: 10px;
+  color: var(--text); opacity: 0.35; letter-spacing: 0.08em;
+  line-height: 1.7; max-width: 580px;
 }
 </style>
 </head>
@@ -862,7 +887,7 @@ body {
 
 <!-- ═══ BOOT SCREEN ═══ -->
 <div id="boot">
-  <div class="boot-logo pulse-glow">
+  <div class="boot-logo">
     <div class="boot-emblem">
       <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
         <rect x="1" y="1" width="62" height="62" stroke="#00e5ff" stroke-width="1.2"/>
@@ -881,7 +906,7 @@ body {
       </svg>
     </div>
     <div>
-      <div class="boot-name glitch">SAT<span>CORP</span></div>
+      <div class="boot-name glitch">KYR<span>AX</span></div>
     </div>
   </div>
 
@@ -899,9 +924,9 @@ body {
   <!-- HEADER -->
   <div class="hdr">
     <div class="hdr-left">
-      <div class="hdr-logo flicker">SAT<em>CORP</em></div>
+      <div class="hdr-logo">SAT<em>CORP</em></div>
       <div class="hdr-sep"></div>
-      <div class="hdr-doc">CLIENT ONBOARDING // DOC-PTA-2025</div>
+      <div class="hdr-doc">KYRAX ONBOARDING // CREATORS · STREAMERS · AMBASSADORS</div>
     </div>
     <div class="hdr-right">
       <div class="hdr-client">ASSIGNED CLIENT<br><span style="color:var(--bright)">PEACE TIME AGENCY</span></div>
@@ -945,7 +970,7 @@ body {
 
       <div class="side-footer">
         <div class="side-stat">
-          ISSUED BY // SATCORP<br>
+          ISSUED BY // KYRAX<br>
           RECIPIENT // PTA<br>
           CLEARANCE // CONFIDENTIAL<br>
           REV // 2025.01<br>SIGNAL // LIVE
@@ -965,7 +990,7 @@ body {
           <div class="ph-left">
             <div class="ph-tag">PAGE 01 OF 03</div>
             <div class="ph-title glitch">BRAND IDENTITY<br>& <em>VISION</em></div>
-            <div class="ph-sub">The "Who" and "Why" behind Peace Time. Complete all fields — this information directly shapes SATCORP's strategy for your build.</div>
+            <div class="ph-sub">The "Who" and "Why" behind Peace Time. Complete all fields — this information directly shapes KYRAX's strategy for your build.</div>
           </div>
           <div class="ph-right">
             <div class="ph-doc-id">DOC-PTA-2025 // SEC-01</div>
@@ -1032,7 +1057,7 @@ body {
             <div class="q-id">// Q.03</div>
             <div class="q-title">VISUAL PREFERENCES</div>
           </div>
-          <div class="q-desc" style="margin-bottom:8px"><strong style="color:var(--bright);font-weight:400">Colors —</strong> Do you have an existing palette, or should SATCORP explore "peaceful" tones (blues, greens, neutrals)?</div>
+          <div class="q-desc" style="margin-bottom:8px"><strong style="color:var(--bright);font-weight:400">Colors —</strong> Do you have an existing palette, or should KYRAX explore "peaceful" tones (blues, greens, neutrals)?</div>
           <div class="input-wrap" style="margin-bottom:24px">
             <input type="text" id="q3colors" placeholder="e.g. We have navy + gold  —  or  —  explore peaceful tones for us">
           </div>
@@ -1056,7 +1081,7 @@ body {
             <label class="opt-card radio">
               <input type="radio" name="img" value="Mix / Open to direction">
               <span class="opt-mark"></span>
-              <span class="opt-text">Mix / Open to Direction<span class="opt-sub">Trust SATCORP to decide</span></span>
+              <span class="opt-text">Mix / Open to Direction<span class="opt-sub">Trust KYRAX to decide</span></span>
             </label>
           </div>
         </div>
@@ -1222,7 +1247,7 @@ body {
           <div class="ph-left">
             <div class="ph-tag">PAGE 03 OF 03</div>
             <div class="ph-title glitch">TECHNICAL<br><em>LOGISTICS</em></div>
-            <div class="ph-sub">The "Where" and "When" of the build. Final information SATCORP needs before initiating Phase 1.</div>
+            <div class="ph-sub">The "Where" and "When" of the build. Final information KYRAX needs before initiating Phase 1 of your creator presence.</div>
           </div>
           <div class="ph-right">
             <div class="ph-doc-id">DOC-PTA-2025 // SEC-03</div>
@@ -1240,8 +1265,8 @@ body {
           <div class="asset-grid">
             <div class="asset-row">
               <div class="asset-info">
-                <div class="asset-name">Logo</div>
-                <div class="asset-desc">High-resolution / vector file (.ai, .svg, .eps)</div>
+                <div class="asset-name">Logo / Channel Art</div>
+                <div class="asset-desc">Profile logo, banner, overlay graphics (.ai, .svg, .png)</div>
               </div>
               <div class="asset-toggle">
                 <button class="atgl-btn" onclick="setAsset(this,'yes')">YES</button>
@@ -1250,8 +1275,8 @@ body {
             </div>
             <div class="asset-row">
               <div class="asset-info">
-                <div class="asset-name">Brand Style Guide</div>
-                <div class="asset-desc">Fonts, color codes, usage rules document</div>
+                <div class="asset-name">Brand Kit / Style Guide</div>
+                <div class="asset-desc">Color palette, fonts, tone-of-voice, usage rules</div>
               </div>
               <div class="asset-toggle">
                 <button class="atgl-btn" onclick="setAsset(this,'yes')">YES</button>
@@ -1260,8 +1285,8 @@ body {
             </div>
             <div class="asset-row">
               <div class="asset-info">
-                <div class="asset-name">Professional Headshots</div>
-                <div class="asset-desc">High-res photography of founder / team</div>
+                <div class="asset-name">Content Library</div>
+                <div class="asset-desc">Existing VODs, clips, reels, or highlight footage ready to use</div>
               </div>
               <div class="asset-toggle">
                 <button class="atgl-btn" onclick="setAsset(this,'yes')">YES</button>
@@ -1270,8 +1295,48 @@ body {
             </div>
             <div class="asset-row">
               <div class="asset-info">
-                <div class="asset-name">Written Copy / Text</div>
-                <div class="asset-desc">Headlines, body copy, and CTAs already drafted</div>
+                <div class="asset-name">Media Kit</div>
+                <div class="asset-desc">Audience demographics, platform stats, past brand deals</div>
+              </div>
+              <div class="asset-toggle">
+                <button class="atgl-btn" onclick="setAsset(this,'yes')">YES</button>
+                <button class="atgl-btn" onclick="setAsset(this,'no')">NO</button>
+              </div>
+            </div>
+            <div class="asset-row">
+              <div class="asset-info">
+                <div class="asset-name">Stream / Content Schedule</div>
+                <div class="asset-desc">Current posting cadence, live schedule, or content calendar</div>
+              </div>
+              <div class="asset-toggle">
+                <button class="atgl-btn" onclick="setAsset(this,'yes')">YES</button>
+                <button class="atgl-btn" onclick="setAsset(this,'no')">NO</button>
+              </div>
+            </div>
+            <div class="asset-row">
+              <div class="asset-info">
+                <div class="asset-name">Creator / Talent Photos</div>
+                <div class="asset-desc">High-res on-brand photography or promo shots</div>
+              </div>
+              <div class="asset-toggle">
+                <button class="atgl-btn" onclick="setAsset(this,'yes')">YES</button>
+                <button class="atgl-btn" onclick="setAsset(this,'no')">NO</button>
+              </div>
+            </div>
+            <div class="asset-row">
+              <div class="asset-info">
+                <div class="asset-name">Merch / Product Catalog</div>
+                <div class="asset-desc">Existing or planned merch line, product images, store link</div>
+              </div>
+              <div class="asset-toggle">
+                <button class="atgl-btn" onclick="setAsset(this,'yes')">YES</button>
+                <button class="atgl-btn" onclick="setAsset(this,'no')">NO</button>
+              </div>
+            </div>
+            <div class="asset-row">
+              <div class="asset-info">
+                <div class="asset-name">Sponsorship / Deal History</div>
+                <div class="asset-desc">List of past or current brand partnerships and rate cards</div>
               </div>
               <div class="asset-toggle">
                 <button class="atgl-btn" onclick="setAsset(this,'yes')">YES</button>
@@ -1295,24 +1360,64 @@ body {
           <div class="q-desc" style="margin-bottom:14px"><strong style="color:var(--bright);font-weight:400">Integrations —</strong> Do you need to connect the page to a specific tool?</div>
           <div class="opt-grid">
             <label class="opt-card">
+              <input type="checkbox" class="intg" value="Twitch">
+              <span class="opt-mark"></span>
+              <span class="opt-text">Twitch<span class="opt-sub">Live stream embed / channel link</span></span>
+            </label>
+            <label class="opt-card">
+              <input type="checkbox" class="intg" value="YouTube">
+              <span class="opt-mark"></span>
+              <span class="opt-text">YouTube<span class="opt-sub">Channel feed / latest video embed</span></span>
+            </label>
+            <label class="opt-card">
+              <input type="checkbox" class="intg" value="TikTok">
+              <span class="opt-mark"></span>
+              <span class="opt-text">TikTok<span class="opt-sub">Profile feed or video embed</span></span>
+            </label>
+            <label class="opt-card">
+              <input type="checkbox" class="intg" value="Instagram">
+              <span class="opt-mark"></span>
+              <span class="opt-text">Instagram<span class="opt-sub">Feed embed or profile CTA</span></span>
+            </label>
+            <label class="opt-card">
+              <input type="checkbox" class="intg" value="Discord">
+              <span class="opt-mark"></span>
+              <span class="opt-text">Discord<span class="opt-sub">Community invite widget</span></span>
+            </label>
+            <label class="opt-card">
+              <input type="checkbox" class="intg" value="Patreon / Memberships">
+              <span class="opt-mark"></span>
+              <span class="opt-text">Patreon / Memberships<span class="opt-sub">Supporter tier CTA</span></span>
+            </label>
+            <label class="opt-card">
+              <input type="checkbox" class="intg" value="Shopify / Merch Store">
+              <span class="opt-mark"></span>
+              <span class="opt-text">Shopify / Merch Store<span class="opt-sub">Product embed or store link</span></span>
+            </label>
+            <label class="opt-card">
+              <input type="checkbox" class="intg" value="Linktree / Beacons">
+              <span class="opt-mark"></span>
+              <span class="opt-text">Linktree / Beacons<span class="opt-sub">Bio link hub redirect</span></span>
+            </label>
+            <label class="opt-card">
               <input type="checkbox" class="intg" value="Calendly">
               <span class="opt-mark"></span>
-              <span class="opt-text">Calendly</span>
+              <span class="opt-text">Calendly<span class="opt-sub">Brand deal / collab booking</span></span>
             </label>
             <label class="opt-card">
-              <input type="checkbox" class="intg" value="Mailchimp">
+              <input type="checkbox" class="intg" value="Mailchimp / Klaviyo">
               <span class="opt-mark"></span>
-              <span class="opt-text">Mailchimp</span>
+              <span class="opt-text">Mailchimp / Klaviyo<span class="opt-sub">Email list / newsletter signup</span></span>
             </label>
             <label class="opt-card">
-              <input type="checkbox" class="intg" value="HubSpot">
+              <input type="checkbox" class="intg" value="Streamlabs / StreamElements">
               <span class="opt-mark"></span>
-              <span class="opt-text">HubSpot</span>
+              <span class="opt-text">Streamlabs / StreamElements<span class="opt-sub">Donation / alert widgets</span></span>
             </label>
             <label class="opt-card">
-              <input type="checkbox" class="intg" value="Typeform">
+              <input type="checkbox" class="intg" value="Spotify / Podcast">
               <span class="opt-mark"></span>
-              <span class="opt-text">Typeform</span>
+              <span class="opt-text">Spotify / Podcast<span class="opt-sub">Episode player embed</span></span>
             </label>
             <label class="opt-card" style="grid-column:1/-1">
               <input type="checkbox" class="intg" value="Other" id="intgOther">
@@ -1320,7 +1425,7 @@ body {
               <span class="opt-text">
                 <div class="other-field">
                   Other:
-                  <input type="text" class="other-inline" id="intgOtherTxt" placeholder="Specify tool name…" onclick="document.getElementById('intgOther').checked=true">
+                  <input type="text" class="other-inline" id="intgOtherTxt" placeholder="Specify tool or platform…" onclick="document.getElementById('intgOther').checked=true">
                 </div>
               </span>
             </label>
@@ -1340,9 +1445,9 @@ body {
         </div>
 
         <div class="pro-tip">
-          <div class="pro-tip-label">// SATCORP NOTE</div>
+          <div class="pro-tip-label">// KYRAX NOTE</div>
           <div class="pro-tip-body">
-            <strong>Keep the "Peace Time" vibe consistent.</strong> If the agency promises tranquility, the website must have generous white space and a layout that never feels cluttered or frantic. SATCORP applies this principle at every design decision — from typography scale to animation speed.
+            <strong>Keep the "Peace Time" vibe consistent.</strong> If the agency promises tranquility, the website must have generous white space and a layout that never feels cluttered or frantic. KYRAX applies this principle at every design decision from typography scale to animation speed.
           </div>
         </div>
       </div>
@@ -1353,8 +1458,13 @@ body {
       <div id="success">
         <div class="success-eyebrow">TRANSMISSION CONFIRMED</div>
         <div class="success-title glitch">BRIEF<br><em>RECEIVED</em></div>
-        <div class="success-body">SATCORP has successfully received the Peace Time Agency onboarding brief. A SATCORP strategist will review your responses and reach out within <strong style="color:var(--bright)">48 business hours</strong> to confirm next steps and schedule your strategy call.</div>
-        <div class="success-ref" id="refCode">REF // SATCORP-000000-PTA</div>
+
+        <div class="success-body">
+          Thank you, Peace Time Agency — your brief has been received and logged in the KYRAX system. The SATCORP team is now reviewing your submission and will personally reach out within <strong style="color:var(--bright)">6–12 hours</strong> to align on next steps and schedule your creator strategy session.
+        </div>
+
+        <div class="success-ref" id="refCode">REF // KYRAX-000000-PTA</div>
+
         <div class="success-grid">
           <div class="sg-cell">
             <div class="sg-label">CLIENT</div>
@@ -1366,8 +1476,33 @@ body {
           </div>
           <div class="sg-cell">
             <div class="sg-label">ETA</div>
-            <div class="sg-value amber">48 HRS</div>
+            <div class="sg-value amber">6–12 HRS</div>
           </div>
+        </div>
+
+        <div class="success-divider">
+          <span>// WHILE YOU WAIT</span>
+        </div>
+
+        <div class="discord-block">
+          <div class="discord-icon">
+            <svg width="28" height="22" viewBox="0 0 28 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M23.7 1.9A22.8 22.8 0 0 0 18.1.3a.1.1 0 0 0-.1.1 15.9 15.9 0 0 0-.7 1.4 21 21 0 0 0-6.3 0A15 15 0 0 0 10.3.4a.1.1 0 0 0-.1 0A22.7 22.7 0 0 0 4.5 2C4.5 2 .7 7.7 0 13.2a23 23 0 0 0 7 3.6.1.1 0 0 0 .1 0 16.5 16.5 0 0 0 1.4-2.3.1.1 0 0 0-.1-.2 15.1 15.1 0 0 1-2.2-1.1.1.1 0 0 1 0-.2l.4-.3a.1.1 0 0 1 .1 0c4.7 2.2 9.7 2.2 14.3 0a.1.1 0 0 1 .1 0l.5.3a.1.1 0 0 1 0 .2 14.9 14.9 0 0 1-2.2 1.1.1.1 0 0 0 0 .2 18.5 18.5 0 0 0 1.4 2.3.1.1 0 0 0 .1 0 22.9 22.9 0 0 0 7-3.6C28 7 24.6 1.9 23.7 1.9ZM9.4 10.7c-1.4 0-2.5-1.3-2.5-2.8s1.1-2.8 2.5-2.8c1.4 0 2.5 1.3 2.5 2.8s-1.1 2.8-2.5 2.8Zm9.3 0c-1.4 0-2.5-1.3-2.5-2.8s1.1-2.8 2.5-2.8c1.4 0 2.5 1.3 2.5 2.8s-1.1 2.8-2.5 2.8Z" fill="#5865F2"/>
+            </svg>
+          </div>
+          <div class="discord-content">
+            <div class="discord-label">// JOIN THE SATCORP COMMUNITY</div>
+            <div class="discord-heading">Get early drops, network with the KYRAX roster, and stay plugged into what's happening across the Board.</div>
+            
+          </div>
+          <a href="https://discord.gg/4xuWB5jGQu" target="_blank" class="discord-btn">
+            JOIN SERVER
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2.5 6.5h8M7 3l3.5 3.5L7 10" stroke="currentColor" stroke-width="1.3"/></svg>
+          </a>
+        </div>
+
+        <div class="success-note">
+          The SATCORP review team will reach out via the email you provided. Keep an eye on your inbox — and your Discord DMs.
         </div>
       </div>
 
@@ -1390,13 +1525,13 @@ body {
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 7h6M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.3"/></svg>
       </button>
       <button class="btn btn-success" id="btnSubmit" onclick="submitForm()" style="display:none">
-        TRANSMIT TO SATCORP
+        TRANSMIT TO KYRAX
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 7h6M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.3"/></svg>
       </button>
     </div>
   </div>
 
-<div class="ticker-wrap"><div class="ticker-inner">// SATCORP SECURE CHANNEL ACTIVE &nbsp;&nbsp;&nbsp; PTA-ONBOARDING-DOC v3.0 &nbsp;&nbsp;&nbsp; ENCRYPTION: AES-256 &nbsp;&nbsp;&nbsp; STATUS: AWAITING TRANSMISSION &nbsp;&nbsp;&nbsp; CLEARANCE: CONFIDENTIAL &nbsp;&nbsp;&nbsp; ISSUED BY SATCORP STRATEGIC DIVISION &nbsp;&nbsp;&nbsp; ALL DATA ENCRYPTED IN TRANSIT &nbsp;&nbsp;&nbsp; UNAUTHORIZED ACCESS PROHIBITED &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;</div></div>
+<div class="ticker-wrap"><div class="ticker-inner">// KYRAX SECURE CHANNEL ACTIVE &nbsp;&nbsp;&nbsp; PTA-ONBOARDING-DOC v3.0 &nbsp;&nbsp;&nbsp; ENCRYPTION: AES-256 &nbsp;&nbsp;&nbsp; STATUS: AWAITING TRANSMISSION &nbsp;&nbsp;&nbsp; CLEARANCE: CONFIDENTIAL &nbsp;&nbsp;&nbsp; ISSUED BY KYRAX TALENT DIVISION &nbsp;&nbsp;&nbsp; ALL DATA ENCRYPTED IN TRANSIT &nbsp;&nbsp;&nbsp; UNAUTHORIZED ACCESS PROHIBITED &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;</div></div>
 </div><!-- /app -->
 
 <script>
@@ -1485,7 +1620,7 @@ animCanvas();
 
 /* ── BOOT SEQUENCE ── */
 const bootLines = [
-  { text: 'SATCORP OS v4.1.2 — KERNEL LOADED', cls: 'ok' },
+  { text: 'KYRAX OS v4.1.2 — KERNEL LOADED', cls: 'ok' },
   { text: 'SECURE CHANNEL ESTABLISHED', cls: 'ok' },
   { text: 'CLIENT PROFILE: PEACE TIME AGENCY', cls: 'ok' },
   { text: 'DOCUMENT CLASS: CONFIDENTIAL ONBOARDING', cls: 'warn' },
@@ -1525,117 +1660,10 @@ function launchApp() {
   setTimeout(() => {
     boot.style.display = 'none';
     document.getElementById('app').classList.add('visible');
-    // Add floating particles on launch
-    for (let i = 0; i < 20; i++) {
-      setTimeout(() => createFloatingParticle(), i * 100);
-    }
   }, 600);
 }
 
 runBoot();
-
-/* ── NEW ANIMATION FUNCTIONS ── */
-
-// Floating particle effect
-function createFloatingParticle() {
-  const particle = document.createElement('div');
-  particle.style.cssText = `
-    position: fixed;
-    left: ${Math.random() * 100}vw;
-    top: ${Math.random() * 100}vh;
-    width: ${Math.random() * 4 + 1}px;
-    height: ${Math.random() * 4 + 1}px;
-    background: ${Math.random() > 0.5 ? '#00e5ff' : '#00ffb3'};
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 100;
-    opacity: ${Math.random() * 0.5 + 0.2};
-    animation: float-up ${Math.random() * 3 + 2}s ease-out forwards;
-  `;
-  document.body.appendChild(particle);
-  setTimeout(() => particle.remove(), 5000);
-}
-
-// Glitch text effect
-function glitchText(element) {
-  if (!element) return;
-  const originalText = element.textContent;
-  const glitchChars = '!<>-_\\/[]{}—=+*^?#________';
-  let iterations = 0;
-  
-  const interval = setInterval(() => {
-    element.textContent = originalText
-      .split('')
-      .map((char, index) => {
-        if (index < iterations) return originalText[index];
-        return glitchChars[Math.floor(Math.random() * glitchChars.length)];
-      })
-      .join('');
-    
-    if (iterations >= originalText.length) {
-      clearInterval(interval);
-      element.textContent = originalText;
-    }
-    iterations += 1/3;
-  }, 30);
-}
-
-// Random glitch on elements
-setInterval(() => {
-  if (Math.random() > 0.7) {
-    const elements = document.querySelectorAll('.ph-title, .hdr-logo, .success-title');
-    const randomEl = elements[Math.floor(Math.random() * elements.length)];
-    glitchText(randomEl);
-  }
-}, 3000);
-
-// Scan line effect
-const scanLine = document.createElement('div');
-scanLine.style.cssText = `
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
-  pointer-events: none;
-  z-index: 1000;
-  opacity: 0.1;
-  animation: scan-line 8s linear infinite;
-`;
-document.body.appendChild(scanLine);
-
-// Keyboard click sounds (visual feedback only)
-document.addEventListener('keydown', (e) => {
-  if (e.target.matches('input, textarea')) {
-    const ripple = document.createElement('div');
-    ripple.style.cssText = `
-      position: fixed;
-      left: ${e.clientX}px;
-      top: ${e.clientY}px;
-      width: 20px;
-      height: 20px;
-      border: 1px solid var(--cyan);
-      border-radius: 50%;
-      transform: translate(-50%, -50%) scale(0);
-      animation: ripple 0.5s ease-out;
-      pointer-events: none;
-      z-index: 1000;
-    `;
-    document.body.appendChild(ripple);
-    setTimeout(() => ripple.remove(), 500);
-  }
-});
-
-// Add ripple animation
-const style = document.createElement('style');
-style.textContent = `
-  @keyframes ripple {
-    from { transform: translate(-50%, -50%) scale(0); opacity: 1; }
-    to { transform: translate(-50%, -50%) scale(3); opacity: 0; }
-  }
-`;
-document.head.appendChild(style);
 
 /* ── PAGE NAVIGATION ── */
 let currentPage = 1;
@@ -1643,9 +1671,6 @@ let currentPage = 1;
 function goTo(page) {
   if (page < 1 || page > 3) return;
 
-  // Add glitch effect on page change
-  glitchText(document.querySelector('.ph-title'));
-  
   document.getElementById('page' + currentPage)?.classList.remove('active');
   document.getElementById('page' + page)?.classList.add('active');
 
@@ -1674,11 +1699,6 @@ function goTo(page) {
   document.getElementById('btnBack').style.display  = page > 1 ? 'flex' : 'none';
   document.getElementById('btnNext').style.display   = page < 3 ? 'flex' : 'none';
   document.getElementById('btnSubmit').style.display = page === 3 ? 'flex' : 'none';
-
-  // Create floating particles on page change
-  for (let i = 0; i < 5; i++) {
-    setTimeout(() => createFloatingParticle(), i * 50);
-  }
 }
 
 /* ── RANK DRAG ── */
@@ -1709,8 +1729,6 @@ document.querySelectorAll('.rank-card').forEach(card => {
       const si = items.indexOf(dragSrc);
       const ti = items.indexOf(card);
       list.insertBefore(dragSrc, si < ti ? card.nextSibling : card);
-      // Add visual feedback
-      createFloatingParticle();
     }
   });
 });
@@ -1725,9 +1743,6 @@ function toggleRank(btn, val) {
   const wrap = btn.closest('.rank-toggle');
   wrap.querySelectorAll('.rtgl-btn').forEach(b => b.classList.remove('on-yes','on-no'));
   btn.classList.add(val === 'yes' ? 'on-yes' : 'on-no');
-  // Add pulse effect
-  btn.style.transform = 'scale(1.1)';
-  setTimeout(() => btn.style.transform = 'scale(1)', 200);
 }
 
 /* ── ASSET TOGGLES ── */
@@ -1736,15 +1751,11 @@ function setAsset(btn, val) {
   wrap.querySelectorAll('.atgl-btn').forEach(b => b.classList.remove('on-yes','on-no'));
   btn.classList.add(val === 'yes' ? 'on-yes' : 'on-no');
   btn.closest('.asset-row').style.transition = 'border-color .3s';
-  
-  // Add pulse effect
-  btn.style.transform = 'scale(1.1)';
-  setTimeout(() => btn.style.transform = 'scale(1)', 200);
 }
 
 /* ── SUBMIT ── */
 function submitForm() {
-  const ref = 'REF // SATCORP-' + Math.floor(100000 + Math.random() * 900000) + '-PTA';
+  const ref = 'REF // KYRAX-' + Math.floor(100000 + Math.random() * 900000) + '-PTA';
 
   // Trigger transmission burst animation
   triggerTransmission(() => {
@@ -1761,19 +1772,14 @@ function submitForm() {
     document.getElementById('bottomNav').style.display = 'none';
     document.getElementById('npFill').style.width = '100%';
     document.getElementById('contentArea').scrollTop = 0;
-    
     // Animate success text in
     typewriterEl(document.querySelector('.success-eyebrow'), 'TRANSMISSION CONFIRMED', 40);
-    
-    // Create celebration particles
-    for (let i = 0; i < 50; i++) {
-      setTimeout(() => createFloatingParticle(), i * 50);
-    }
+    startSuccessParticles();
   });
 }
 
 /* ══════════════════════════════════════════
-   SATCORP ANIMATION LAYER
+   KYRAX ANIMATION LAYER
 ═══════════════════════════════════════════ */
 
 /* ── 1. RADAR SWEEP (sidebar canvas) ── */
@@ -1806,6 +1812,7 @@ function initRadar() {
     r.beginPath(); r.moveTo(cx,cy-radius); r.lineTo(cx,cy+radius); r.stroke();
 
     // Sweep trail
+    const trail = r.createConicalGradient ? null : null;
     for (let i = 0; i < 60; i++) {
       const a = angle - (i * Math.PI / 180);
       const alpha = (1 - i/60) * 0.3;
@@ -1937,6 +1944,21 @@ function initDataStreams() {
 
 /* ── 4. TARGET LOCK RETICLE on focused inputs ── */
 function initReticles() {
+  const reticle = document.createElement('div');
+  reticle.id = 'reticle';
+  reticle.style.cssText = `
+    position:fixed; z-index:300; pointer-events:none;
+    width:0; height:0; opacity:0;
+    transition: opacity .2s;
+  `;
+  reticle.innerHTML = `
+    <svg id="reticleSVG" width="200" height="60" viewBox="0 0 200 60" fill="none" style="overflow:visible">
+      <line id="rt" x1="0" y1="0" x2="0" y2="0" stroke="#00e5ff" stroke-width="1" opacity="0"/>
+      <line id="rb" x1="0" y1="0" x2="0" y2="0" stroke="#00e5ff" stroke-width="1" opacity="0"/>
+    </svg>
+  `;
+  document.body.appendChild(reticle);
+
   // Corner bracket SVGs at each corner of focused input
   let brackets = [];
   function clearBrackets() { brackets.forEach(b => b.remove()); brackets = []; }
@@ -2048,7 +2070,7 @@ function triggerTransmission(cb) {
         font-family:'Share Tech Mono',monospace; font-size:11px;
         color:var(--cyan); letter-spacing:.2em; text-transform:uppercase;
         opacity:0; animation: burstTxt .4s ease .6s forwards;
-      " id="burstTxt">TRANSMITTING TO SATCORP…</div>
+      " id="burstTxt">TRANSMITTING TO KYRAX…</div>
     </div>
   `;
   const style = document.createElement('style');
@@ -2067,7 +2089,7 @@ function triggerTransmission(cb) {
 
   // Animate typewriter on the text
   const burstTxt = document.getElementById('burstTxt');
-  setTimeout(() => typewriterEl(burstTxt, 'TRANSMITTING TO SATCORP…', 45), 600);
+  setTimeout(() => typewriterEl(burstTxt, 'TRANSMITTING TO KYRAX…', 45), 600);
 
   function drawBurst() {
     bx.clearRect(0,0,300,300);
@@ -2258,41 +2280,6 @@ function launchApp() {
     }, 100);
   }, 600);
 }
-
-/* ── ADD FLOATING PARTICLES ON MOUSE MOVE ── */
-document.addEventListener('mousemove', (e) => {
-  if (Math.random() > 0.9) {
-    const particle = document.createElement('div');
-    particle.style.cssText = `
-      position: fixed;
-      left: ${e.clientX}px;
-      top: ${e.clientY}px;
-      width: 2px;
-      height: 2px;
-      background: var(--cyan);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 100;
-      animation: float-up 1s ease-out forwards;
-    `;
-    document.body.appendChild(particle);
-    setTimeout(() => particle.remove(), 1000);
-  }
-});
-
-// Add hover glow to all interactive elements
-document.querySelectorAll('button, .opt-card, .rank-card, .asset-row, .side-step').forEach(el => {
-  el.classList.add('hover-glow');
-});
-
-// Random glitch effects on boot
-setInterval(() => {
-  if (Math.random() > 0.95) {
-    document.body.style.filter = 'hue-rotate(' + Math.random() * 10 + 'deg)';
-    setTimeout(() => document.body.style.filter = 'none', 100);
-  }
-}, 5000);
-
 </script>
 </body>
 </html>
