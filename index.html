@@ -786,6 +786,62 @@ body {
 .sg-cell:nth-child(3){animation-delay:.5s}
 @keyframes sgReveal{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
+/* ── NEW ANIMATIONS ── */
+@keyframes pulse-glow {
+  0%, 100% { filter: drop-shadow(0 0 5px var(--cyan)); }
+  50% { filter: drop-shadow(0 0 15px var(--cyan)); }
+}
+
+@keyframes data-flow {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 200% 0%; }
+}
+
+@keyframes scan-line {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.3; }
+  94% { opacity: 1; }
+  96% { opacity: 0.6; }
+  97% { opacity: 1; }
+}
+
+@keyframes pulse-border {
+  0%, 100% { border-color: var(--border2); }
+  50% { border-color: var(--cyan); }
+}
+
+@keyframes float-up {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(-20px); opacity: 0; }
+}
+
+@keyframes rotate-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ── ANIMATION CLASSES ── */
+.pulse-glow { animation: pulse-glow 2s infinite; }
+.flicker { animation: flicker 3s infinite; }
+.pulse-border { animation: pulse-border 2s infinite; }
+
+.hover-glow:hover {
+  filter: drop-shadow(0 0 10px var(--cyan));
+  transition: filter 0.3s;
+}
+
+.data-bg {
+  background: linear-gradient(90deg, transparent, rgba(0,229,255,0.1), transparent);
+  background-size: 200% 100%;
+  animation: data-flow 3s infinite;
+}
+
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
   .sidebar { display: none; }
@@ -806,7 +862,7 @@ body {
 
 <!-- ═══ BOOT SCREEN ═══ -->
 <div id="boot">
-  <div class="boot-logo">
+  <div class="boot-logo pulse-glow">
     <div class="boot-emblem">
       <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
         <rect x="1" y="1" width="62" height="62" stroke="#00e5ff" stroke-width="1.2"/>
@@ -843,7 +899,7 @@ body {
   <!-- HEADER -->
   <div class="hdr">
     <div class="hdr-left">
-      <div class="hdr-logo">SAT<em>CORP</em></div>
+      <div class="hdr-logo flicker">SAT<em>CORP</em></div>
       <div class="hdr-sep"></div>
       <div class="hdr-doc">CLIENT ONBOARDING // DOC-PTA-2025</div>
     </div>
@@ -1469,10 +1525,117 @@ function launchApp() {
   setTimeout(() => {
     boot.style.display = 'none';
     document.getElementById('app').classList.add('visible');
+    // Add floating particles on launch
+    for (let i = 0; i < 20; i++) {
+      setTimeout(() => createFloatingParticle(), i * 100);
+    }
   }, 600);
 }
 
 runBoot();
+
+/* ── NEW ANIMATION FUNCTIONS ── */
+
+// Floating particle effect
+function createFloatingParticle() {
+  const particle = document.createElement('div');
+  particle.style.cssText = `
+    position: fixed;
+    left: ${Math.random() * 100}vw;
+    top: ${Math.random() * 100}vh;
+    width: ${Math.random() * 4 + 1}px;
+    height: ${Math.random() * 4 + 1}px;
+    background: ${Math.random() > 0.5 ? '#00e5ff' : '#00ffb3'};
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 100;
+    opacity: ${Math.random() * 0.5 + 0.2};
+    animation: float-up ${Math.random() * 3 + 2}s ease-out forwards;
+  `;
+  document.body.appendChild(particle);
+  setTimeout(() => particle.remove(), 5000);
+}
+
+// Glitch text effect
+function glitchText(element) {
+  if (!element) return;
+  const originalText = element.textContent;
+  const glitchChars = '!<>-_\\/[]{}—=+*^?#________';
+  let iterations = 0;
+  
+  const interval = setInterval(() => {
+    element.textContent = originalText
+      .split('')
+      .map((char, index) => {
+        if (index < iterations) return originalText[index];
+        return glitchChars[Math.floor(Math.random() * glitchChars.length)];
+      })
+      .join('');
+    
+    if (iterations >= originalText.length) {
+      clearInterval(interval);
+      element.textContent = originalText;
+    }
+    iterations += 1/3;
+  }, 30);
+}
+
+// Random glitch on elements
+setInterval(() => {
+  if (Math.random() > 0.7) {
+    const elements = document.querySelectorAll('.ph-title, .hdr-logo, .success-title');
+    const randomEl = elements[Math.floor(Math.random() * elements.length)];
+    glitchText(randomEl);
+  }
+}, 3000);
+
+// Scan line effect
+const scanLine = document.createElement('div');
+scanLine.style.cssText = `
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.1;
+  animation: scan-line 8s linear infinite;
+`;
+document.body.appendChild(scanLine);
+
+// Keyboard click sounds (visual feedback only)
+document.addEventListener('keydown', (e) => {
+  if (e.target.matches('input, textarea')) {
+    const ripple = document.createElement('div');
+    ripple.style.cssText = `
+      position: fixed;
+      left: ${e.clientX}px;
+      top: ${e.clientY}px;
+      width: 20px;
+      height: 20px;
+      border: 1px solid var(--cyan);
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      animation: ripple 0.5s ease-out;
+      pointer-events: none;
+      z-index: 1000;
+    `;
+    document.body.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 500);
+  }
+});
+
+// Add ripple animation
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes ripple {
+    from { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+    to { transform: translate(-50%, -50%) scale(3); opacity: 0; }
+  }
+`;
+document.head.appendChild(style);
 
 /* ── PAGE NAVIGATION ── */
 let currentPage = 1;
@@ -1480,6 +1643,9 @@ let currentPage = 1;
 function goTo(page) {
   if (page < 1 || page > 3) return;
 
+  // Add glitch effect on page change
+  glitchText(document.querySelector('.ph-title'));
+  
   document.getElementById('page' + currentPage)?.classList.remove('active');
   document.getElementById('page' + page)?.classList.add('active');
 
@@ -1508,6 +1674,11 @@ function goTo(page) {
   document.getElementById('btnBack').style.display  = page > 1 ? 'flex' : 'none';
   document.getElementById('btnNext').style.display   = page < 3 ? 'flex' : 'none';
   document.getElementById('btnSubmit').style.display = page === 3 ? 'flex' : 'none';
+
+  // Create floating particles on page change
+  for (let i = 0; i < 5; i++) {
+    setTimeout(() => createFloatingParticle(), i * 50);
+  }
 }
 
 /* ── RANK DRAG ── */
@@ -1538,6 +1709,8 @@ document.querySelectorAll('.rank-card').forEach(card => {
       const si = items.indexOf(dragSrc);
       const ti = items.indexOf(card);
       list.insertBefore(dragSrc, si < ti ? card.nextSibling : card);
+      // Add visual feedback
+      createFloatingParticle();
     }
   });
 });
@@ -1552,6 +1725,9 @@ function toggleRank(btn, val) {
   const wrap = btn.closest('.rank-toggle');
   wrap.querySelectorAll('.rtgl-btn').forEach(b => b.classList.remove('on-yes','on-no'));
   btn.classList.add(val === 'yes' ? 'on-yes' : 'on-no');
+  // Add pulse effect
+  btn.style.transform = 'scale(1.1)';
+  setTimeout(() => btn.style.transform = 'scale(1)', 200);
 }
 
 /* ── ASSET TOGGLES ── */
@@ -1560,6 +1736,10 @@ function setAsset(btn, val) {
   wrap.querySelectorAll('.atgl-btn').forEach(b => b.classList.remove('on-yes','on-no'));
   btn.classList.add(val === 'yes' ? 'on-yes' : 'on-no');
   btn.closest('.asset-row').style.transition = 'border-color .3s';
+  
+  // Add pulse effect
+  btn.style.transform = 'scale(1.1)';
+  setTimeout(() => btn.style.transform = 'scale(1)', 200);
 }
 
 /* ── SUBMIT ── */
@@ -1581,9 +1761,14 @@ function submitForm() {
     document.getElementById('bottomNav').style.display = 'none';
     document.getElementById('npFill').style.width = '100%';
     document.getElementById('contentArea').scrollTop = 0;
+    
     // Animate success text in
     typewriterEl(document.querySelector('.success-eyebrow'), 'TRANSMISSION CONFIRMED', 40);
-    startSuccessParticles();
+    
+    // Create celebration particles
+    for (let i = 0; i < 50; i++) {
+      setTimeout(() => createFloatingParticle(), i * 50);
+    }
   });
 }
 
@@ -1621,7 +1806,6 @@ function initRadar() {
     r.beginPath(); r.moveTo(cx,cy-radius); r.lineTo(cx,cy+radius); r.stroke();
 
     // Sweep trail
-    const trail = r.createConicalGradient ? null : null;
     for (let i = 0; i < 60; i++) {
       const a = angle - (i * Math.PI / 180);
       const alpha = (1 - i/60) * 0.3;
@@ -1753,21 +1937,6 @@ function initDataStreams() {
 
 /* ── 4. TARGET LOCK RETICLE on focused inputs ── */
 function initReticles() {
-  const reticle = document.createElement('div');
-  reticle.id = 'reticle';
-  reticle.style.cssText = `
-    position:fixed; z-index:300; pointer-events:none;
-    width:0; height:0; opacity:0;
-    transition: opacity .2s;
-  `;
-  reticle.innerHTML = `
-    <svg id="reticleSVG" width="200" height="60" viewBox="0 0 200 60" fill="none" style="overflow:visible">
-      <line id="rt" x1="0" y1="0" x2="0" y2="0" stroke="#00e5ff" stroke-width="1" opacity="0"/>
-      <line id="rb" x1="0" y1="0" x2="0" y2="0" stroke="#00e5ff" stroke-width="1" opacity="0"/>
-    </svg>
-  `;
-  document.body.appendChild(reticle);
-
   // Corner bracket SVGs at each corner of focused input
   let brackets = [];
   function clearBrackets() { brackets.forEach(b => b.remove()); brackets = []; }
@@ -2089,6 +2258,41 @@ function launchApp() {
     }, 100);
   }, 600);
 }
+
+/* ── ADD FLOATING PARTICLES ON MOUSE MOVE ── */
+document.addEventListener('mousemove', (e) => {
+  if (Math.random() > 0.9) {
+    const particle = document.createElement('div');
+    particle.style.cssText = `
+      position: fixed;
+      left: ${e.clientX}px;
+      top: ${e.clientY}px;
+      width: 2px;
+      height: 2px;
+      background: var(--cyan);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 100;
+      animation: float-up 1s ease-out forwards;
+    `;
+    document.body.appendChild(particle);
+    setTimeout(() => particle.remove(), 1000);
+  }
+});
+
+// Add hover glow to all interactive elements
+document.querySelectorAll('button, .opt-card, .rank-card, .asset-row, .side-step').forEach(el => {
+  el.classList.add('hover-glow');
+});
+
+// Random glitch effects on boot
+setInterval(() => {
+  if (Math.random() > 0.95) {
+    document.body.style.filter = 'hue-rotate(' + Math.random() * 10 + 'deg)';
+    setTimeout(() => document.body.style.filter = 'none', 100);
+  }
+}, 5000);
+
 </script>
 </body>
-  </html>
+</html>
