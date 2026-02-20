@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KYRAX × PEACE TIME AGENCY — ONBOARDING</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+
+<!-- CURSOR -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+<canvas id="bgCanvas"></canvas>
+<div class="noise"></div>
+
+<!-- ═══ BOOT SCREEN ═══ -->
+<div id="boot">
+  <div class="boot-logo">
+    <div class="boot-emblem">
+      <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+        <rect x="1" y="1" width="62" height="62" stroke="#00e5ff" stroke-width="1.2"/>
+        <rect x="8" y="8" width="48" height="48" stroke="#162030" stroke-width="1"/>
+        <path d="M32 10 L54 52 L10 52 Z" stroke="#00e5ff" stroke-width="1.4" fill="rgba(0,229,255,0.06)"/>
+        <line x1="32" y1="26" x2="32" y2="40" stroke="#00e5ff" stroke-width="1.5"/>
+        <circle cx="32" cy="44" r="2" fill="#00e5ff"/>
+        <line x1="32" y1="1"  x2="32" y2="7"  stroke="#00e5ff" stroke-width="1"/>
+        <line x1="32" y1="57" x2="32" y2="63" stroke="#00e5ff" stroke-width="1"/>
+        <line x1="1"  y1="32" x2="7"  y2="32" stroke="#00e5ff" stroke-width="1"/>
+        <line x1="57" y1="32" x2="63" y2="32" stroke="#00e5ff" stroke-width="1"/>
+        <line x1="1"  y1="1"  x2="6"  y2="6"  stroke="#00e5ff" stroke-width="1" opacity=".4"/>
+        <line x1="63" y1="1"  x2="58" y2="6"  stroke="#00e5ff" stroke-width="1" opacity=".4"/>
+        <line x1="1"  y1="63" x2="6"  y2="58" stroke="#00e5ff" stroke-width="1" opacity=".4"/>
+        <line x1="63" y1="63" x2="58" y2="58" stroke="#00e5ff" stroke-width="1" opacity=".4"/>
+      </svg>
+    </div>
+    <div>
+      <div class="boot-name glitch">KYR<span>AX</span></div>
+    </div>
+  </div>
+
+  <div class="boot-seq" id="bootSeq"></div>
+
+  <div class="boot-bar-wrap">
+    <div class="boot-bar-label" id="bootBarLabel">INITIALIZING SECURE SESSION…</div>
+    <div class="boot-bar-track"><div class="boot-bar-fill" id="bootBar"></div></div>
+  </div>
+</div>
+
+<!-- ═══ APP ═══ -->
+<div id="app">
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-left">
+      <div class="hdr-logo">SAT<em>CORP</em></div>
+      <div class="hdr-sep"></div>
+      <div class="hdr-doc">KYRAX ONBOARDING // CREATORS · STREAMERS · AMBASSADORS</div>
+    </div>
+    <div class="hdr-right">
+      <div class="hdr-client">ASSIGNED CLIENT<br><span style="color:var(--bright)">PEACE TIME AGENCY</span></div>
+      <div class="hdr-badge">ACTIVE</div>
+    </div>
+  </div>
+
+  <!-- LAYOUT -->
+  <div class="layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="side-label">// MISSION BRIEF</div>
+
+      <div class="side-step active" id="ss1" onclick="goTo(1)">
+        <div class="step-ico" id="si1">01</div>
+        <div class="step-info">
+          <div class="step-num-label">SECTION 01</div>
+          <div class="step-title">BRAND IDENTITY<br>& VISION</div>
+          <div class="step-sub">The Who & Why</div>
+        </div>
+      </div>
+
+      <div class="side-step" id="ss2" onclick="goTo(2)">
+        <div class="step-ico" id="si2">02</div>
+        <div class="step-info">
+          <div class="step-num-label">SECTION 02</div>
+          <div class="step-title">LANDING PAGE<br>STRUCTURE</div>
+          <div class="step-sub">The What & How</div>
+        </div>
+      </div>
+
+      <div class="side-step" id="ss3" onclick="goTo(3)">
+        <div class="step-ico" id="si3">03</div>
+        <div class="step-info">
+          <div class="step-num-label">SECTION 03</div>
+          <div class="step-title">TECHNICAL<br>LOGISTICS</div>
+          <div class="step-sub">The Where & When</div>
+        </div>
+      </div>
+
+      <div class="side-footer">
+        <div class="side-stat">
+          ISSUED BY // KYRAX<br>
+          RECIPIENT // PTA<br>
+          CLEARANCE // CONFIDENTIAL<br>
+          REV // 2025.01<br>SIGNAL // LIVE
+        </div>
+        <div class="signal-bars"><div class="sig-bar"></div><div class="sig-bar"></div><div class="sig-bar"></div><div class="sig-bar"></div><div class="sig-bar"></div></div>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content" id="contentArea">
+
+      <!-- ──────────────────────────────
+           PAGE 1: BRAND IDENTITY
+      ─────────────────────────────────── -->
+      <div class="page active" id="page1">
+        <div class="ph">
+          <div class="ph-left">
+            <div class="ph-tag">PAGE 01 OF 03</div>
+            <div class="ph-title glitch">BRAND IDENTITY<br>& <em>VISION</em></div>
+            <div class="ph-sub">The "Who" and "Why" behind Peace Time. Complete all fields — this information directly shapes KYRAX's strategy for your build.</div>
+          </div>
+          <div class="ph-right">
+            <div class="ph-doc-id">DOC-PTA-2025 // SEC-01</div>
+            <div class="ph-stamp">CONFIDENTIAL</div>
+          </div>
+        </div>
+
+        <!-- Q1 -->
+        <div class="q" style="animation-delay:.05s">
+          <div class="q-header">
+            <div class="q-id">// Q.01</div>
+            <div class="q-title">THE ELEVATOR PITCH</div>
+          </div>
+          <div class="q-desc">In 2–3 sentences, what does Peace Time Agency do, and what is the primary problem you solve for your clients?</div>
+          <div class="input-wrap">
+            <textarea id="q1" rows="4" placeholder="e.g. Peace Time Agency removes the operational chaos from a creator's world — handling strategy, partnerships, and growth so founders can focus on what they do best…"></textarea>
+          </div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="q" style="animation-delay:.1s">
+          <div class="q-header">
+            <div class="q-id">// Q.02</div>
+            <div class="q-title">BRAND PERSONALITY</div>
+          </div>
+          <div class="q-desc">If your agency were a person, how would they speak? Select all that apply — then hit <strong style="color:var(--cyan);font-weight:400">+</strong> on any to add more context.</div>
+          <div class="multi-hint">// SELECT ALL THAT APPLY · EXPAND EACH FOR DETAILS</div>
+          <div class="opt-grid">
+            <div class="opt-expand-wrap">
+              <label class="opt-card" onclick="toggleDetail(this)">
+                <input type="checkbox" class="bp" value="Calm & Reassuring">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Calm & Reassuring</span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" data-for="Calm & Reassuring" placeholder="Tell us more — how does this calm, reassuring tone show up in your content and client interactions?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card" onclick="toggleDetail(this)">
+                <input type="checkbox" class="bp" value="Minimalist & Modern">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Minimalist & Modern</span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" data-for="Minimalist & Modern" placeholder="Describe what minimalism means to you — visual, verbal, or both?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card" onclick="toggleDetail(this)">
+                <input type="checkbox" class="bp" value="High-Energy & Bold">
+                <span class="opt-mark"></span>
+                <span class="opt-text">High-Energy & Bold</span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" data-for="High-Energy & Bold" placeholder="What does bold look like for you? Visuals, copy style, campaign concepts?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card" onclick="toggleDetail(this)">
+                <input type="checkbox" class="bp" value="Wise & Experienced">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Wise & Experienced</span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" data-for="Wise & Experienced" placeholder="What expertise or credibility do you want the brand to convey?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap" style="grid-column:1/-1">
+              <label class="opt-card" onclick="toggleDetail(this)">
+                <input type="checkbox" class="bp" value="Other" id="bpOther">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Something else entirely</span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" id="bpOtherTxt" data-for="Other" placeholder="Describe your own brand voice in your words…" onclick="document.getElementById('bpOther').checked=true"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="q" style="animation-delay:.15s">
+          <div class="q-header">
+            <div class="q-id">// Q.03</div>
+            <div class="q-title">VISUAL PREFERENCES</div>
+          </div>
+          <div class="q-desc" style="margin-bottom:8px"><strong style="color:var(--bright);font-weight:400">Colors —</strong> Do you have an existing palette, or should KYRAX explore "peaceful" tones (blues, greens, neutrals)?</div>
+          <div class="input-wrap" style="margin-bottom:24px">
+            <input type="text" id="q3colors" placeholder="e.g. We have navy + gold  —  or  —  explore peaceful tones for us">
+          </div>
+          <div class="q-desc" style="margin-bottom:6px"><strong style="color:var(--bright);font-weight:400">Imagery —</strong> Select all directions that resonate — mix and match freely. Hit <strong style="color:var(--cyan);font-weight:400">+</strong> on any to give us more context.</div>
+          <div class="multi-hint">// SELECT ALL THAT APPLY · EXPAND EACH FOR DETAILS</div>
+          <div class="opt-grid">
+            <div class="opt-expand-wrap">
+              <label class="opt-card" onclick="toggleDetail(this)">
+                <input type="checkbox" class="img-pref" value="Photography — real people / office">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Photography<span class="opt-sub">Real people / office environments</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" data-for="Photography" placeholder="Candid or posed? Lifestyle or professional setting? Any reference accounts or photographers you love?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card" onclick="toggleDetail(this)">
+                <input type="checkbox" class="img-pref" value="Abstract Art">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Abstract Art<span class="opt-sub">Mood-driven, conceptual visuals</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" data-for="Abstract Art" placeholder="What mood or feeling should the abstract imagery evoke? Any color or texture directions?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card" onclick="toggleDetail(this)">
+                <input type="checkbox" class="img-pref" value="Clean 3D Illustrations">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Clean 3D Illustrations<span class="opt-sub">Modern, polished, product-style</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" data-for="3D Illustrations" placeholder="Any style references? Soft clay look, hard-surface, glassmorphism, etc?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card" onclick="toggleDetail(this)">
+                <input type="checkbox" class="img-pref" value="Mix / Open to direction">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Open to Direction<span class="opt-sub">Trust KYRAX to decide</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" data-for="Open to Direction" placeholder="Any brands or websites whose visual identity you admire? Share links or names…"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="q" style="animation-delay:.2s">
+          <div class="q-header">
+            <div class="q-id">// Q.04</div>
+            <div class="q-title">THE "PEACE" FACTOR</div>
+          </div>
+          <div class="q-desc">What does "Peace Time" mean in the context of your business? Does it mean you handle the stress so the client doesn't have to?</div>
+          <div class="input-wrap">
+            <textarea id="q4" rows="4" placeholder="Describe what 'peace' represents — for your agency and for your clients…"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- ──────────────────────────────
+           PAGE 2: LANDING PAGE STRUCTURE
+      ─────────────────────────────────── -->
+      <div class="page" id="page2">
+        <div class="ph">
+          <div class="ph-left">
+            <div class="ph-tag">PAGE 02 OF 03</div>
+            <div class="ph-title glitch">LANDING PAGE<br><em>STRUCTURE</em></div>
+            <div class="ph-sub">The "What" and "How" of the first phase. Define the architecture and priority of the Peace Time landing page build.</div>
+          </div>
+          <div class="ph-right">
+            <div class="ph-doc-id">DOC-PTA-2025 // SEC-02</div>
+            <div class="ph-stamp">CONFIDENTIAL</div>
+          </div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="q" style="animation-delay:.05s">
+          <div class="q-header">
+            <div class="q-id">// Q.05</div>
+            <div class="q-title">THE PRIMARY GOALS</div>
+          </div>
+          <div class="q-desc">Select every action you want visitors to take — then hit <strong style="color:var(--cyan);font-weight:400">+</strong> to tell us more about how each should work.</div>
+          <div class="multi-hint">// SELECT ALL THAT APPLY · EXPAND EACH FOR DETAILS</div>
+          <div class="opt-grid full">
+            <div class="opt-expand-wrap" style="grid-column:1/-1">
+              <label class="opt-card" onclick="toggleDetail(this)">
+                <input type="checkbox" class="goal-chk" value="Book a consultation">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Book a consultation</span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" data-for="Book a consultation" placeholder="Which tool — Calendly, Google Calendar, direct DM? What type of session — discovery call, strategy session, pitch meeting?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap" style="grid-column:1/-1">
+              <label class="opt-card" onclick="toggleDetail(this)">
+                <input type="checkbox" class="goal-chk" value="Sign up for newsletter / waitlist">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Sign up for a newsletter / waitlist</span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" data-for="Newsletter / Waitlist" placeholder="What will subscribers receive? How often? Is this a launch waitlist or ongoing newsletter?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap" style="grid-column:1/-1">
+              <label class="opt-card" onclick="toggleDetail(this)">
+                <input type="checkbox" class="goal-chk" value="Download a portfolio / guide">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Download a portfolio / guide</span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" data-for="Download" placeholder="What's the document — a media kit, rate card, creator portfolio, or how-to guide? Does it exist yet?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap" style="grid-column:1/-1">
+              <label class="opt-card" onclick="toggleDetail(this)">
+                <input type="checkbox" class="goal-chk" value="Fill out a contact form">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Fill out a contact form</span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" data-for="Contact Form" placeholder="What fields should it capture? Budget, platform, niche? Where should submissions go — email, CRM, Notion?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap" style="grid-column:1/-1">
+              <label class="opt-card" onclick="toggleDetail(this)">
+                <input type="checkbox" class="goal-chk" value="Join the Discord community">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Join the Discord community</span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" data-for="Discord" placeholder="Should this be the main CTA or secondary? Any specific channel or role you want them to land in first?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap" style="grid-column:1/-1">
+              <label class="opt-card" onclick="toggleDetail(this)">
+                <input type="checkbox" class="goal-chk" value="Other">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Something else</span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" data-for="Other Goal" placeholder="Describe the action you want visitors to take…"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q6 -->
+        <div class="q" style="animation-delay:.1s">
+          <div class="q-header">
+            <div class="q-id">// Q.06</div>
+            <div class="q-title">KEY CONTENT SECTIONS</div>
+          </div>
+          <div class="q-desc">Which sections are essential for launch? <strong style="color:var(--bright);font-weight:400">Drag to rank by priority.</strong> Toggle IN / OUT to include or exclude.</div>
+          <div class="rank-list" id="rankList">
+            <div class="rank-card" draggable="true" data-section="Hero Section">
+              <div class="rank-pos">1</div>
+              <div class="rank-grip">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" opacity=".5">
+                  <rect x="3" y="2" width="8" height="1.5" rx=".5"/>
+                  <rect x="3" y="6" width="8" height="1.5" rx=".5"/>
+                  <rect x="3" y="10" width="8" height="1.5" rx=".5"/>
+                </svg>
+              </div>
+              <div class="rank-body">
+                <div class="rank-name">Hero Section</div>
+                <div class="rank-desc">High-impact headline and sub-headline</div>
+              </div>
+              <div class="rank-toggle">
+                <button class="rtgl-btn on-yes" onclick="toggleRank(this,'yes')">IN</button>
+                <button class="rtgl-btn" onclick="toggleRank(this,'no')">OUT</button>
+              </div>
+            </div>
+            <div class="rank-card" draggable="true" data-section="The Process">
+              <div class="rank-pos">2</div>
+              <div class="rank-grip"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" opacity=".5"><rect x="3" y="2" width="8" height="1.5" rx=".5"/><rect x="3" y="6" width="8" height="1.5" rx=".5"/><rect x="3" y="10" width="8" height="1.5" rx=".5"/></svg></div>
+              <div class="rank-body">
+                <div class="rank-name">The Process</div>
+                <div class="rank-desc">A 1-2-3 step breakdown of how you work</div>
+              </div>
+              <div class="rank-toggle">
+                <button class="rtgl-btn on-yes" onclick="toggleRank(this,'yes')">IN</button>
+                <button class="rtgl-btn" onclick="toggleRank(this,'no')">OUT</button>
+              </div>
+            </div>
+            <div class="rank-card" draggable="true" data-section="Social Proof">
+              <div class="rank-pos">3</div>
+              <div class="rank-grip"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" opacity=".5"><rect x="3" y="2" width="8" height="1.5" rx=".5"/><rect x="3" y="6" width="8" height="1.5" rx=".5"/><rect x="3" y="10" width="8" height="1.5" rx=".5"/></svg></div>
+              <div class="rank-body">
+                <div class="rank-name">Social Proof</div>
+                <div class="rank-desc">Client logos or testimonial placeholder</div>
+              </div>
+              <div class="rank-toggle">
+                <button class="rtgl-btn on-yes" onclick="toggleRank(this,'yes')">IN</button>
+                <button class="rtgl-btn" onclick="toggleRank(this,'no')">OUT</button>
+              </div>
+            </div>
+            <div class="rank-card" draggable="true" data-section="Services">
+              <div class="rank-pos">4</div>
+              <div class="rank-grip"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" opacity=".5"><rect x="3" y="2" width="8" height="1.5" rx=".5"/><rect x="3" y="6" width="8" height="1.5" rx=".5"/><rect x="3" y="10" width="8" height="1.5" rx=".5"/></svg></div>
+              <div class="rank-body">
+                <div class="rank-name">Services</div>
+                <div class="rank-desc">A brief "menu" of what you offer</div>
+              </div>
+              <div class="rank-toggle">
+                <button class="rtgl-btn on-yes" onclick="toggleRank(this,'yes')">IN</button>
+                <button class="rtgl-btn" onclick="toggleRank(this,'no')">OUT</button>
+              </div>
+            </div>
+            <div class="rank-card" draggable="true" data-section="About / Founder">
+              <div class="rank-pos">5</div>
+              <div class="rank-grip"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" opacity=".5"><rect x="3" y="2" width="8" height="1.5" rx=".5"/><rect x="3" y="6" width="8" height="1.5" rx=".5"/><rect x="3" y="10" width="8" height="1.5" rx=".5"/></svg></div>
+              <div class="rank-body">
+                <div class="rank-name">About / Founder</div>
+                <div class="rank-desc">A brief bio to build trust</div>
+              </div>
+              <div class="rank-toggle">
+                <button class="rtgl-btn on-yes" onclick="toggleRank(this,'yes')">IN</button>
+                <button class="rtgl-btn" onclick="toggleRank(this,'no')">OUT</button>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:10px;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text);opacity:.4;letter-spacing:.1em">
+            // DRAG TO REORDER · TOGGLE IN/OUT TO INCLUDE OR EXCLUDE EACH SECTION
+          </div>
+        </div>
+
+        <!-- Q7 -->
+        <div class="q" style="animation-delay:.15s">
+          <div class="q-header">
+            <div class="q-id">// Q.07</div>
+            <div class="q-title">TARGET AUDIENCE</div>
+          </div>
+          <div class="q-desc">Who is the ideal visitor? (e.g., Stressed-out startup founders, corporate HR departments, creative freelancers?) Be as specific as possible.</div>
+          <div class="input-wrap">
+            <textarea id="q7" rows="4" placeholder="Describe your ideal visitor — their role, industry, pain points, and mindset when they discover Peace Time Agency…"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- ──────────────────────────────
+           PAGE 3: TECHNICAL LOGISTICS
+      ─────────────────────────────────── -->
+      <div class="page" id="page3">
+        <div class="ph">
+          <div class="ph-left">
+            <div class="ph-tag">PAGE 03 OF 03</div>
+            <div class="ph-title glitch">TECHNICAL<br><em>LOGISTICS</em></div>
+            <div class="ph-sub">The "Where" and "When" of the build. Final information KYRAX needs before initiating Phase 1 of your creator presence.</div>
+          </div>
+          <div class="ph-right">
+            <div class="ph-doc-id">DOC-PTA-2025 // SEC-03</div>
+            <div class="ph-stamp">CONFIDENTIAL</div>
+          </div>
+        </div>
+
+        <!-- Q8 -->
+        <div class="q" style="animation-delay:.05s">
+          <div class="q-header">
+            <div class="q-id">// Q.08</div>
+            <div class="q-title">INVENTORY OF ASSETS</div>
+          </div>
+          <div class="q-desc">Do you currently have the following ready to go? Mark each asset as available or not.</div>
+          <div class="asset-grid">
+            <div class="asset-row">
+              <div class="asset-info">
+                <div class="asset-name">Logo / Channel Art</div>
+                <div class="asset-desc">Profile logo, banner, overlay graphics (.ai, .svg, .png)</div>
+              </div>
+              <div class="asset-toggle">
+                <button class="atgl-btn" onclick="setAsset(this,'yes')">YES</button>
+                <button class="atgl-btn" onclick="setAsset(this,'no')">NO</button>
+              </div>
+            </div>
+            <div class="asset-row">
+              <div class="asset-info">
+                <div class="asset-name">Brand Kit / Style Guide</div>
+                <div class="asset-desc">Color palette, fonts, tone-of-voice, usage rules</div>
+              </div>
+              <div class="asset-toggle">
+                <button class="atgl-btn" onclick="setAsset(this,'yes')">YES</button>
+                <button class="atgl-btn" onclick="setAsset(this,'no')">NO</button>
+              </div>
+            </div>
+            <div class="asset-row">
+              <div class="asset-info">
+                <div class="asset-name">Content Library</div>
+                <div class="asset-desc">Existing VODs, clips, reels, or highlight footage ready to use</div>
+              </div>
+              <div class="asset-toggle">
+                <button class="atgl-btn" onclick="setAsset(this,'yes')">YES</button>
+                <button class="atgl-btn" onclick="setAsset(this,'no')">NO</button>
+              </div>
+            </div>
+            <div class="asset-row">
+              <div class="asset-info">
+                <div class="asset-name">Media Kit</div>
+                <div class="asset-desc">Audience demographics, platform stats, past brand deals</div>
+              </div>
+              <div class="asset-toggle">
+                <button class="atgl-btn" onclick="setAsset(this,'yes')">YES</button>
+                <button class="atgl-btn" onclick="setAsset(this,'no')">NO</button>
+              </div>
+            </div>
+            <div class="asset-row">
+              <div class="asset-info">
+                <div class="asset-name">Stream / Content Schedule</div>
+                <div class="asset-desc">Current posting cadence, live schedule, or content calendar</div>
+              </div>
+              <div class="asset-toggle">
+                <button class="atgl-btn" onclick="setAsset(this,'yes')">YES</button>
+                <button class="atgl-btn" onclick="setAsset(this,'no')">NO</button>
+              </div>
+            </div>
+            <div class="asset-row">
+              <div class="asset-info">
+                <div class="asset-name">Creator / Talent Photos</div>
+                <div class="asset-desc">High-res on-brand photography or promo shots</div>
+              </div>
+              <div class="asset-toggle">
+                <button class="atgl-btn" onclick="setAsset(this,'yes')">YES</button>
+                <button class="atgl-btn" onclick="setAsset(this,'no')">NO</button>
+              </div>
+            </div>
+            <div class="asset-row">
+              <div class="asset-info">
+                <div class="asset-name">Merch / Product Catalog</div>
+                <div class="asset-desc">Existing or planned merch line, product images, store link</div>
+              </div>
+              <div class="asset-toggle">
+                <button class="atgl-btn" onclick="setAsset(this,'yes')">YES</button>
+                <button class="atgl-btn" onclick="setAsset(this,'no')">NO</button>
+              </div>
+            </div>
+            <div class="asset-row">
+              <div class="asset-info">
+                <div class="asset-name">Sponsorship / Deal History</div>
+                <div class="asset-desc">List of past or current brand partnerships and rate cards</div>
+              </div>
+              <div class="asset-toggle">
+                <button class="atgl-btn" onclick="setAsset(this,'yes')">YES</button>
+                <button class="atgl-btn" onclick="setAsset(this,'no')">NO</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q9 -->
+        <div class="q" style="animation-delay:.1s">
+          <div class="q-header">
+            <div class="q-id">// Q.09</div>
+            <div class="q-title">TECHNICAL REQUIREMENTS</div>
+          </div>
+          <div class="q-desc" style="margin-bottom:10px"><strong style="color:var(--bright);font-weight:400">Domain —</strong> Do you already own the URL? Enter it below if so.</div>
+          <div class="input-wrap" style="margin-bottom:28px">
+            <input type="text" id="q9domain" placeholder="e.g. peacetimeagency.com  —  or leave blank if not yet purchased">
+          </div>
+
+          <div class="q-desc" style="margin-bottom:6px"><strong style="color:var(--bright);font-weight:400">Integrations —</strong> Select every tool you need connected. Hit <strong style="color:var(--cyan);font-weight:400">+</strong> on any to add your handle, link, or specific requirements.</div>
+          <div class="multi-hint">// SELECT ALL THAT APPLY · EXPAND EACH FOR DETAILS</div>
+          <div class="opt-grid">
+            <div class="opt-expand-wrap">
+              <label class="opt-card" onclick="toggleDetail(this)">
+                <input type="checkbox" class="intg" value="Twitch">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Twitch<span class="opt-sub">Live stream embed / channel link</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" data-for="Twitch" placeholder="Your Twitch channel URL? Panel embed or full stream player? Any alerts or sub goals to show?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card" onclick="toggleDetail(this)">
+                <input type="checkbox" class="intg" value="YouTube">
+                <span class="opt-mark"></span>
+                <span class="opt-text">YouTube<span class="opt-sub">Channel feed / latest video embed</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" data-for="YouTube" placeholder="Channel URL? Latest video auto-embed, playlist, or subscribe CTA? Any specific video to feature?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card" onclick="toggleDetail(this)">
+                <input type="checkbox" class="intg" value="TikTok">
+                <span class="opt-mark"></span>
+                <span class="opt-text">TikTok<span class="opt-sub">Profile feed or video embed</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" data-for="TikTok" placeholder="Your @handle? Feed embed or single featured video? Any specific content series to highlight?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card" onclick="toggleDetail(this)">
+                <input type="checkbox" class="intg" value="Instagram">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Instagram<span class="opt-sub">Feed embed or profile CTA</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" data-for="Instagram" placeholder="Your @handle? Grid embed, story highlights, or just a follow button? Personal or brand account?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card" onclick="toggleDetail(this)">
+                <input type="checkbox" class="intg" value="Discord">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Discord<span class="opt-sub">Community invite widget</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" data-for="Discord" placeholder="Your invite link? Member count widget or just a CTA button? Any specific channel to land new members in?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card" onclick="toggleDetail(this)">
+                <input type="checkbox" class="intg" value="Patreon / Memberships">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Patreon / Memberships<span class="opt-sub">Supporter tier CTA</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" data-for="Patreon" placeholder="Patreon URL or membership platform? Which tier(s) to feature? What perks should be highlighted on the page?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card" onclick="toggleDetail(this)">
+                <input type="checkbox" class="intg" value="Shopify / Merch Store">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Shopify / Merch Store<span class="opt-sub">Product embed or store link</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" data-for="Merch Store" placeholder="Store URL? Embed a product grid or just link out? Any featured drops or limited items to showcase?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card" onclick="toggleDetail(this)">
+                <input type="checkbox" class="intg" value="Linktree / Beacons">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Linktree / Beacons<span class="opt-sub">Bio link hub redirect</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" data-for="Linktree" placeholder="Your link-in-bio URL? Should this be the main CTA or just a nav link? Any specific buttons you want foregrounded?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card" onclick="toggleDetail(this)">
+                <input type="checkbox" class="intg" value="Calendly">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Calendly<span class="opt-sub">Brand deal / collab booking</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" data-for="Calendly" placeholder="Your Calendly link? Inline embed or popup? Which event type — brand inquiry, collab call, fan session?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card" onclick="toggleDetail(this)">
+                <input type="checkbox" class="intg" value="Mailchimp / Klaviyo">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Mailchimp / Klaviyo<span class="opt-sub">Email list / newsletter signup</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" data-for="Email List" placeholder="Which platform — Mailchimp, Klaviyo, ConvertKit, Beehiiv? What's the incentive for signing up? Any existing list size?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card" onclick="toggleDetail(this)">
+                <input type="checkbox" class="intg" value="Streamlabs / StreamElements">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Streamlabs / StreamElements<span class="opt-sub">Donation / alert widgets</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" data-for="Streamlabs" placeholder="Donation page link? Should the page show a live donation goal or tip jar widget?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card" onclick="toggleDetail(this)">
+                <input type="checkbox" class="intg" value="Spotify / Podcast">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Spotify / Podcast<span class="opt-sub">Episode player embed</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" data-for="Podcast" placeholder="Show or episode URL? Latest episode auto-embed or a featured one? Spotify, Apple, or both?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap" style="grid-column:1/-1">
+              <label class="opt-card" onclick="toggleDetail(this)">
+                <input type="checkbox" class="intg" value="Other" id="intgOther">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Something else</span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" id="intgOtherTxt" data-for="Other Integration" placeholder="Name the tool or platform and describe how you want it integrated…"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q10 -->
+        <div class="q" style="animation-delay:.15s">
+          <div class="q-header">
+            <div class="q-id">// Q.10</div>
+            <div class="q-title">SUCCESS METRICS</div>
+          </div>
+          <div class="q-desc">Six months from now, how will we know this landing page was a success? Be specific — numbers, outcomes, milestones.</div>
+          <div class="input-wrap">
+            <textarea id="q10" rows="4" placeholder="e.g. 500+ unique monthly visitors, 50 consultation bookings, 3 brand deal inquiries/month, featured in industry media…"></textarea>
+          </div>
+        </div>
+
+        <div class="pro-tip">
+          <div class="pro-tip-label">// KYRAX NOTE</div>
+          <div class="pro-tip-body">
+            <strong>Keep the "Peace Time" vibe consistent.</strong> If the agency promises tranquility, the website must have generous white space and a layout that never feels cluttered or frantic. KYRAX applies this principle at every design decision from typography scale to animation speed.
+          </div>
+        </div>
+      </div>
+
+      <!-- ──────────────────────────────
+           SUCCESS
+      ─────────────────────────────────── -->
+      <div id="success">
+        <div class="success-eyebrow">TRANSMISSION CONFIRMED</div>
+        <div class="success-title glitch">BRIEF<br><em>RECEIVED</em></div>
+
+        <div class="success-body">
+          Thank you, Peace Time Agency — your brief has been received and logged in the KYRAX system. The SATCORP team is now reviewing your submission and will personally reach out within <strong style="color:var(--bright)">6–12 hours</strong> to align on next steps and schedule your creator strategy session.
+        </div>
+
+        <div class="success-ref" id="refCode">REF // KYRAX-000000-PTA</div>
+
+        <div class="success-grid">
+          <div class="sg-cell">
+            <div class="sg-label">CLIENT</div>
+            <div class="sg-value green">PTA</div>
+          </div>
+          <div class="sg-cell">
+            <div class="sg-label">STATUS</div>
+            <div class="sg-value cyan">ACTIVE</div>
+          </div>
+          <div class="sg-cell">
+            <div class="sg-label">ETA</div>
+            <div class="sg-value amber">6–12 HRS</div>
+          </div>
+        </div>
+
+        <div class="success-divider">
+          <span>// WHILE YOU WAIT</span>
+        </div>
+
+        <div class="discord-block">
+          <div class="discord-icon">
+            <svg width="28" height="22" viewBox="0 0 28 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M23.7 1.9A22.8 22.8 0 0 0 18.1.3a.1.1 0 0 0-.1.1 15.9 15.9 0 0 0-.7 1.4 21 21 0 0 0-6.3 0A15 15 0 0 0 10.3.4a.1.1 0 0 0-.1 0A22.7 22.7 0 0 0 4.5 2C4.5 2 .7 7.7 0 13.2a23 23 0 0 0 7 3.6.1.1 0 0 0 .1 0 16.5 16.5 0 0 0 1.4-2.3.1.1 0 0 0-.1-.2 15.1 15.1 0 0 1-2.2-1.1.1.1 0 0 1 0-.2l.4-.3a.1.1 0 0 1 .1 0c4.7 2.2 9.7 2.2 14.3 0a.1.1 0 0 1 .1 0l.5.3a.1.1 0 0 1 0 .2 14.9 14.9 0 0 1-2.2 1.1.1.1 0 0 0 0 .2 18.5 18.5 0 0 0 1.4 2.3.1.1 0 0 0 .1 0 22.9 22.9 0 0 0 7-3.6C28 7 24.6 1.9 23.7 1.9ZM9.4 10.7c-1.4 0-2.5-1.3-2.5-2.8s1.1-2.8 2.5-2.8c1.4 0 2.5 1.3 2.5 2.8s-1.1 2.8-2.5 2.8Zm9.3 0c-1.4 0-2.5-1.3-2.5-2.8s1.1-2.8 2.5-2.8c1.4 0 2.5 1.3 2.5 2.8s-1.1 2.8-2.5 2.8Z" fill="#5865F2"/>
+            </svg>
+          </div>
+          <div class="discord-content">
+            <div class="discord-label">// JOIN THE SATCORP COMMUNITY</div>
+            <div class="discord-heading">Get early drops, network with the KYRAX roster, and stay plugged into what's happening across the Board.</div>
+            
+          </div>
+          <a href="https://discord.gg/4xuWB5jGQu" target="_blank" class="discord-btn">
+            JOIN SERVER
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2.5 6.5h8M7 3l3.5 3.5L7 10" stroke="currentColor" stroke-width="1.3"/></svg>
+          </a>
+        </div>
+
+        <div class="success-note">
+          The SATCORP review team will reach out via the email you provided. Keep an eye on your inbox — and your Discord DMs.
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /layout -->
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav" id="bottomNav">
+    <div class="nav-progress">
+      <div class="np-track"><div class="np-fill" id="npFill" style="width:33%"></div></div>
+      <div class="np-label">SECTION <span id="npCurrent">1</span> OF 3</div>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn btn-ghost" id="btnBack" onclick="goTo(currentPage-1)" style="display:none">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M10 7H4M6 4L3 7l3 3" stroke="currentColor" stroke-width="1.3"/></svg>
+        BACK
+      </button>
+      <button class="btn btn-primary" id="btnNext" onclick="goTo(currentPage+1)">
+        NEXT
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 7h6M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.3"/></svg>
+      </button>
+      <button class="btn btn-success" id="btnSubmit" onclick="submitForm()" style="display:none">
+        TRANSMIT TO KYRAX
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 7h6M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.3"/></svg>
+      </button>
+    </div>
+  </div>
+
+<div class="ticker-wrap"><div class="ticker-inner">// KYRAX SECURE CHANNEL ACTIVE &nbsp;&nbsp;&nbsp; PTA-ONBOARDING-DOC v3.0 &nbsp;&nbsp;&nbsp; ENCRYPTION: AES-256 &nbsp;&nbsp;&nbsp; STATUS: AWAITING TRANSMISSION &nbsp;&nbsp;&nbsp; CLEARANCE: CONFIDENTIAL &nbsp;&nbsp;&nbsp; ISSUED BY KYRAX TALENT DIVISION &nbsp;&nbsp;&nbsp; ALL DATA ENCRYPTED IN TRANSIT &nbsp;&nbsp;&nbsp; UNAUTHORIZED ACCESS PROHIBITED &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;</div></div>
+</div><!-- /app -->
+
+  <script src="app.js"></script>
+</body>
+</html>
