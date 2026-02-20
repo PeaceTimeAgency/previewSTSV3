@@ -875,6 +875,83 @@ body {
   color: var(--text); opacity: 0.35; letter-spacing: 0.08em;
   line-height: 1.7; max-width: 580px;
 }
+
+/* ── EXPAND PANEL SYSTEM ── */
+.multi-hint {
+  font-family: 'Share Tech Mono', monospace; font-size: 9px;
+  color: var(--text); letter-spacing: 0.14em; opacity: 0.45;
+  margin-bottom: 12px; display: flex; align-items: center; gap: 10px;
+}
+.multi-hint::before {
+  content: ''; display: inline-block;
+  width: 12px; height: 1px; background: var(--cyan); opacity: 0.5;
+}
+
+.opt-expand-wrap {
+  display: flex; flex-direction: column;
+}
+
+.opt-expand-wrap .opt-card {
+  border-bottom: 1px solid var(--border2);
+}
+
+.opt-expand-wrap.expanded .opt-card {
+  border-color: rgba(0,229,255,0.45);
+  background: rgba(0,229,255,0.04);
+}
+
+.opt-expand-icon {
+  flex-shrink: 0; margin-left: auto;
+  width: 22px; height: 22px;
+  border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 300; font-family: 'Share Tech Mono', monospace;
+  color: var(--text); line-height: 1;
+  transition: all .2s; pointer-events: none;
+  user-select: none;
+}
+
+.opt-expand-wrap.expanded .opt-expand-icon {
+  transform: rotate(45deg);
+  border-color: var(--cyan); color: var(--cyan);
+  background: rgba(0,229,255,0.07);
+}
+
+.opt-detail-panel {
+  max-height: 0; overflow: hidden; opacity: 0;
+  border-left: 2px solid transparent;
+  transition: max-height .35s cubic-bezier(0.23,1,0.32,1),
+              opacity .25s ease;
+}
+
+.opt-expand-wrap.expanded .opt-detail-panel {
+  max-height: 160px; opacity: 1;
+  border-left-color: var(--cyan);
+  border-right: 1px solid rgba(0,229,255,0.2);
+  border-bottom: 1px solid rgba(0,229,255,0.15);
+  background: rgba(0,229,255,0.02);
+}
+
+.opt-detail-input {
+  width: 100%; background: transparent;
+  border: none; border-top: 1px solid var(--border2);
+  color: var(--bright); font-family: 'DM Sans', sans-serif;
+  font-size: 12px; font-weight: 300; line-height: 1.65;
+  padding: 11px 16px; resize: none; outline: none; min-height: 68px;
+}
+
+.opt-detail-input::placeholder {
+  color: rgba(139,173,200,0.28); font-style: italic; font-size: 11px;
+}
+
+.opt-detail-input:focus { background: rgba(0,229,255,0.03); }
+
+/* dot indicator when detail has been typed */
+.opt-expand-wrap.has-detail .opt-text::after {
+  content: ' ·'; color: var(--cyan); font-size: 16px;
+  line-height: 0; vertical-align: middle; margin-left: 4px;
+}
+
 </style>
 </head>
 <body>
@@ -1016,38 +1093,64 @@ body {
             <div class="q-id">// Q.02</div>
             <div class="q-title">BRAND PERSONALITY</div>
           </div>
-          <div class="q-desc">If your agency were a person, how would they speak? Select 3–4 traits that define Peace Time Agency's voice.</div>
+          <div class="q-desc">Select all traits that define Peace Time Agency's voice. Hit <strong style="color:var(--cyan);font-weight:400">+</strong> on any to add more context.</div>
+          <div class="multi-hint">// SELECT ALL THAT APPLY · EXPAND FOR DETAIL</div>
           <div class="opt-grid">
-            <label class="opt-card">
-              <input type="checkbox" class="bp" value="Calm & Reassuring">
-              <span class="opt-mark"></span>
-              <span class="opt-text">Calm & Reassuring</span>
-            </label>
-            <label class="opt-card">
-              <input type="checkbox" class="bp" value="Minimalist & Modern">
-              <span class="opt-mark"></span>
-              <span class="opt-text">Minimalist & Modern</span>
-            </label>
-            <label class="opt-card">
-              <input type="checkbox" class="bp" value="High-Energy & Bold">
-              <span class="opt-mark"></span>
-              <span class="opt-text">High-Energy & Bold</span>
-            </label>
-            <label class="opt-card">
-              <input type="checkbox" class="bp" value="Wise & Experienced">
-              <span class="opt-mark"></span>
-              <span class="opt-text">Wise & Experienced</span>
-            </label>
-            <label class="opt-card" style="grid-column:1/-1">
-              <input type="checkbox" class="bp" value="Other" id="bpOther">
-              <span class="opt-mark"></span>
-              <span class="opt-text">
-                <div class="other-field">
-                  Other:
-                  <input type="text" class="other-inline" id="bpOtherTxt" placeholder="Describe your brand voice…" onclick="document.getElementById('bpOther').checked=true">
-                </div>
-              </span>
-            </label>
+            <div class="opt-expand-wrap">
+              <label class="opt-card">
+                <input type="checkbox" class="bp" value="Calm & Reassuring">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Calm & Reassuring</span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" placeholder="How does this calm tone show up — in your copy, client interactions, visuals?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card">
+                <input type="checkbox" class="bp" value="Minimalist & Modern">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Minimalist & Modern</span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" placeholder="Minimal visually, verbally, or both? Any reference sites or brands?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card">
+                <input type="checkbox" class="bp" value="High-Energy & Bold">
+                <span class="opt-mark"></span>
+                <span class="opt-text">High-Energy & Bold</span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" placeholder="What does bold look like for you — copy style, colour choices, campaign tone?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card">
+                <input type="checkbox" class="bp" value="Wise & Experienced">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Wise & Experienced</span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" placeholder="What expertise or credibility do you want the brand to convey?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap" style="grid-column:1/-1">
+              <label class="opt-card">
+                <input type="checkbox" class="bp" value="Other" id="bpOther">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Something else entirely</span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" id="bpOtherTxt" placeholder="Describe your brand voice in your own words…"></textarea>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1061,28 +1164,53 @@ body {
           <div class="input-wrap" style="margin-bottom:24px">
             <input type="text" id="q3colors" placeholder="e.g. We have navy + gold  —  or  —  explore peaceful tones for us">
           </div>
-          <div class="q-desc" style="margin-bottom:12px"><strong style="color:var(--bright);font-weight:400">Imagery —</strong> Which visual direction feels right for Peace Time?</div>
+          <div class="q-desc" style="margin-bottom:6px"><strong style="color:var(--bright);font-weight:400">Imagery —</strong> Select all directions that feel right — mix freely. Hit <strong style="color:var(--cyan);font-weight:400">+</strong> to give us more context.</div>
+          <div class="multi-hint">// SELECT ALL THAT APPLY · EXPAND FOR DETAIL</div>
           <div class="opt-grid">
-            <label class="opt-card radio">
-              <input type="radio" name="img" value="Photography — real people / office">
-              <span class="opt-mark"></span>
-              <span class="opt-text">Photography<span class="opt-sub">Real people / office environments</span></span>
-            </label>
-            <label class="opt-card radio">
-              <input type="radio" name="img" value="Abstract Art">
-              <span class="opt-mark"></span>
-              <span class="opt-text">Abstract Art<span class="opt-sub">Mood-driven, conceptual visuals</span></span>
-            </label>
-            <label class="opt-card radio">
-              <input type="radio" name="img" value="Clean 3D Illustrations">
-              <span class="opt-mark"></span>
-              <span class="opt-text">Clean 3D Illustrations<span class="opt-sub">Modern, polished, product-style</span></span>
-            </label>
-            <label class="opt-card radio">
-              <input type="radio" name="img" value="Mix / Open to direction">
-              <span class="opt-mark"></span>
-              <span class="opt-text">Mix / Open to Direction<span class="opt-sub">Trust KYRAX to decide</span></span>
-            </label>
+            <div class="opt-expand-wrap">
+              <label class="opt-card">
+                <input type="checkbox" class="img-chk" value="Photography">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Photography<span class="opt-sub">Real people / office environments</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" placeholder="Candid or posed? Lifestyle or professional? Any reference photographers or accounts?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card">
+                <input type="checkbox" class="img-chk" value="Abstract Art">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Abstract Art<span class="opt-sub">Mood-driven, conceptual visuals</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" placeholder="What mood should it evoke? Any colour or texture directions?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card">
+                <input type="checkbox" class="img-chk" value="Clean 3D Illustrations">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Clean 3D Illustrations<span class="opt-sub">Modern, polished, product-style</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" placeholder="Style references? Soft clay, glassmorphism, hard-surface, isometric?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card">
+                <input type="checkbox" class="img-chk" value="Open to Direction">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Open to Direction<span class="opt-sub">Trust KYRAX to decide</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" placeholder="Any brands or sites whose visual identity you admire? Drop names or links…"></textarea>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1119,30 +1247,77 @@ body {
         <div class="q" style="animation-delay:.05s">
           <div class="q-header">
             <div class="q-id">// Q.05</div>
-            <div class="q-title">THE PRIMARY GOAL — THE "ONE BIG THING"</div>
+            <div class="q-title">PRIMARY GOALS</div>
           </div>
-          <div class="q-desc">When a visitor lands on this page, what is the single most important action they should take?</div>
+          <div class="q-desc">What actions do you want visitors to take? Select all that apply — hit <strong style="color:var(--cyan);font-weight:400">+</strong> to tell us how each should work.</div>
+          <div class="multi-hint">// SELECT ALL THAT APPLY · EXPAND FOR DETAIL</div>
           <div class="opt-grid full">
-            <label class="opt-card radio">
-              <input type="radio" name="goal" value="Book a consultation">
-              <span class="opt-mark"></span>
-              <span class="opt-text">Book a consultation</span>
-            </label>
-            <label class="opt-card radio">
-              <input type="radio" name="goal" value="Sign up for newsletter / waitlist">
-              <span class="opt-mark"></span>
-              <span class="opt-text">Sign up for a newsletter / waitlist</span>
-            </label>
-            <label class="opt-card radio">
-              <input type="radio" name="goal" value="Download a portfolio / guide">
-              <span class="opt-mark"></span>
-              <span class="opt-text">Download a portfolio / guide</span>
-            </label>
-            <label class="opt-card radio">
-              <input type="radio" name="goal" value="Fill out a contact form">
-              <span class="opt-mark"></span>
-              <span class="opt-text">Fill out a contact form</span>
-            </label>
+            <div class="opt-expand-wrap">
+              <label class="opt-card">
+                <input type="checkbox" class="goal-chk" value="Book a consultation">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Book a consultation</span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" placeholder="Which tool — Calendly, Google Calendar, direct DM? Discovery call, strategy session, or pitch meeting?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card">
+                <input type="checkbox" class="goal-chk" value="Sign up for newsletter / waitlist">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Sign up for a newsletter / waitlist</span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" placeholder="What will subscribers receive? How often? Launch waitlist or ongoing newsletter?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card">
+                <input type="checkbox" class="goal-chk" value="Download a portfolio / guide">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Download a portfolio / guide</span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" placeholder="What's the document — media kit, rate card, creator portfolio, or how-to guide? Does it exist yet?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card">
+                <input type="checkbox" class="goal-chk" value="Fill out a contact form">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Fill out a contact form</span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" placeholder="What fields should it capture? Budget, platform, niche? Where should submissions go — email, CRM, Notion?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card">
+                <input type="checkbox" class="goal-chk" value="Join the Discord community">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Join the Discord community</span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" placeholder="Primary CTA or secondary? Any specific channel or role for new members to land in?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card">
+                <input type="checkbox" class="goal-chk" value="Other">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Something else</span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" placeholder="Describe the action you want visitors to take…"></textarea>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1357,78 +1532,152 @@ body {
             <input type="text" id="q9domain" placeholder="e.g. peacetimeagency.com  —  or leave blank if not yet purchased">
           </div>
 
-          <div class="q-desc" style="margin-bottom:14px"><strong style="color:var(--bright);font-weight:400">Integrations —</strong> Do you need to connect the page to a specific tool?</div>
+          <div class="q-desc" style="margin-bottom:6px"><strong style="color:var(--bright);font-weight:400">Integrations —</strong> Select every tool you need. Hit <strong style="color:var(--cyan);font-weight:400">+</strong> to add your handle, link, or requirements.</div>
+          <div class="multi-hint">// SELECT ALL THAT APPLY · EXPAND FOR DETAIL</div>
           <div class="opt-grid">
-            <label class="opt-card">
-              <input type="checkbox" class="intg" value="Twitch">
-              <span class="opt-mark"></span>
-              <span class="opt-text">Twitch<span class="opt-sub">Live stream embed / channel link</span></span>
-            </label>
-            <label class="opt-card">
-              <input type="checkbox" class="intg" value="YouTube">
-              <span class="opt-mark"></span>
-              <span class="opt-text">YouTube<span class="opt-sub">Channel feed / latest video embed</span></span>
-            </label>
-            <label class="opt-card">
-              <input type="checkbox" class="intg" value="TikTok">
-              <span class="opt-mark"></span>
-              <span class="opt-text">TikTok<span class="opt-sub">Profile feed or video embed</span></span>
-            </label>
-            <label class="opt-card">
-              <input type="checkbox" class="intg" value="Instagram">
-              <span class="opt-mark"></span>
-              <span class="opt-text">Instagram<span class="opt-sub">Feed embed or profile CTA</span></span>
-            </label>
-            <label class="opt-card">
-              <input type="checkbox" class="intg" value="Discord">
-              <span class="opt-mark"></span>
-              <span class="opt-text">Discord<span class="opt-sub">Community invite widget</span></span>
-            </label>
-            <label class="opt-card">
-              <input type="checkbox" class="intg" value="Patreon / Memberships">
-              <span class="opt-mark"></span>
-              <span class="opt-text">Patreon / Memberships<span class="opt-sub">Supporter tier CTA</span></span>
-            </label>
-            <label class="opt-card">
-              <input type="checkbox" class="intg" value="Shopify / Merch Store">
-              <span class="opt-mark"></span>
-              <span class="opt-text">Shopify / Merch Store<span class="opt-sub">Product embed or store link</span></span>
-            </label>
-            <label class="opt-card">
-              <input type="checkbox" class="intg" value="Linktree / Beacons">
-              <span class="opt-mark"></span>
-              <span class="opt-text">Linktree / Beacons<span class="opt-sub">Bio link hub redirect</span></span>
-            </label>
-            <label class="opt-card">
-              <input type="checkbox" class="intg" value="Calendly">
-              <span class="opt-mark"></span>
-              <span class="opt-text">Calendly<span class="opt-sub">Brand deal / collab booking</span></span>
-            </label>
-            <label class="opt-card">
-              <input type="checkbox" class="intg" value="Mailchimp / Klaviyo">
-              <span class="opt-mark"></span>
-              <span class="opt-text">Mailchimp / Klaviyo<span class="opt-sub">Email list / newsletter signup</span></span>
-            </label>
-            <label class="opt-card">
-              <input type="checkbox" class="intg" value="Streamlabs / StreamElements">
-              <span class="opt-mark"></span>
-              <span class="opt-text">Streamlabs / StreamElements<span class="opt-sub">Donation / alert widgets</span></span>
-            </label>
-            <label class="opt-card">
-              <input type="checkbox" class="intg" value="Spotify / Podcast">
-              <span class="opt-mark"></span>
-              <span class="opt-text">Spotify / Podcast<span class="opt-sub">Episode player embed</span></span>
-            </label>
-            <label class="opt-card" style="grid-column:1/-1">
-              <input type="checkbox" class="intg" value="Other" id="intgOther">
-              <span class="opt-mark"></span>
-              <span class="opt-text">
-                <div class="other-field">
-                  Other:
-                  <input type="text" class="other-inline" id="intgOtherTxt" placeholder="Specify tool or platform…" onclick="document.getElementById('intgOther').checked=true">
-                </div>
-              </span>
-            </label>
+            <div class="opt-expand-wrap">
+              <label class="opt-card">
+                <input type="checkbox" class="intg" value="Twitch">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Twitch<span class="opt-sub">Live stream embed / channel link</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" placeholder="Your Twitch URL? Panel embed or full player? Any alert or sub-goal widgets?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card">
+                <input type="checkbox" class="intg" value="YouTube">
+                <span class="opt-mark"></span>
+                <span class="opt-text">YouTube<span class="opt-sub">Channel feed / latest video embed</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" placeholder="Channel URL? Latest video auto-embed, playlist, or subscribe CTA?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card">
+                <input type="checkbox" class="intg" value="TikTok">
+                <span class="opt-mark"></span>
+                <span class="opt-text">TikTok<span class="opt-sub">Profile feed or video embed</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" placeholder="Your @handle? Feed embed or single featured video? Any content series to highlight?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card">
+                <input type="checkbox" class="intg" value="Instagram">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Instagram<span class="opt-sub">Feed embed or profile CTA</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" placeholder="Your @handle? Grid embed or follow button? Personal or brand account?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card">
+                <input type="checkbox" class="intg" value="Discord">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Discord<span class="opt-sub">Community invite widget</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" placeholder="Invite link? Member count widget or just a CTA button?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card">
+                <input type="checkbox" class="intg" value="Patreon / Memberships">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Patreon / Memberships<span class="opt-sub">Supporter tier CTA</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" placeholder="Patreon URL? Which tiers to feature? What perks to highlight?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card">
+                <input type="checkbox" class="intg" value="Shopify / Merch Store">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Shopify / Merch Store<span class="opt-sub">Product embed or store link</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" placeholder="Store URL? Product grid embed or link out? Any featured drops?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card">
+                <input type="checkbox" class="intg" value="Linktree / Beacons">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Linktree / Beacons<span class="opt-sub">Bio link hub redirect</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" placeholder="Your link-in-bio URL? Main CTA or nav link?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card">
+                <input type="checkbox" class="intg" value="Calendly">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Calendly<span class="opt-sub">Brand deal / collab booking</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" placeholder="Your Calendly link? Inline embed or popup? Which event type?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card">
+                <input type="checkbox" class="intg" value="Mailchimp / Klaviyo">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Mailchimp / Klaviyo<span class="opt-sub">Email list / newsletter signup</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" placeholder="Platform — Mailchimp, Klaviyo, Beehiiv? Sign-up incentive?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card">
+                <input type="checkbox" class="intg" value="Streamlabs / StreamElements">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Streamlabs / StreamElements<span class="opt-sub">Donation / alert widgets</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" placeholder="Donation page link? Live goal widget or tip jar?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap">
+              <label class="opt-card">
+                <input type="checkbox" class="intg" value="Spotify / Podcast">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Spotify / Podcast<span class="opt-sub">Episode player embed</span></span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" placeholder="Show URL? Latest episode auto-embed or featured one? Spotify, Apple, or both?"></textarea>
+              </div>
+            </div>
+            <div class="opt-expand-wrap" style="grid-column:1/-1">
+              <label class="opt-card">
+                <input type="checkbox" class="intg" value="Other" id="intgOther">
+                <span class="opt-mark"></span>
+                <span class="opt-text">Something else</span>
+                <span class="opt-expand-icon">+</span>
+              </label>
+              <div class="opt-detail-panel">
+                <textarea class="opt-detail-input" id="intgOtherTxt" placeholder="Name the tool or platform and describe how you want it integrated…"></textarea>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1535,6 +1784,66 @@ body {
 </div><!-- /app -->
 
 <script>
+/* ── EXPAND DETAIL PANELS ── */
+/* ── EXPAND PANEL: driven purely by checkbox change events ──
+   No onclick on labels — browser handles check/uncheck natively.
+   We listen to the change event and show/hide the detail panel. */
+
+function applyExpandState(cb) {
+  const wrap = cb.closest('.opt-expand-wrap');
+  if (!wrap) return;
+  if (cb.checked) {
+    wrap.classList.add('expanded');
+    // Focus textarea after CSS transition
+    setTimeout(() => {
+      const ta = wrap.querySelector('.opt-detail-input');
+      if (ta) ta.focus();
+    }, 320);
+  } else {
+    wrap.classList.remove('expanded', 'has-detail');
+    const ta = wrap.querySelector('.opt-detail-input');
+    if (ta) ta.value = '';  // clear detail when deselected
+  }
+}
+
+// Single delegated listener — fires once per checkbox change
+document.addEventListener('change', e => {
+  if (e.target.matches('.opt-expand-wrap input[type="checkbox"]')) {
+    applyExpandState(e.target);
+    syncFormData();
+  }
+});
+
+// Update has-detail dot and re-sync when user types in a detail textarea
+document.addEventListener('input', e => {
+  if (e.target.matches('.opt-detail-input')) {
+    const wrap = e.target.closest('.opt-expand-wrap');
+    if (wrap) wrap.classList.toggle('has-detail', e.target.value.trim().length > 0);
+    syncFormData();
+  }
+});
+
+/* Collect all checked items + their optional detail for a given checkbox class */
+function collectGroup(selector) {
+  const out = [];
+  document.querySelectorAll(selector).forEach(cb => {
+    if (!cb.checked) return;
+    const wrap   = cb.closest('.opt-expand-wrap');
+    const detail = wrap ? (wrap.querySelector('.opt-detail-input') || {}).value || '' : '';
+    out.push(detail.trim() ? cb.value + ': ' + detail.trim() : cb.value);
+  });
+  return out;
+}
+
+/* Re-collect every tracked field and save — called on any expand/detail change */
+function syncFormData() {
+  formData.q2_brand_personality = collectGroup('.bp');
+  formData.q3_imagery           = collectGroup('.img-chk').join(', ');
+  formData.q5_primary_goal      = collectGroup('.goal-chk').join(' | ');
+  formData.q9_integrations      = collectGroup('.intg');
+  saveSession();
+}
+
 /* ══════════════════════════════════════════════════════
    FORMSPREE — paste your Form ID below to activate email delivery
    1. Go to https://formspree.io → sign up free → New Form
@@ -1641,38 +1950,18 @@ function bindTrackers() {
     formData.q1_elevator_pitch = e.target.value; saveSession();
   });
 
-  // Q2 — brand personality checkboxes
-  document.querySelectorAll('.bp').forEach(cb => {
-    cb.addEventListener('change', () => {
-      formData.q2_brand_personality = [...document.querySelectorAll('.bp:checked')].map(c => c.value);
-      saveSession();
-    });
-  });
-  document.getElementById('bpOtherTxt')?.addEventListener('input', e => {
-    formData.q2_brand_other = e.target.value;
-    const bpOther = document.getElementById('bpOther');
-    if (bpOther && e.target.value) bpOther.checked = true;
-    formData.q2_brand_personality = [...document.querySelectorAll('.bp:checked')].map(c => c.value);
-    saveSession();
-  });
+  // Q2 brand personality, Q3 imagery, Q5 goals, Q9 integrations
+  // are all handled by the delegated change + input listeners above (applyExpandState / syncFormData)
+  // bindTrackers handles the plain text fields only:
 
   // Q3 — colors
   document.getElementById('q3colors')?.addEventListener('input', e => {
     formData.q3_colors = e.target.value; saveSession();
   });
-  // Q3 — imagery radio
-  document.querySelectorAll('input[name="img"]').forEach(r => {
-    r.addEventListener('change', () => { formData.q3_imagery = r.value; saveSession(); });
-  });
 
   // Q4
   document.getElementById('q4')?.addEventListener('input', e => {
     formData.q4_peace_factor = e.target.value; saveSession();
-  });
-
-  // Q5 — primary goal radio
-  document.querySelectorAll('input[name="goal"]').forEach(r => {
-    r.addEventListener('change', () => { formData.q5_primary_goal = r.value; saveSession(); });
   });
 
   // Q7
@@ -1683,20 +1972,6 @@ function bindTrackers() {
   // Q9 — domain
   document.getElementById('q9domain')?.addEventListener('input', e => {
     formData.q9_domain = e.target.value; saveSession();
-  });
-  // Q9 — integrations checkboxes
-  document.querySelectorAll('.intg').forEach(cb => {
-    cb.addEventListener('change', () => {
-      formData.q9_integrations = [...document.querySelectorAll('.intg:checked')].map(c => c.value);
-      saveSession();
-    });
-  });
-  document.getElementById('intgOtherTxt')?.addEventListener('input', e => {
-    formData.q9_other = e.target.value;
-    const intgOther = document.getElementById('intgOther');
-    if (intgOther && e.target.value) intgOther.checked = true;
-    formData.q9_integrations = [...document.querySelectorAll('.intg:checked')].map(c => c.value);
-    saveSession();
   });
 
   // Q10
