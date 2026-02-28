@@ -1,2878 +1,1691 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KYRAX × PEACE TIME AGENCY — ONBOARDING</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --black:   #03050a;
-  --deep:    #080d14;
-  --panel:   #0c1520;
-  --glass:   rgba(12,21,32,0.85);
-  --border:  #162030;
-  --border2: #1e3048;
-  --cyan:    #00e5ff;
-  --green:   #00ffb3;
-  --amber:   #ffb800;
-  --red:     #ff3c5a;
-  --text:    #8badc8;
-  --bright:  #cde4f5;
-  --white:   #f0f8ff;
-}
-
-/* ── CURSOR ── */
-*, *::before, *::after { cursor: none !important; }
-
-#cursor {
-  position: fixed; z-index: 9999; pointer-events: none;
-  width: 10px; height: 10px;
-  border: 1px solid var(--cyan);
-  transform: translate(-50%,-50%);
-  transition: width .15s, height .15s, opacity .15s;
-  mix-blend-mode: screen;
-}
-
-#cursor-ring {
-  position: fixed; z-index: 9998; pointer-events: none;
-  width: 36px; height: 36px;
-  border: 1px solid rgba(0,229,255,0.25);
-  border-radius: 50%;
-  transform: translate(-50%,-50%);
-  transition: all .3s ease;
-}
-
-body:has(button:hover) #cursor, body:has(a:hover) #cursor,
-body:has(input:hover) #cursor, body:has(label:hover) #cursor,
-body:has(textarea:hover) #cursor {
-  width: 6px; height: 6px; background: var(--cyan);
-}
-
-/* ── SCROLLBAR ── */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: var(--black); }
-::-webkit-scrollbar-thumb { background: var(--border2); }
-
-/* ── BASE ── */
-html, body { height: 100%; overflow: hidden; }
-
-body {
-  background: var(--black);
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 300;
-}
-
-/* ── CANVAS BG ── */
-#bgCanvas {
-  position: fixed; inset: 0; z-index: 0;
-  pointer-events: none; opacity: 0.6;
-}
-
-/* ── NOISE OVERLAY ── */
-.noise {
-  position: fixed; inset: 0; z-index: 1; pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-  opacity: 0.4;
-}
-
-/* ── BOOT SCREEN ── */
-#boot {
-  position: fixed; inset: 0; z-index: 200;
-  background: var(--black);
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 40px;
-}
-
-.boot-logo {
-  display: flex; align-items: center; gap: 20px;
-  animation: bootFadeIn .5s ease forwards;
-}
-
-.boot-emblem { position: relative; }
-
-.boot-emblem svg { filter: drop-shadow(0 0 20px rgba(0,229,255,0.4)); }
-
-.boot-name {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 72px; letter-spacing: 0.15em;
-  color: var(--white); line-height: 1;
-}
-
-.boot-name span { color: var(--cyan); }
-
-.boot-seq {
-  width: 480px; max-width: 90vw;
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 11px; color: var(--text);
-  letter-spacing: 0.06em; line-height: 2;
-}
-
-.boot-line { opacity: 0; animation: bootLine .2s ease forwards; }
-.boot-line.ok::after { content: ' [OK]'; color: var(--green); }
-.boot-line.warn::after { content: ' [READY]'; color: var(--amber); }
-
-.boot-bar-wrap { width: 480px; max-width: 90vw; }
-.boot-bar-label {
-  font-family: 'Share Tech Mono', monospace; font-size: 10px;
-  color: var(--cyan); letter-spacing: 0.1em; margin-bottom: 8px;
-}
-
-.boot-bar-track {
-  width: 100%; height: 2px; background: var(--border);
-  position: relative; overflow: hidden;
-}
-
-.boot-bar-fill {
-  height: 100%; width: 0%;
-  background: linear-gradient(90deg, var(--cyan), var(--green));
-  transition: width 2.5s cubic-bezier(0.23,1,0.32,1);
-  box-shadow: 0 0 8px var(--cyan);
-}
-
-@keyframes bootFadeIn { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:none} }
-@keyframes bootLine   { from{opacity:0;transform:translateX(-8px)} to{opacity:1;transform:none} }
-
-/* ── APP ── */
-#app {
-  position: fixed; inset: 0; z-index: 10;
-  display: flex; flex-direction: column;
-  opacity: 0; pointer-events: none;
-  transition: opacity .8s ease;
-  overflow: hidden;
-}
-
-#app.visible { opacity: 1; pointer-events: all; }
-
-/* ── HEADER ── */
-.hdr {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 0 40px; height: 60px;
-  border-bottom: 1px solid var(--border);
-  background: var(--glass);
-  backdrop-filter: blur(20px);
-  flex-shrink: 0; position: relative; z-index: 50;
-}
-
-.hdr-left { display: flex; align-items: center; gap: 16px; }
-
-.hdr-logo {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 26px; letter-spacing: 0.18em;
-  color: var(--white); line-height: 1;
-}
-.hdr-logo em { font-style: normal; color: var(--cyan); }
-
-.hdr-sep { width: 1px; height: 22px; background: var(--border2); }
-
-.hdr-doc {
-  font-family: 'Share Tech Mono', monospace; font-size: 10px;
-  color: var(--text); letter-spacing: 0.1em; text-transform: uppercase;
-}
-
-.hdr-right { display: flex; align-items: center; gap: 16px; }
-
-.hdr-client {
-  font-family: 'Share Tech Mono', monospace; font-size: 9px;
-  color: var(--text); letter-spacing: 0.12em; text-align: right;
-}
-
-.hdr-badge {
-  font-family: 'Bebas Neue', sans-serif; font-size: 14px;
-  letter-spacing: 0.2em; color: var(--black);
-  background: var(--green); padding: 5px 14px;
-  animation: badgePulse 3s infinite;
-}
-
-@keyframes badgePulse {
-  0%,100% { box-shadow: 0 0 0 0 rgba(0,255,179,0.3); }
-  50%      { box-shadow: 0 0 0 6px rgba(0,255,179,0); }
-}
-
-/* ── SIDEBAR ── */
-.layout { display: flex; flex: 1; overflow: hidden; }
-
-.sidebar {
-  width: 220px; flex-shrink: 0;
-  border-right: 1px solid var(--border);
-  background: rgba(8,13,20,0.9);
-  display: flex; flex-direction: column;
-  padding: 32px 0; gap: 0; position: relative;
-  overflow: hidden;
-}
-
-.sidebar::before {
-  content: '';
-  position: absolute; left: 0; top: 0; bottom: 0; width: 1px;
-  background: linear-gradient(180deg, transparent, var(--cyan), transparent);
-  animation: sideGlow 4s ease-in-out infinite;
-}
-
-@keyframes sideGlow {
-  0%,100% { opacity: 0; transform: translateY(-100%); }
-  50%      { opacity: 1; transform: translateY(100%); }
-}
-
-.side-label {
-  font-family: 'Share Tech Mono', monospace; font-size: 9px;
-  color: var(--text); letter-spacing: 0.2em; text-transform: uppercase;
-  padding: 0 24px 16px;
-  border-bottom: 1px solid var(--border); margin-bottom: 16px;
-}
-
-.side-step {
-  display: flex; align-items: flex-start; gap: 14px;
-  padding: 14px 24px; cursor: pointer;
-  transition: background .2s; position: relative;
-  border-left: 2px solid transparent;
-}
-
-.side-step::after {
-  content: ''; position: absolute;
-  left: 0; top: 0; bottom: 0; width: 2px;
-  background: var(--cyan); opacity: 0;
-  transition: opacity .3s;
-}
-
-.side-step.active::after { opacity: 1; }
-.side-step.active { background: rgba(0,229,255,0.04); }
-
-.side-step.done .step-ico { border-color: var(--green); background: rgba(0,255,179,0.08); }
-.side-step.done .step-ico::after {
-  content: '✓'; color: var(--green);
-  font-family: 'Share Tech Mono', monospace; font-size: 11px;
-}
-
-.step-ico {
-  width: 28px; height: 28px; border: 1px solid var(--border2);
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; transition: all .3s;
-  font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--text);
-}
-
-.side-step.active .step-ico {
-  border-color: var(--cyan); color: var(--cyan); background: rgba(0,229,255,0.06);
-}
-
-.step-info { display: flex; flex-direction: column; gap: 3px; padding-top: 2px; }
-
-.step-num-label {
-  font-family: 'Share Tech Mono', monospace; font-size: 9px;
-  color: var(--text); letter-spacing: 0.1em; opacity: 0.5;
-}
-
-.step-title {
-  font-family: 'Bebas Neue', sans-serif; font-size: 13px;
-  letter-spacing: 0.1em; color: var(--text); transition: color .3s;
-  line-height: 1.2;
-}
-
-.side-step.active .step-title { color: var(--bright); }
-.side-step.done  .step-title  { color: var(--green); }
-
-.step-sub {
-  font-size: 10px; color: var(--text); opacity: 0.4; line-height: 1.4;
-  margin-top: 2px;
-}
-
-.side-footer {
-  margin-top: auto; padding: 24px 24px 0;
-  border-top: 1px solid var(--border);
-}
-
-.side-stat {
-  font-family: 'Share Tech Mono', monospace; font-size: 9px;
-  color: var(--text); letter-spacing: 0.1em; line-height: 1.8; opacity: 0.5;
-}
-
-/* ── CONTENT AREA ── */
-.content {
-  flex: 1; overflow-y: auto; overflow-x: hidden;
-  position: relative;
-}
-
-/* ── PAGES ── */
-.page {
-  display: none; min-height: 100%;
-  padding: 48px 56px 80px;
-  animation: pageSlide .4s ease forwards;
-}
-
-.page.active { display: block; }
-
-@keyframes pageSlide {
-  from { opacity: 0; transform: translateX(20px); }
-  to   { opacity: 1; transform: none; }
-}
-
-/* ── PAGE HEADER ── */
-.ph {
-  display: flex; justify-content: space-between; align-items: flex-start;
-  margin-bottom: 48px; padding-bottom: 32px;
-  border-bottom: 1px solid var(--border);
-  position: relative;
-}
-
-.ph::after {
-  content: ''; position: absolute; bottom: -1px; left: 0;
-  width: 80px; height: 1px; background: var(--cyan);
-}
-
-.ph-left { display: flex; flex-direction: column; gap: 8px; }
-
-.ph-tag {
-  font-family: 'Share Tech Mono', monospace; font-size: 10px;
-  color: var(--cyan); letter-spacing: 0.15em; text-transform: uppercase;
-  display: flex; align-items: center; gap: 10px;
-}
-
-.ph-tag::before {
-  content: ''; width: 16px; height: 1px; background: var(--cyan);
-}
-
-.ph-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(36px, 4vw, 52px);
-  letter-spacing: 0.04em; color: var(--white); line-height: 1;
-}
-
-.ph-title em { font-style: normal; color: var(--cyan); }
-
-.ph-sub {
-  font-size: 13px; color: var(--text); line-height: 1.6; max-width: 420px;
-}
-
-.ph-right {
-  display: flex; flex-direction: column; align-items: flex-end; gap: 6px;
-  flex-shrink: 0;
-}
-
-.ph-doc-id {
-  font-family: 'Share Tech Mono', monospace; font-size: 10px;
-  color: var(--text); letter-spacing: 0.1em; opacity: 0.4;
-}
-
-.ph-stamp {
-  font-family: 'Share Tech Mono', monospace; font-size: 9px;
-  letter-spacing: 0.12em; color: var(--amber); text-transform: uppercase;
-  padding: 4px 10px; border: 1px solid rgba(255,184,0,0.25);
-  background: rgba(255,184,0,0.05);
-}
-
-/* ── QUESTION BLOCKS ── */
-.q {
-  margin-bottom: 40px;
-  animation: qFade .3s ease forwards;
-}
-
-@keyframes qFade { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
-
-.q-header {
-  display: flex; align-items: baseline; gap: 14px; margin-bottom: 12px;
-}
-
-.q-id {
-  font-family: 'Share Tech Mono', monospace; font-size: 10px;
-  color: var(--cyan); letter-spacing: 0.1em;
-  flex-shrink: 0;
-}
-
-.q-title {
-  font-family: 'Bebas Neue', sans-serif; font-size: 20px;
-  letter-spacing: 0.06em; color: var(--bright); line-height: 1;
-}
-
-.q-desc {
-  font-size: 12px; color: var(--text); line-height: 1.65;
-  margin-bottom: 16px; padding-left: 0;
-  max-width: 560px;
-}
-
-/* ── INPUTS ── */
-.input-wrap { position: relative; }
-
-.input-wrap input,
-.input-wrap textarea {
-  width: 100%; background: var(--panel);
-  border: 1px solid var(--border2); color: var(--bright);
-  font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 300;
-  padding: 14px 18px; outline: none; transition: all .25s;
-  resize: vertical;
-}
-
-.input-wrap textarea { min-height: 100px; line-height: 1.65; }
-
-.input-wrap input::placeholder,
-.input-wrap textarea::placeholder { color: rgba(139,173,200,0.3); font-size: 13px; font-style: italic; }
-
-.input-wrap input:focus,
-.input-wrap textarea:focus {
-  border-color: var(--cyan);
-  background: rgba(0,229,255,0.03);
-  box-shadow: 0 0 0 1px rgba(0,229,255,0.1), inset 0 0 20px rgba(0,229,255,0.02);
-}
-
-.input-wrap::after {
-  content: ''; position: absolute;
-  bottom: 0; left: 0; width: 0; height: 1px;
-  background: var(--cyan); transition: width .3s;
-}
-
-.input-wrap:focus-within::after { width: 100%; }
-
-/* ── OPTION CARDS ── */
-.opt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.opt-grid.full { grid-template-columns: 1fr; }
-
-.opt-card {
-  display: flex; align-items: center; gap: 14px;
-  padding: 14px 18px; border: 1px solid var(--border2);
-  background: var(--panel); cursor: pointer;
-  transition: all .2s; user-select: none; position: relative;
-  overflow: hidden;
-}
-
-.opt-card::before {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(90deg, rgba(0,229,255,0.06), transparent);
-  transform: translateX(-100%); transition: transform .3s;
-}
-
-.opt-card:hover::before { transform: translateX(0); }
-.opt-card:hover { border-color: rgba(0,229,255,0.3); }
-
-.opt-card input { display: none; }
-
-.opt-mark {
-  width: 18px; height: 18px; border: 1px solid var(--border2);
-  flex-shrink: 0; transition: all .2s; display: flex;
-  align-items: center; justify-content: center; position: relative;
-}
-
-.opt-mark::after {
-  content: ''; width: 8px; height: 8px;
-  background: var(--cyan); display: none;
-}
-
-.opt-card.radio .opt-mark { border-radius: 50%; }
-.opt-card.radio .opt-mark::after { border-radius: 50%; }
-
-.opt-card input:checked ~ .opt-mark { border-color: var(--cyan); background: rgba(0,229,255,0.08); }
-.opt-card input:checked ~ .opt-mark::after { display: block; }
-.opt-card input:checked ~ .opt-text { color: var(--bright); }
-
-.opt-card:has(input:checked) { border-color: rgba(0,229,255,0.4); background: rgba(0,229,255,0.04); }
-.opt-card:has(input:checked)::before { transform: translateX(0); }
-
-.opt-text { font-size: 13px; color: var(--text); flex: 1; transition: color .2s; letter-spacing: 0.02em; }
-.opt-sub  { font-size: 11px; color: var(--text); opacity: 0.5; display: block; margin-top: 2px; }
-
-/* Other input inline */
-.other-field {
-  display: flex; align-items: center; gap: 8px; flex: 1;
-}
-
-.other-inline {
-  flex: 1; background: transparent;
-  border: none; border-bottom: 1px solid var(--border2);
-  color: var(--bright); font-family: 'DM Sans', sans-serif;
-  font-size: 13px; padding: 2px 6px; outline: none;
-  transition: border-color .2s;
-}
-
-.other-inline:focus { border-bottom-color: var(--cyan); }
-.other-inline::placeholder { color: rgba(139,173,200,0.3); font-style: italic; }
-
-/* ── DRAG RANK ── */
-.rank-list { display: flex; flex-direction: column; gap: 6px; }
-
-.rank-card {
-  display: flex; align-items: center; gap: 0;
-  border: 1px solid var(--border2); background: var(--panel);
-  cursor: grab; user-select: none; transition: all .2s;
-  position: relative; overflow: hidden;
-}
-
-.rank-card:active { cursor: grabbing; }
-.rank-card.dragging { opacity: 0.4; border-color: var(--cyan); }
-.rank-card.over { border-color: var(--green); background: rgba(0,255,179,0.04); transform: scale(1.01); }
-
-.rank-pos {
-  font-family: 'Share Tech Mono', monospace; font-size: 13px;
-  color: var(--cyan); width: 44px; text-align: center;
-  padding: 16px 0; border-right: 1px solid var(--border2);
-  flex-shrink: 0; font-weight: 400;
-}
-
-.rank-grip {
-  padding: 16px 14px; color: rgba(139,173,200,0.3);
-  border-right: 1px solid var(--border2); flex-shrink: 0;
-  display: flex; align-items: center;
-}
-
-.rank-body { flex: 1; padding: 14px 18px; }
-
-.rank-name {
-  font-size: 13px; color: var(--bright); font-weight: 400;
-  letter-spacing: 0.02em;
-}
-
-.rank-desc { font-size: 11px; color: var(--text); opacity: 0.5; margin-top: 2px; }
-
-.rank-toggle {
-  padding: 16px 18px; border-left: 1px solid var(--border2);
-  flex-shrink: 0; display: flex; gap: 0;
-}
-
-.rtgl-btn {
-  font-family: 'Share Tech Mono', monospace; font-size: 10px;
-  letter-spacing: 0.1em; padding: 5px 10px; border: 1px solid var(--border2);
-  background: transparent; color: var(--text); transition: all .2s;
-  cursor: pointer;
-}
-
-.rtgl-btn:first-child { border-right: none; }
-.rtgl-btn.on-yes { background: rgba(0,255,179,0.08); border-color: var(--green); color: var(--green); }
-.rtgl-btn.on-no  { background: rgba(255,60,90,0.08);  border-color: var(--red);   color: var(--red);   }
-
-/* ── ASSET GRID ── */
-.asset-grid { display: flex; flex-direction: column; gap: 6px; }
-
-.asset-row {
-  display: flex; align-items: center; gap: 0;
-  border: 1px solid var(--border2); background: var(--panel);
-  transition: border-color .2s;
-}
-
-.asset-row:has(.atgl-btn.on-yes) { border-color: rgba(0,255,179,0.25); }
-.asset-row:has(.atgl-btn.on-no)  { border-color: rgba(255,60,90,0.2); }
-
-.asset-info { flex: 1; padding: 15px 20px; }
-
-.asset-name { font-size: 13px; color: var(--bright); font-weight: 400; }
-.asset-desc { font-size: 11px; color: var(--text); opacity: 0.5; margin-top: 2px; }
-
-.asset-toggle { display: flex; border-left: 1px solid var(--border2); flex-shrink: 0; }
-
-.atgl-btn {
-  font-family: 'Share Tech Mono', monospace; font-size: 10px;
-  letter-spacing: 0.1em; padding: 0 16px; border: none;
-  border-left: 1px solid var(--border2); background: transparent;
-  color: var(--text); transition: all .2s; cursor: pointer; height: 52px;
-}
-
-.atgl-btn:first-child { border-left: none; }
-.atgl-btn.on-yes { background: rgba(0,255,179,0.08); color: var(--green); }
-.atgl-btn.on-no  { background: rgba(255,60,90,0.08);  color: var(--red);   }
-
-/* ── DIVIDER ── */
-.section-div {
-  display: flex; align-items: center; gap: 16px;
-  margin: 32px 0; font-family: 'Share Tech Mono', monospace;
-  font-size: 9px; color: var(--text); letter-spacing: 0.2em;
-  text-transform: uppercase; opacity: 0.4;
-}
-.section-div::before, .section-div::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-/* ── PRO TIP ── */
-.pro-tip {
-  display: flex; gap: 16px; padding: 18px 22px; margin-top: 36px;
-  border: 1px solid rgba(255,184,0,0.2);
-  background: rgba(255,184,0,0.04); position: relative;
-}
-
-.pro-tip::before {
-  content: ''; position: absolute;
-  left: 0; top: 0; bottom: 0; width: 2px;
-  background: var(--amber);
-}
-
-.pro-tip-label {
-  font-family: 'Share Tech Mono', monospace; font-size: 9px;
-  color: var(--amber); letter-spacing: 0.15em; flex-shrink: 0; padding-top: 2px;
-}
-
-.pro-tip-body { font-size: 12px; color: var(--text); line-height: 1.65; }
-.pro-tip-body strong { color: var(--bright); font-weight: 500; }
-
-/* ── BOTTOM NAV ── */
-.bottom-nav {
-  position: fixed; bottom: 0; right: 0;
-  left: 220px;
-  height: 64px;
-  background: var(--glass); backdrop-filter: blur(20px);
-  border-top: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 56px; z-index: 40;
-}
-
-.nav-progress {
-  display: flex; align-items: center; gap: 16px;
-}
-
-.np-track {
-  width: 120px; height: 1px; background: var(--border);
-  position: relative; overflow: visible;
-}
-
-.np-fill {
-  height: 100%; background: var(--cyan);
-  transition: width .6s cubic-bezier(0.23,1,0.32,1);
-  position: relative;
-}
-
-.np-fill::after {
-  content: ''; position: absolute;
-  right: -3px; top: -3px;
-  width: 7px; height: 7px;
-  background: var(--cyan); border: 1px solid var(--black);
-  box-shadow: 0 0 8px var(--cyan);
-}
-
-.np-label {
-  font-family: 'Share Tech Mono', monospace; font-size: 10px;
-  color: var(--text); letter-spacing: 0.1em;
-}
-
-.np-label span { color: var(--cyan); }
-
-.nav-buttons { display: flex; align-items: center; gap: 10px; }
-
-.btn {
-  font-family: 'Bebas Neue', sans-serif; font-size: 14px;
-  letter-spacing: 0.18em; padding: 12px 28px;
-  cursor: pointer; border: none; transition: all .25s;
-  display: flex; align-items: center; gap: 10px;
-  position: relative; overflow: hidden;
-}
-
-.btn::before {
-  content: ''; position: absolute; inset: 0;
-  background: rgba(255,255,255,0.06);
-  transform: translateX(-100%); transition: transform .25s;
-}
-
-.btn:hover::before { transform: translateX(0); }
-
-.btn-ghost {
-  background: transparent; color: var(--text);
-  border: 1px solid var(--border2);
-}
-
-.btn-ghost:hover { border-color: var(--cyan); color: var(--cyan); }
-
-.btn-primary {
-  background: var(--cyan); color: var(--black);
-  box-shadow: 0 0 24px rgba(0,229,255,0.2);
-}
-
-.btn-primary:hover { box-shadow: 0 0 32px rgba(0,229,255,0.4); }
-
-.btn-success {
-  background: var(--green); color: var(--black);
-  box-shadow: 0 0 24px rgba(0,255,179,0.2);
-}
-
-.btn-success:hover { box-shadow: 0 0 32px rgba(0,255,179,0.4); }
-
-/* ── SUCCESS ── */
-#success {
-  display: none; padding: 80px 56px;
-  flex-direction: column; align-items: flex-start;
-}
-
-#success.active { display: flex; }
-
-.success-eyebrow {
-  font-family: 'Share Tech Mono', monospace; font-size: 10px;
-  color: var(--green); letter-spacing: 0.2em; text-transform: uppercase;
-  display: flex; align-items: center; gap: 12px; margin-bottom: 24px;
-}
-
-.success-eyebrow::before {
-  content: ''; display: inline-block; width: 24px; height: 1px; background: var(--green);
-}
-
-.success-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(48px, 6vw, 80px);
-  letter-spacing: 0.04em; color: var(--white);
-  line-height: 1; margin-bottom: 24px;
-}
-
-.success-title em { font-style: normal; color: var(--green); }
-
-.success-body {
-  font-size: 14px; color: var(--text); line-height: 1.7;
-  max-width: 480px; margin-bottom: 40px;
-}
-
-.success-ref {
-  font-family: 'Share Tech Mono', monospace; font-size: 13px;
-  color: var(--cyan); padding: 16px 28px;
-  border: 1px solid rgba(0,229,255,0.25); background: rgba(0,229,255,0.04);
-  display: inline-block; letter-spacing: 0.1em; margin-bottom: 48px;
-  animation: refPulse 3s ease-in-out infinite;
-}
-
-@keyframes refPulse {
-  0%,100% { box-shadow: 0 0 0 0 rgba(0,229,255,0.2); }
-  50%      { box-shadow: 0 0 0 8px rgba(0,229,255,0); }
-}
-
-.success-grid {
-  display: grid; grid-template-columns: repeat(3,1fr); gap: 1px;
-  width: 100%; max-width: 520px; border: 1px solid var(--border);
-}
-
-.sg-cell {
-  background: var(--panel); padding: 16px 20px;
-  border-right: 1px solid var(--border);
-}
-
-.sg-cell:last-child { border-right: none; }
-.sg-label { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--text); letter-spacing: 0.15em; opacity: 0.5; margin-bottom: 6px; }
-.sg-value { font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 0.1em; }
-.sg-value.cyan  { color: var(--cyan); }
-.sg-value.green { color: var(--green); }
-.sg-value.amber { color: var(--amber); }
-
-/* ── GLITCH ── */
-.glitch {
-  position: relative;
-  animation: glitch 8s infinite;
-}
-
-@keyframes glitch {
-  0%,94%,100% { text-shadow: none; clip-path: none; }
-  95% { text-shadow: -2px 0 var(--cyan), 2px 0 var(--red); clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%); }
-  96% { text-shadow: 2px 0 var(--green); clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%); }
-  97% { text-shadow: none; clip-path: none; }
-}
-
-/* ── EXTRA ANIMATION CSS ── */
-@keyframes bootFlicker {
-  0%,100% { opacity:1; }
-  92%      { opacity:1; }
-  93%      { opacity:0.2; }
-  94%      { opacity:1; }
-  96%      { opacity:0.4; }
-  97%      { opacity:1; }
-}
-
-.signal-bars { display:flex; gap:2px; align-items:flex-end; margin-top:10px; }
-.sig-bar { width:4px; background:var(--cyan); opacity:0.5; animation:sigPulse 1.5s ease-in-out infinite; }
-.sig-bar:nth-child(1){height:4px;animation-delay:0s}
-.sig-bar:nth-child(2){height:7px;animation-delay:.15s}
-.sig-bar:nth-child(3){height:10px;animation-delay:.3s}
-.sig-bar:nth-child(4){height:13px;animation-delay:.45s}
-.sig-bar:nth-child(5){height:10px;animation-delay:.6s}
-@keyframes sigPulse{0%,100%{opacity:0.25}50%{opacity:0.8}}
-
-.ticker-wrap{overflow:hidden;white-space:nowrap;font-family:'Share Tech Mono',monospace;font-size:9px;color:rgba(0,229,255,0.3);letter-spacing:.1em;border-top:1px solid var(--border);padding:6px 40px;}
-.ticker-inner{display:inline-block;animation:tickerScroll 28s linear infinite;}
-@keyframes tickerScroll{from{transform:translateX(60vw)}to{transform:translateX(-100%)}}
-
-.opt-card:has(input:checked){box-shadow:inset 0 0 20px rgba(0,229,255,0.04),0 0 0 1px rgba(0,229,255,0.15);}
-.rank-card:hover{box-shadow:0 0 16px rgba(0,229,255,0.06);}
-
-.sg-cell{animation:sgReveal .4s ease forwards;opacity:0;}
-.sg-cell:nth-child(1){animation-delay:.2s}
-.sg-cell:nth-child(2){animation-delay:.35s}
-.sg-cell:nth-child(3){animation-delay:.5s}
-@keyframes sgReveal{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-
-/* ── RESPONSIVE ── */
-@media (max-width: 768px) {
-  .sidebar { display: none; }
-  .bottom-nav { left: 0; padding: 0 20px; }
-  .page, #success { padding: 32px 20px 80px; }
-  .ph { flex-direction: column; gap: 16px; }
-  .opt-grid { grid-template-columns: 1fr; }
-}
-
-/* ── SUCCESS EXTRAS ── */
-.success-divider {
-  display: flex; align-items: center; gap: 16px;
-  margin: 36px 0 28px; width: 100%; max-width: 580px;
-  font-family: 'Share Tech Mono', monospace; font-size: 9px;
-  color: var(--muted); letter-spacing: 0.18em; text-transform: uppercase;
-  opacity: 0.5;
-}
-.success-divider::before, .success-divider::after {
-  content: ''; flex: 1; height: 1px; background: var(--border);
-}
-
-.discord-block {
-  display: flex; align-items: center; gap: 20px;
-  width: 100%; max-width: 580px;
-  padding: 22px 24px;
-  border: 1px solid rgba(88,101,242,0.35);
-  background: rgba(88,101,242,0.05);
-  position: relative; overflow: hidden;
-  animation: discordReveal .5s ease .6s both;
-}
-
-@keyframes discordReveal {
-  from { opacity:0; transform:translateY(12px); }
-  to   { opacity:1; transform:none; }
-}
-
-.discord-block::before {
-  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
-  width: 2px; background: #5865F2;
-}
-
-.discord-icon {
-  flex-shrink: 0;
-  width: 48px; height: 48px;
-  border: 1px solid rgba(88,101,242,0.3);
-  background: rgba(88,101,242,0.08);
-  display: flex; align-items: center; justify-content: center;
-}
-
-.discord-content { flex: 1; display: flex; flex-direction: column; gap: 5px; }
-
-.discord-label {
-  font-family: 'Share Tech Mono', monospace; font-size: 9px;
-  color: #5865F2; letter-spacing: 0.15em; text-transform: uppercase;
-}
-
-.discord-heading {
-  font-size: 13px; color: var(--bright); font-weight: 400;
-  line-height: 1.5;
-}
-
-.discord-sub {
-  font-size: 11px; color: var(--text); opacity: 0.6; line-height: 1.5;
-}
-
-.discord-btn {
-  flex-shrink: 0;
-  font-family: 'Bebas Neue', sans-serif; font-size: 13px;
-  letter-spacing: 0.18em; padding: 12px 20px;
-  background: #5865F2; color: #fff;
-  text-decoration: none; border: none; cursor: pointer;
-  display: flex; align-items: center; gap: 8px;
-  transition: all .2s; white-space: nowrap;
-}
-
-.discord-btn:hover {
-  background: #4752c4;
-  box-shadow: 0 0 20px rgba(88,101,242,0.4);
-}
-
-.discord-btn svg { transition: transform .2s; }
-.discord-btn:hover svg { transform: translateX(3px); }
-
-.success-note {
-  margin-top: 20px;
-  font-family: 'Share Tech Mono', monospace; font-size: 10px;
-  color: var(--text); opacity: 0.35; letter-spacing: 0.08em;
-  line-height: 1.7; max-width: 580px;
-}
-
-/* ── EXPAND PANEL SYSTEM ── */
-.multi-hint {
-  font-family: 'Share Tech Mono', monospace; font-size: 9px;
-  color: var(--text); letter-spacing: 0.14em; opacity: 0.45;
-  margin-bottom: 12px; display: flex; align-items: center; gap: 10px;
-}
-.multi-hint::before {
-  content: ''; display: inline-block;
-  width: 12px; height: 1px; background: var(--cyan); opacity: 0.5;
-}
-
-.opt-expand-wrap {
-  display: flex; flex-direction: column;
-}
-
-.opt-expand-wrap .opt-card {
-  border-bottom: 1px solid var(--border2);
-}
-
-.opt-expand-wrap.expanded .opt-card {
-  border-color: rgba(0,229,255,0.45);
-  background: rgba(0,229,255,0.04);
-}
-
-.opt-expand-icon {
-  flex-shrink: 0; margin-left: auto;
-  width: 22px; height: 22px;
-  border: 1px solid var(--border2);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px; font-weight: 300; font-family: 'Share Tech Mono', monospace;
-  color: var(--text); line-height: 1;
-  transition: all .2s; pointer-events: none;
-  user-select: none;
-}
-
-.opt-expand-wrap.expanded .opt-expand-icon {
-  transform: rotate(45deg);
-  border-color: var(--cyan); color: var(--cyan);
-  background: rgba(0,229,255,0.07);
-}
-
-.opt-detail-panel {
-  max-height: 0; overflow: hidden; opacity: 0;
-  border-left: 2px solid transparent;
-  transition: max-height .35s cubic-bezier(0.23,1,0.32,1),
-              opacity .25s ease;
-}
-
-.opt-expand-wrap.expanded .opt-detail-panel {
-  max-height: 160px; opacity: 1;
-  border-left-color: var(--cyan);
-  border-right: 1px solid rgba(0,229,255,0.2);
-  border-bottom: 1px solid rgba(0,229,255,0.15);
-  background: rgba(0,229,255,0.02);
-}
-
-.opt-detail-input {
-  width: 100%; background: transparent;
-  border: none; border-top: 1px solid var(--border2);
-  color: var(--bright); font-family: 'DM Sans', sans-serif;
-  font-size: 12px; font-weight: 300; line-height: 1.65;
-  padding: 11px 16px; resize: none; outline: none; min-height: 68px;
-}
-
-.opt-detail-input::placeholder {
-  color: rgba(139,173,200,0.28); font-style: italic; font-size: 11px;
-}
-
-.opt-detail-input:focus { background: rgba(0,229,255,0.03); }
-
-/* dot indicator when detail has been typed */
-.opt-expand-wrap.has-detail .opt-text::after {
-  content: ' ·'; color: var(--cyan); font-size: 16px;
-  line-height: 0; vertical-align: middle; margin-left: 4px;
-}
-
-</style>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Peacetime Agency \u2014 Creator-First, Always</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+  <style>
+  /* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+     TOKENS
+  \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
+  :root {
+    /* World 1 \u2014 Visitor (deep forest night) */
+    --w1-bg:      #0d1a0f;
+    --w1-surface: #111f13;
+    --w1-border:  rgba(144,196,130,0.12);
+    --w1-text:    #d4e8cc;
+    --w1-muted:   rgba(212,232,204,0.45);
+    --w1-accent:  #7ec870;
+    --w1-gold:    #c8a84b;
+
+    /* World 2 \u2014 Creators (warm amber dusk) */
+    --w2-bg:      #1a1108;
+    --w2-surface: #221808;
+    --w2-border:  rgba(220,175,90,0.14);
+    --w2-text:    #f0ddb0;
+    --w2-muted:   rgba(240,221,176,0.45);
+    --w2-accent:  #dcaf5a;
+    --w2-pop:     #e86b3a;
+
+    /* World 3 \u2014 Staff (cool slate navy) */
+    --w3-bg:      #09111f;
+    --w3-surface: #0d1828;
+    --w3-border:  rgba(100,160,220,0.12);
+    --w3-text:    #c8daf0;
+    --w3-muted:   rgba(200,218,240,0.45);
+    --w3-accent:  #64a0dc;
+    --w3-pop:     #a87fe8;
+
+    --ff-display: 'Cormorant Garamond', Georgia, serif;
+    --ff-ui:      'Syne', sans-serif;
+    --ff-mono:    'JetBrains Mono', monospace;
+    --ease-out:   cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; font-size: 16px; }
+
+  body {
+    font-family: var(--ff-ui);
+    background: var(--w1-bg);
+    color: var(--w1-text);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* \u2500\u2500 Custom cursor \u2500\u2500 */
+  #cursor {
+    position: fixed;
+    width: 10px; height: 10px;
+    background: var(--w1-accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s var(--ease-out), background 0.3s, width 0.2s, height 0.2s;
+    transform: translate(-50%, -50%);
+  }
+  #cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid var(--w1-accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    opacity: 0.4;
+    transition: transform 0.35s var(--ease-out), border-color 0.3s, opacity 0.2s;
+    transform: translate(-50%, -50%);
+  }
+  body:has(#world-creators:target) #cursor,
+  .world-creators #cursor  { background: var(--w2-accent); }
+
+  /* \u2500\u2500 Grain \u2500\u2500 */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.025;
+    pointer-events: none;
+    z-index: 9990;
+  }
+
+  /* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+     NAV
+  \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
+  #nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 500;
+    padding: 0 40px;
+    height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+    transition: background 0.5s, border-color 0.5s;
+    border-bottom: 1px solid transparent;
+  }
+  #nav.scrolled {
+    background: rgba(13,26,15,0.85);
+    backdrop-filter: blur(20px);
+    border-color: var(--w1-border);
+  }
+  #nav.world-creators-active { background: rgba(26,17,8,0.88) !important; border-color: var(--w2-border) !important; }
+  #nav.world-staff-active    { background: rgba(9,17,31,0.88) !important; border-color: var(--w3-border) !important; }
+
+  .nav-logo {
+    font-family: var(--ff-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--w1-accent);
+    text-decoration: none;
+    transition: color 0.4s;
+  }
+  #nav.world-creators-active .nav-logo { color: var(--w2-accent); }
+  #nav.world-staff-active    .nav-logo { color: var(--w3-accent); }
+
+  .nav-worlds {
+    display: flex; gap: 6px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 40px;
+    padding: 5px;
+  }
+
+  .nav-world-btn {
+    font-family: var(--ff-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    background: transparent;
+    border: none;
+    padding: 7px 18px;
+    border-radius: 40px;
+    cursor: none;
+    transition: background 0.25s, color 0.25s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .nav-world-btn:hover { color: rgba(255,255,255,0.8); }
+  .nav-world-btn.active-visitors { background: var(--w1-accent); color: var(--w1-bg); }
+  .nav-world-btn.active-creators { background: var(--w2-accent); color: var(--w2-bg); }
+  .nav-world-btn.active-staff    { background: var(--w3-accent); color: var(--w3-bg); }
+
+  .nav-cta {
+    font-family: var(--ff-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--w1-bg);
+    background: var(--w1-accent);
+    text-decoration: none;
+    padding: 9px 20px;
+    border-radius: 3px;
+    transition: background 0.3s, color 0.3s, transform 0.15s;
+  }
+  .nav-cta:hover { transform: translateY(-1px); }
+  #nav.world-creators-active .nav-cta { background: var(--w2-accent); color: var(--w2-bg); }
+  #nav.world-staff-active    .nav-cta { background: var(--w3-accent); color: var(--w3-bg); }
+
+  /* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+     SHARED UTILITIES
+  \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 40px; }
+
+  .label-row {
+    display: flex; align-items: center; gap: 14px;
+    font-family: var(--ff-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .label-row::before {
+    content: '';
+    width: 28px; height: 1px;
+    background: currentColor;
+    opacity: 0.5;
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
+  }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  /* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+     WORLD 1 \u2014 VISITORS
+  \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
+  .world-visitors {
+    background: var(--w1-bg);
+    color: var(--w1-text);
+    min-height: 100vh;
+  }
+
+  /* \u2500\u2500 Visitor Hero \u2500\u2500 */
+  .v-hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding-bottom: 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .v-hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 70% at 70% 40%, rgba(126,200,112,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 50% at 20% 80%, rgba(200,168,75,0.05) 0%, transparent 50%);
+  }
+
+  .v-hero-grid-lines {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(126,200,112,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(126,200,112,0.04) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mask-image: linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%);
+  }
+
+  .v-hero-num {
+    position: absolute;
+    right: 40px; top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--ff-display);
+    font-size: clamp(18rem, 28vw, 32rem);
+    font-weight: 300;
+    color: rgba(126,200,112,0.04);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .v-hero-content { position: relative; z-index: 2; }
+
+  .v-hero-kicker {
+    color: var(--w1-accent);
+    margin-bottom: 28px;
+  }
+
+  .v-hero-headline {
+    font-family: var(--ff-display);
+    font-size: clamp(4rem, 8vw, 9rem);
+    font-weight: 300;
+    line-height: 0.92;
+    letter-spacing: -0.03em;
+    color: var(--w1-text);
+    margin-bottom: 40px;
+  }
+  .v-hero-headline strong {
+    font-weight: 700;
+    display: block;
+    color: var(--w1-accent);
+  }
+  .v-hero-headline em {
+    font-style: italic;
+    font-weight: 300;
+    color: var(--w1-gold);
+  }
+
+  .v-hero-bottom {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    border-top: 1px solid var(--w1-border);
+    padding-top: 40px;
+    margin-top: 40px;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .v-hero-sub {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--w1-muted);
+    max-width: 420px;
+  }
+
+  .v-hero-stats {
+    display: flex; gap: 48px;
+  }
+
+  .v-stat-val {
+    font-family: var(--ff-display);
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: var(--w1-text);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .v-stat-lbl {
+    font-family: var(--ff-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--w1-muted);
+  }
+
+  .v-hero-ctas { display: flex; gap: 16px; flex-wrap: wrap; }
+
+  /* \u2500\u2500 Visitor sections \u2500\u2500 */
+  .v-section { padding: 120px 0; }
+  .v-section-alt { background: var(--w1-surface); }
+
+  .v-section-title {
+    font-family: var(--ff-display);
+    font-size: clamp(2.5rem, 4vw, 4.5rem);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    color: var(--w1-text);
+    margin-bottom: 48px;
+  }
+  .v-section-title strong { font-weight: 700; color: var(--w1-accent); }
+  .v-section-title em { font-style: italic; color: var(--w1-gold); }
+
+  /* Why grid */
+  .v-why-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 60px; align-items: center;
+  }
+
+  .v-why-text p {
+    font-size: 1rem;
+    line-height: 1.9;
+    color: var(--w1-muted);
+    margin-bottom: 18px;
+  }
+
+  .v-pullquote {
+    border-left: 2px solid var(--w1-accent);
+    padding: 24px 0 24px 32px;
+  }
+  .v-pullquote blockquote {
+    font-family: var(--ff-display);
+    font-size: 1.6rem;
+    font-style: italic;
+    font-weight: 300;
+    line-height: 1.5;
+    color: var(--w1-text);
+  }
+
+  /* Feature cards */
+  .v-cards {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--w1-border);
+    border: 1px solid var(--w1-border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 48px;
+  }
+
+  .v-card {
+    background: var(--w1-bg);
+    padding: 44px 36px;
+    transition: background 0.25s;
+    position: relative;
+  }
+  .v-card:hover { background: #152218; }
+
+  .v-card-num {
+    font-family: var(--ff-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    color: var(--w1-accent);
+    opacity: 0.6;
+    margin-bottom: 20px;
+  }
+  .v-card-icon { font-size: 1.8rem; margin-bottom: 18px; display: block; }
+  .v-card-title {
+    font-family: var(--ff-display);
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--w1-text);
+    margin-bottom: 12px;
+  }
+  .v-card-body { font-size: 0.9rem; line-height: 1.8; color: var(--w1-muted); }
+
+  /* Expectations */
+  .v-exp-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--w1-border);
+    border: 1px solid var(--w1-border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .v-exp-card {
+    background: var(--w1-surface);
+    padding: 44px 32px;
+    transition: background 0.25s;
+  }
+  .v-exp-card:hover { background: #16221a; }
+  .v-exp-icon { font-size: 2rem; margin-bottom: 20px; display: block; }
+  .v-exp-card h3 {
+    font-family: var(--ff-display);
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--w1-text);
+    margin-bottom: 10px;
+  }
+  .v-exp-card p { font-size: 0.9rem; line-height: 1.8; color: var(--w1-muted); }
+
+  /* Onboarding steps */
+  .v-steps { margin-top: 48px; }
+  .v-step {
+    display: flex; gap: 28px;
+    padding: 32px 0;
+    border-bottom: 1px solid var(--w1-border);
+  }
+  .v-step:first-child { border-top: 1px solid var(--w1-border); }
+  .v-step-num {
+    font-family: var(--ff-display);
+    font-size: 3rem;
+    font-weight: 700;
+    color: rgba(126,200,112,0.12);
+    line-height: 1;
+    min-width: 60px;
+  }
+  .v-step h4 {
+    font-family: var(--ff-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--w1-text);
+    margin-bottom: 6px;
+  }
+  .v-step p { font-size: 0.9rem; line-height: 1.75; color: var(--w1-muted); }
+
+  /* Buttons \u2014 World 1 */
+  .btn-v1 {
+    font-family: var(--ff-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--w1-bg);
+    background: var(--w1-accent);
+    text-decoration: none;
+    padding: 13px 30px;
+    border-radius: 3px;
+    display: inline-block;
+    transition: opacity 0.2s, transform 0.15s;
+    cursor: none;
+  }
+  .btn-v1:hover { opacity: 0.85; transform: translateY(-1px); }
+
+  .btn-v1-ghost {
+    font-family: var(--ff-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--w1-accent);
+    text-decoration: none;
+    padding: 13px 0;
+    border-bottom: 1px solid rgba(126,200,112,0.3);
+    display: inline-block;
+    transition: border-color 0.2s, color 0.2s;
+    cursor: none;
+  }
+  .btn-v1-ghost:hover { border-color: var(--w1-accent); color: var(--w1-text); }
+
+  /* \u2500\u2500 World divider \u2500\u2500 */
+  .world-divider {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .wd-visitors-creators {
+    background: linear-gradient(180deg, var(--w1-bg) 0%, var(--w2-bg) 100%);
+  }
+  .wd-creators-staff {
+    background: linear-gradient(180deg, var(--w2-bg) 0%, var(--w3-bg) 100%);
+  }
+
+  .wd-label {
+    font-family: var(--ff-display);
+    font-size: clamp(4rem, 10vw, 9rem);
+    font-weight: 700;
+    font-style: italic;
+    letter-spacing: -0.04em;
+    opacity: 0.06;
+    color: #fff;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .wd-arrow {
+    position: absolute;
+    bottom: 24px;
+    font-family: var(--ff-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.3;
+    display: flex; align-items: center; gap: 8px;
+    animation: bob 2s ease-in-out infinite;
+  }
+  @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }
+
+  /* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+     WORLD 2 \u2014 CREATORS
+  \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
+  .world-creators {
+    background: var(--w2-bg);
+    color: var(--w2-text);
+    min-height: 100vh;
+  }
+
+  /* \u2500\u2500 Creator Hero \u2500\u2500 */
+  .c-hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding-bottom: 80px;
+    position: relative; overflow: hidden;
+  }
+
+  .c-hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 70% 60% at 30% 50%, rgba(220,175,90,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 80% 20%, rgba(232,107,58,0.06) 0%, transparent 50%);
+  }
+
+  .c-hero-num {
+    position: absolute;
+    left: 40px; top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--ff-display);
+    font-size: clamp(18rem, 28vw, 32rem);
+    font-weight: 300;
+    color: rgba(220,175,90,0.04);
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .c-hero-content { position: relative; z-index: 2; }
+
+  .c-hero-kicker { color: var(--w2-accent); margin-bottom: 28px; }
+
+  .c-hero-headline {
+    font-family: var(--ff-display);
+    font-size: clamp(4rem, 8vw, 9rem);
+    font-weight: 300;
+    line-height: 0.92;
+    letter-spacing: -0.03em;
+    color: var(--w2-text);
+    margin-bottom: 40px;
+  }
+  .c-hero-headline strong { font-weight: 700; color: var(--w2-accent); display: block; }
+  .c-hero-headline em { font-style: italic; color: var(--w2-pop); }
+
+  .c-hero-bottom {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    border-top: 1px solid var(--w2-border);
+    padding-top: 40px; margin-top: 40px;
+    gap: 40px; flex-wrap: wrap;
+  }
+  .c-hero-sub { font-size: 1rem; line-height: 1.8; color: var(--w2-muted); max-width: 440px; }
+
+  /* \u2500\u2500 Section titles - creators \u2500\u2500 */
+  .c-section { padding: 120px 0; }
+  .c-section-alt { background: var(--w2-surface); }
+
+  .c-section-title {
+    font-family: var(--ff-display);
+    font-size: clamp(2.5rem, 4vw, 4.5rem);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    color: var(--w2-text);
+    margin-bottom: 48px;
+  }
+  .c-section-title strong { font-weight: 700; color: var(--w2-accent); }
+  .c-section-title em { font-style: italic; color: var(--w2-pop); }
+
+  .label-row-c { color: var(--w2-accent); }
+  .label-row-s { color: var(--w3-accent); }
+
+  /* Creator Roster */
+  .roster-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    background: var(--w2-border);
+    border: 1px solid var(--w2-border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .roster-card {
+    background: var(--w2-bg);
+    padding: 32px 24px;
+    transition: background 0.25s;
+    position: relative;
+    group: true;
+  }
+  .roster-card:hover { background: #271a05; }
+
+  .roster-avatar {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    margin-bottom: 16px;
+    background: var(--w2-border);
+    border: 1px solid var(--w2-border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem;
+    overflow: hidden;
+    transition: transform 0.2s var(--ease-out);
+  }
+  .roster-card:hover .roster-avatar { transform: scale(1.05); }
+
+  .roster-name {
+    font-family: var(--ff-display);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--w2-text);
+    margin-bottom: 4px;
+  }
+  .roster-handle {
+    font-family: var(--ff-mono);
+    font-size: 0.65rem;
+    color: var(--w2-accent);
+    margin-bottom: 10px;
+    letter-spacing: 0.05em;
+  }
+  .roster-niche {
+    font-size: 0.8rem;
+    color: var(--w2-muted);
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+  .roster-badge {
+    display: inline-block;
+    font-family: var(--ff-mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 2px;
+    background: rgba(220,175,90,0.12);
+    color: var(--w2-accent);
+    border: 1px solid rgba(220,175,90,0.2);
+  }
+
+  /* News */
+  .news-list { margin-top: 48px; }
+  .news-item {
+    display: grid; grid-template-columns: 100px 1fr auto;
+    gap: 28px; align-items: start;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--w2-border);
+    transition: padding-left 0.2s;
+  }
+  .news-item:first-child { border-top: 1px solid var(--w2-border); }
+  .news-item:hover { padding-left: 8px; }
+
+  .news-date {
+    font-family: var(--ff-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    color: var(--w2-muted);
+    padding-top: 3px;
+  }
+  .news-title {
+    font-family: var(--ff-display);
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--w2-text);
+    margin-bottom: 6px;
+  }
+  .news-excerpt { font-size: 0.88rem; color: var(--w2-muted); line-height: 1.65; }
+  .news-tag {
+    font-family: var(--ff-mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 2px;
+    background: rgba(220,175,90,0.1);
+    color: var(--w2-accent);
+    white-space: nowrap;
+    border: 1px solid rgba(220,175,90,0.15);
+    margin-top: 3px;
+  }
+
+  /* Resources */
+  .resources-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--w2-border);
+    border: 1px solid var(--w2-border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 48px;
+  }
+  .resource-card {
+    background: var(--w2-bg);
+    padding: 36px 32px;
+    transition: background 0.25s;
+  }
+  .resource-card:hover { background: #271a05; }
+  .resource-icon { font-size: 1.6rem; margin-bottom: 16px; display: block; }
+  .resource-title {
+    font-family: var(--ff-display);
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--w2-text);
+    margin-bottom: 8px;
+  }
+  .resource-desc { font-size: 0.88rem; line-height: 1.75; color: var(--w2-muted); margin-bottom: 16px; }
+  .resource-link {
+    font-family: var(--ff-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--w2-accent);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(220,175,90,0.25);
+    padding-bottom: 2px;
+    transition: border-color 0.2s;
+    cursor: none;
+  }
+  .resource-link:hover { border-color: var(--w2-accent); }
+
+  /* Buttons \u2014 World 2 */
+  .btn-v2 {
+    font-family: var(--ff-mono);
+    font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--w2-bg); background: var(--w2-accent);
+    text-decoration: none; padding: 13px 30px; border-radius: 3px;
+    display: inline-block; transition: opacity 0.2s, transform 0.15s;
+    cursor: none;
+  }
+  .btn-v2:hover { opacity: 0.85; transform: translateY(-1px); }
+
+  /* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+     WORLD 3 \u2014 STAFF
+  \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
+  .world-staff {
+    background: var(--w3-bg);
+    color: var(--w3-text);
+    min-height: 100vh;
+  }
+
+  /* \u2500\u2500 Staff Hero \u2500\u2500 */
+  .s-hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding-bottom: 80px;
+    position: relative; overflow: hidden;
+  }
+
+  .s-hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 60% at 80% 30%, rgba(100,160,220,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 10% 70%, rgba(168,127,232,0.06) 0%, transparent 50%);
+  }
+
+  .s-hero-num {
+    position: absolute;
+    right: 40px; bottom: 80px;
+    font-family: var(--ff-display);
+    font-size: clamp(18rem, 28vw, 32rem);
+    font-weight: 300;
+    color: rgba(100,160,220,0.04);
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .s-hero-content { position: relative; z-index: 2; }
+  .s-hero-kicker { color: var(--w3-accent); margin-bottom: 28px; }
+
+  .s-hero-headline {
+    font-family: var(--ff-display);
+    font-size: clamp(4rem, 8vw, 9rem);
+    font-weight: 300;
+    line-height: 0.92;
+    letter-spacing: -0.03em;
+    color: var(--w3-text);
+    margin-bottom: 40px;
+  }
+  .s-hero-headline strong { font-weight: 700; color: var(--w3-accent); display: block; }
+  .s-hero-headline em { font-style: italic; color: var(--w3-pop); }
+
+  .s-hero-bottom {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    border-top: 1px solid var(--w3-border);
+    padding-top: 40px; margin-top: 40px;
+    gap: 40px; flex-wrap: wrap;
+  }
+  .s-hero-sub { font-size: 1rem; line-height: 1.8; color: var(--w3-muted); max-width: 440px; }
+
+  /* \u2500\u2500 Staff sections \u2500\u2500 */
+  .s-section { padding: 120px 0; }
+  .s-section-alt { background: var(--w3-surface); }
+
+  .s-section-title {
+    font-family: var(--ff-display);
+    font-size: clamp(2.5rem, 4vw, 4.5rem);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    color: var(--w3-text);
+    margin-bottom: 48px;
+  }
+  .s-section-title strong { font-weight: 700; color: var(--w3-accent); }
+  .s-section-title em { font-style: italic; color: var(--w3-pop); }
+
+  /* Team grid */
+  .team-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--w3-border);
+    border: 1px solid var(--w3-border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .team-card {
+    background: var(--w3-bg);
+    padding: 44px 36px;
+    transition: background 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .team-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--w3-accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s var(--ease-out);
+  }
+  .team-card:hover { background: #101c2e; }
+  .team-card:hover::after { transform: scaleX(1); }
+
+  .team-avatar {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    margin-bottom: 20px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem;
+    background: var(--w3-border);
+    border: 1px solid var(--w3-border);
+    transition: transform 0.25s var(--ease-out);
+  }
+  .team-card:hover .team-avatar { transform: scale(1.06); }
+
+  .team-role {
+    font-family: var(--ff-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--w3-accent);
+    margin-bottom: 8px;
+  }
+  .team-name {
+    font-family: var(--ff-display);
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--w3-text);
+    margin-bottom: 12px;
+  }
+  .team-bio { font-size: 0.88rem; line-height: 1.8; color: var(--w3-muted); }
+
+  /* Staff resources */
+  .staff-resources {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    background: var(--w3-border);
+    border: 1px solid var(--w3-border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 48px;
+  }
+  .staff-res-card {
+    background: var(--w3-bg);
+    padding: 32px 28px;
+    transition: background 0.25s;
+  }
+  .staff-res-card:hover { background: #101c2e; }
+  .sr-icon { font-size: 1.5rem; margin-bottom: 14px; display: block; }
+  .sr-title {
+    font-family: var(--ff-display);
+    font-size: 1rem; font-weight: 600;
+    color: var(--w3-text); margin-bottom: 6px;
+  }
+  .sr-desc { font-size: 0.82rem; line-height: 1.7; color: var(--w3-muted); margin-bottom: 14px; }
+  .sr-link {
+    font-family: var(--ff-mono);
+    font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--w3-accent); text-decoration: none;
+    border-bottom: 1px solid rgba(100,160,220,0.25);
+    padding-bottom: 2px; transition: border-color 0.2s;
+    cursor: none;
+  }
+  .sr-link:hover { border-color: var(--w3-accent); }
+
+  /* Staff news */
+  .s-news-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: var(--w3-border);
+    border: 1px solid var(--w3-border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 48px;
+  }
+  .s-news-card {
+    background: var(--w3-bg);
+    padding: 40px 36px;
+    transition: background 0.25s;
+  }
+  .s-news-card:hover { background: #101c2e; }
+  .s-news-tag {
+    font-family: var(--ff-mono);
+    font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--w3-accent);
+    border: 1px solid rgba(100,160,220,0.2);
+    padding: 3px 10px; border-radius: 2px;
+    display: inline-block; margin-bottom: 16px;
+  }
+  .s-news-title {
+    font-family: var(--ff-display);
+    font-size: 1.35rem; font-weight: 600;
+    color: var(--w3-text); margin-bottom: 10px;
+  }
+  .s-news-excerpt { font-size: 0.88rem; line-height: 1.75; color: var(--w3-muted); margin-bottom: 20px; }
+  .s-news-meta {
+    font-family: var(--ff-mono);
+    font-size: 0.6rem; letter-spacing: 0.08em;
+    color: var(--w3-muted); opacity: 0.6;
+  }
+
+  /* Buttons \u2014 World 3 */
+  .btn-v3 {
+    font-family: var(--ff-mono);
+    font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--w3-bg); background: var(--w3-accent);
+    text-decoration: none; padding: 13px 30px; border-radius: 3px;
+    display: inline-block; transition: opacity 0.2s, transform 0.15s;
+    cursor: none;
+  }
+  .btn-v3:hover { opacity: 0.85; transform: translateY(-1px); }
+
+  /* \u2500\u2500 Marquee \u2500\u2500 */
+  .marquee-bar {
+    overflow: hidden; padding: 11px 0;
+    border-top: 1px solid; border-bottom: 1px solid;
+  }
+  .marquee-bar-v { border-color: var(--w1-border); background: rgba(126,200,112,0.03); }
+  .marquee-bar-c { border-color: var(--w2-border); background: rgba(220,175,90,0.03); }
+  .marquee-bar-s { border-color: var(--w3-border); background: rgba(100,160,220,0.03); }
+
+  .marquee-track { display: flex; animation: marquee 30s linear infinite; width: max-content; }
+  .marquee-item {
+    font-family: var(--ff-mono);
+    font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase;
+    white-space: nowrap; padding: 0 32px; opacity: 0.4;
+  }
+  .marquee-sep { opacity: 0.2; padding: 0 8px; }
+  @keyframes marquee { to { transform: translateX(-50%); } }
+
+  /* \u2500\u2500 Footer \u2500\u2500 */
+  .site-footer {
+    background: #050a06;
+    padding: 48px 40px 28px;
+    border-top: 1px solid rgba(255,255,255,0.04);
+  }
+  .footer-inner {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px; padding-bottom: 40px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    margin-bottom: 24px;
+  }
+  .footer-brand-name {
+    font-family: var(--ff-display);
+    font-size: 1.5rem; font-weight: 600;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 12px;
+  }
+  .footer-brand p { font-size: 0.85rem; line-height: 1.75; color: rgba(255,255,255,0.25); max-width: 260px; }
+  .footer-col h5 {
+    font-family: var(--ff-mono);
+    font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: rgba(255,255,255,0.25); margin-bottom: 16px;
+  }
+  .footer-col a {
+    display: block; font-size: 0.85rem;
+    color: rgba(255,255,255,0.35); text-decoration: none;
+    margin-bottom: 10px; transition: color 0.2s; cursor: none;
+  }
+  .footer-col a:hover { color: rgba(255,255,255,0.7); }
+  .footer-copy {
+    font-family: var(--ff-mono);
+    font-size: 0.6rem; letter-spacing: 0.08em;
+    text-align: center; color: rgba(255,255,255,0.15);
+  }
+
+  /* \u2500\u2500 Responsive \u2500\u2500 */
+  @media (max-width: 1024px) {
+    .v-cards, .v-exp-grid { grid-template-columns: 1fr 1fr; }
+    .roster-grid, .team-grid { grid-template-columns: 1fr 1fr; }
+    .resources-grid, .staff-resources { grid-template-columns: 1fr 1fr; }
+    .s-news-grid { grid-template-columns: 1fr; }
+    .footer-inner { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (max-width: 768px) {
+    .v-hero-headline, .c-hero-headline, .s-hero-headline { font-size: clamp(3rem, 12vw, 5rem); }
+    .v-hero-bottom, .c-hero-bottom, .s-hero-bottom { flex-direction: column; align-items: flex-start; }
+    .v-hero-stats { gap: 28px; }
+    .v-why-grid { grid-template-columns: 1fr; }
+    .v-cards, .v-exp-grid, .roster-grid, .team-grid, .resources-grid, .staff-resources { grid-template-columns: 1fr; }
+    .news-item { grid-template-columns: 1fr; gap: 8px; }
+    nav .nav-worlds { display: none; }
+    .footer-inner { grid-template-columns: 1fr; }
+    .wrap { padding: 0 20px; }
+  }
+  </style>
 </head>
 <body>
 
-<!-- CURSOR -->
-<div id="cursor"></div>
-<div id="cursor-ring"></div>
-<canvas id="bgCanvas"></canvas>
-<div class="noise"></div>
+  <!-- Custom cursor -->
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
 
-<!-- ═══ BOOT SCREEN ═══ -->
-<div id="boot">
-  <div class="boot-logo">
-    <div class="boot-emblem">
-      <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
-        <rect x="1" y="1" width="62" height="62" stroke="#00e5ff" stroke-width="1.2"/>
-        <rect x="8" y="8" width="48" height="48" stroke="#162030" stroke-width="1"/>
-        <path d="M32 10 L54 52 L10 52 Z" stroke="#00e5ff" stroke-width="1.4" fill="rgba(0,229,255,0.06)"/>
-        <line x1="32" y1="26" x2="32" y2="40" stroke="#00e5ff" stroke-width="1.5"/>
-        <circle cx="32" cy="44" r="2" fill="#00e5ff"/>
-        <line x1="32" y1="1"  x2="32" y2="7"  stroke="#00e5ff" stroke-width="1"/>
-        <line x1="32" y1="57" x2="32" y2="63" stroke="#00e5ff" stroke-width="1"/>
-        <line x1="1"  y1="32" x2="7"  y2="32" stroke="#00e5ff" stroke-width="1"/>
-        <line x1="57" y1="32" x2="63" y2="32" stroke="#00e5ff" stroke-width="1"/>
-        <line x1="1"  y1="1"  x2="6"  y2="6"  stroke="#00e5ff" stroke-width="1" opacity=".4"/>
-        <line x1="63" y1="1"  x2="58" y2="6"  stroke="#00e5ff" stroke-width="1" opacity=".4"/>
-        <line x1="1"  y1="63" x2="6"  y2="58" stroke="#00e5ff" stroke-width="1" opacity=".4"/>
-        <line x1="63" y1="63" x2="58" y2="58" stroke="#00e5ff" stroke-width="1" opacity=".4"/>
-      </svg>
+  <!-- \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 NAV \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 -->
+  <nav id="nav">
+    <a href="#world-visitors" class="nav-logo">peacetime</a>
+
+    <div class="nav-worlds">
+      <a href="#world-visitors" class="nav-world-btn" id="btn-visitors">Visitors</a>
+      <a href="#world-creators" class="nav-world-btn" id="btn-creators">Creators</a>
+      <a href="#world-staff"    class="nav-world-btn" id="btn-staff">Staff</a>
     </div>
-    <div>
-      <div class="boot-name glitch">KYR<span>AX</span></div>
+
+    <a href="#onboarding" class="nav-cta">Apply to Join</a>
+  </nav>
+
+
+  <!-- \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588
+       WORLD 1 \u2014 VISITORS
+  \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588 -->
+  <div class="world-visitors" id="world-visitors">
+
+    <!-- Hero -->
+    <section class="v-hero">
+      <div class="v-hero-bg"></div>
+      <div class="v-hero-grid-lines"></div>
+      <div class="v-hero-num">I</div>
+      <div class="wrap v-hero-content">
+        <p class="label-row v-hero-kicker">Peacetime Agency \u00b7 TikTok Creator Community</p>
+        <h1 class="v-hero-headline">
+          Grow on<br>
+          <strong>your terms.</strong>
+          <em>Win together.</em>
+        </h1>
+        <div class="v-hero-bottom">
+          <p class="v-hero-sub">A creator-first agency built on radical transparency, community, and a total rejection of predatory practices. No lock-ins. No pressure. Just real support.</p>
+          <div class="v-hero-stats">
+            <div>
+              <div class="v-stat-val">100%</div>
+              <div class="v-stat-lbl">Transparent</div>
+            </div>
+            <div>
+              <div class="v-stat-val">0</div>
+              <div class="v-stat-lbl">Lock-in clauses</div>
+            </div>
+            <div>
+              <div class="v-stat-val">24/7</div>
+              <div class="v-stat-lbl">Community</div>
+            </div>
+          </div>
+        </div>
+        <div class="v-hero-ctas" style="margin-top:36px;">
+          <a href="#onboarding" class="btn-v1">Apply to Join \u2192</a>
+          <a href="#why" class="btn-v1-ghost">Read our story</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Marquee -->
+    <div class="marquee-bar marquee-bar-v">
+      <div class="marquee-track">
+        <span class="marquee-item">Transparent by design</span><span class="marquee-sep">\u2726</span>
+        <span class="marquee-item">No restrictive contracts</span><span class="marquee-sep">\u2726</span>
+        <span class="marquee-item">Creator-first, always</span><span class="marquee-sep">\u2726</span>
+        <span class="marquee-item">Shared success</span><span class="marquee-sep">\u2726</span>
+        <span class="marquee-item">Real support \u00b7 Real strategy</span><span class="marquee-sep">\u2726</span>
+        <span class="marquee-item">Grow on your own terms</span><span class="marquee-sep">\u2726</span>
+        <span class="marquee-item">Community-driven growth</span><span class="marquee-sep">\u2726</span>
+        <span class="marquee-item">Transparent by design</span><span class="marquee-sep">\u2726</span>
+        <span class="marquee-item">No restrictive contracts</span><span class="marquee-sep">\u2726</span>
+        <span class="marquee-item">Creator-first, always</span><span class="marquee-sep">\u2726</span>
+        <span class="marquee-item">Shared success</span><span class="marquee-sep">\u2726</span>
+        <span class="marquee-item">Real support \u00b7 Real strategy</span><span class="marquee-sep">\u2726</span>
+        <span class="marquee-item">Grow on your own terms</span><span class="marquee-sep">\u2726</span>
+        <span class="marquee-item">Community-driven growth</span><span class="marquee-sep">\u2726</span>
+      </div>
     </div>
+
+    <!-- Why -->
+    <section class="v-section" id="why">
+      <div class="wrap">
+        <p class="label-row" style="color:var(--w1-accent);">01 \u2014 Why Peacetime</p>
+        <div class="v-why-grid">
+          <div class="v-why-text reveal">
+            <h2 class="v-section-title">The agency world needed <em>fixing.</em></h2>
+            <p>Too many agencies operate with predatory practices \u2014 restrictive contracts, one-sided expectations, and growth that only benefits the agency. Creators were being trapped, not supported.</p>
+            <p>Peacetime was built as the alternative. A transparent, community-driven agency focused on ethical partnerships, real support, and mutual success. We believe you deserve better.</p>
+            <p>Our goal is simple: create a space where creators help each other grow and <strong>win together.</strong></p>
+          </div>
+          <div class="reveal" style="transition-delay:0.1s;">
+            <div class="v-pullquote">
+              <blockquote>"We saw too many creators being treated like numbers. Peacetime was built to treat them like partners."</blockquote>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section class="v-section v-section-alt">
+      <div class="wrap">
+        <p class="label-row" style="color:var(--w1-accent);">02 \u2014 About</p>
+        <h2 class="v-section-title reveal">Built on trust,<br>not <em>restrictions.</em></h2>
+        <div class="v-cards reveal">
+          <div class="v-card">
+            <div class="v-card-num">001</div>
+            <span class="v-card-icon">\u2696\ufe0f</span>
+            <h3 class="v-card-title">Full Transparency</h3>
+            <p class="v-card-body">We operate through TikTok's standard agency agreement \u2014 no restrictive contracts beyond TikTok's own platform policies. What you see is what you get, always.</p>
+          </div>
+          <div class="v-card">
+            <div class="v-card-num">002</div>
+            <span class="v-card-icon">\ud83d\udcc8</span>
+            <h3 class="v-card-title">Shared Success</h3>
+            <p class="v-card-body">You gain access to educational resources, strategic support, and performance insights. We review analytics, identify opportunities, and help you grow intentionally.</p>
+          </div>
+          <div class="v-card">
+            <div class="v-card-num">003</div>
+            <span class="v-card-icon">\ud83e\udd1d</span>
+            <h3 class="v-card-title">Collaborative Model</h3>
+            <p class="v-card-body">Creators who invest in their growth receive real support, grow with us, and help bring others into the fold. It's a win all around \u2014 not just for the agency.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Expectations -->
+    <section class="v-section">
+      <div class="wrap">
+        <p class="label-row" style="color:var(--w1-accent);">03 \u2014 Expectations</p>
+        <h2 class="v-section-title reveal">You set the pace.<br><em>We match the energy.</em></h2>
+        <div class="v-exp-grid reveal">
+          <div class="v-exp-card">
+            <span class="v-exp-icon">\u2696\ufe0f</span>
+            <h3>No rigid requirements</h3>
+            <p>No quotas, pressure, or unrealistic benchmarks. Growth looks different for everyone \u2014 you define it, we support it.</p>
+          </div>
+          <div class="v-exp-card">
+            <span class="v-exp-icon">\ud83d\ude80</span>
+            <h3>Aggressive growth</h3>
+            <p>If you want to scale fast, we match that energy with hands-on support, targeted strategy, and momentum-building pushes.</p>
+          </div>
+          <div class="v-exp-card">
+            <span class="v-exp-icon">\ud83c\udf31</span>
+            <h3>Casual streamers welcome</h3>
+            <p>Prefer a smaller community and your own pace? That's perfectly fine. Resources and community remain accessible regardless.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Onboarding -->
+    <section class="v-section v-section-alt" id="onboarding">
+      <div class="wrap">
+        <p class="label-row" style="color:var(--w1-accent);">04 \u2014 Onboarding</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;" class="reveal">
+          <div>
+            <h2 class="v-section-title">Simple to join.<br><em>Always free to leave.</em></h2>
+            <div class="v-steps">
+              <div class="v-step">
+                <div class="v-step-num">01</div>
+                <div>
+                  <h4>Request an invite</h4>
+                  <p>Fill out a short application \u2014 simple and pressure-free. No hoops to jump through.</p>
+                </div>
+              </div>
+              <div class="v-step">
+                <div class="v-step-num">02</div>
+                <div>
+                  <h4>Accept via TikTok</h4>
+                  <p>Joining is handled through TikTok's official agency system. Standard platform agreement, reviewed within the app.</p>
+                </div>
+              </div>
+              <div class="v-step">
+                <div class="v-step-num">03</div>
+                <div>
+                  <h4>Join the community</h4>
+                  <p>Gain immediate access to Discord, resources, and your personal support structure.</p>
+                </div>
+              </div>
+              <div class="v-step">
+                <div class="v-step-num">04</div>
+                <div>
+                  <h4>Leave whenever you want</h4>
+                  <p>If you choose to leave, you're free to do so. The only limitation is TikTok's 60-day transition period \u2014 a platform policy, not ours.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="position:sticky;top:100px;">
+            <div style="background:var(--w1-surface);border:1px solid var(--w1-border);border-radius:4px;padding:48px 40px;">
+              <p class="label-row" style="color:var(--w1-accent);">Ready to join?</p>
+              <h3 style="font-family:var(--ff-display);font-size:2rem;font-weight:600;color:var(--w1-text);margin-bottom:16px;line-height:1.2;">Become part of<br><em style="color:var(--w1-accent);">the alternative.</em></h3>
+              <p style="font-size:0.9rem;line-height:1.8;color:var(--w1-muted);margin-bottom:32px;">Onboarding is transparent, simple, and completely pressure-free. No additional contracts required.</p>
+              <a href="#" class="btn-v1">Request an invite \u2192</a>
+              <p style="font-family:var(--ff-mono);font-size:0.6rem;color:var(--w1-muted);opacity:0.5;margin-top:16px;line-height:1.6;">Uses TikTok's standard agency agreement only.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Scroll prompt -->
+    <div style="text-align:center;padding:60px 0 40px;border-top:1px solid var(--w1-border);">
+      <p style="font-family:var(--ff-mono);font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--w1-muted);opacity:0.5;margin-bottom:12px;">Continue exploring</p>
+      <a href="#world-creators" class="btn-v1">Meet our Creators \u2193</a>
+    </div>
+
+  </div><!-- /world-visitors -->
+
+
+  <!-- \u2500\u2500 Divider 1 \u2500\u2500 -->
+  <div class="world-divider wd-visitors-creators">
+    <span class="wd-label">Creators</span>
+    <span class="wd-arrow" style="color:var(--w2-accent);">\u2193 Creator Community</span>
   </div>
 
-  <div class="boot-seq" id="bootSeq"></div>
 
-  <div class="boot-bar-wrap">
-    <div class="boot-bar-label" id="bootBarLabel">INITIALIZING SECURE SESSION…</div>
-    <div class="boot-bar-track"><div class="boot-bar-fill" id="bootBar"></div></div>
-  </div>
-</div>
+  <!-- \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588
+       WORLD 2 \u2014 CREATORS
+  \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588 -->
+  <div class="world-creators" id="world-creators">
 
-<!-- ═══ APP ═══ -->
-<div id="app">
-
-  <!-- HEADER -->
-  <div class="hdr">
-    <div class="hdr-left">
-      <div class="hdr-logo">SAT<em>CORP</em></div>
-      <div class="hdr-sep"></div>
-      <div class="hdr-doc">KYRAX ONBOARDING // CREATORS · STREAMERS · AMBASSADORS</div>
-    </div>
-    <div class="hdr-right">
-      <div class="hdr-client">ASSIGNED CLIENT<br><span style="color:var(--bright)">PEACE TIME AGENCY</span></div>
-      <div class="hdr-badge">ACTIVE</div>
-    </div>
-  </div>
-
-  <!-- LAYOUT -->
-  <div class="layout">
-
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-      <div class="side-label">// MISSION BRIEF</div>
-
-      <div class="side-step active" id="ss1" onclick="goTo(1)">
-        <div class="step-ico" id="si1">01</div>
-        <div class="step-info">
-          <div class="step-num-label">SECTION 01</div>
-          <div class="step-title">BRAND IDENTITY<br>& VISION</div>
-          <div class="step-sub">The Who & Why</div>
+    <!-- Creator Hero -->
+    <section class="c-hero">
+      <div class="c-hero-bg"></div>
+      <div class="c-hero-num">II</div>
+      <div class="wrap c-hero-content">
+        <p class="label-row label-row-c c-hero-kicker">Our Creators \u00b7 The Peacetime Roster</p>
+        <h1 class="c-hero-headline">
+          Meet the<br>
+          <strong>community.</strong>
+          <em>The real Peacetime.</em>
+        </h1>
+        <div class="c-hero-bottom">
+          <p class="c-hero-sub">These are the people who make Peacetime what it is \u2014 creators across niches, at every stage of their journey, growing together.</p>
+          <a href="#roster" class="btn-v2">See the roster \u2192</a>
         </div>
       </div>
+    </section>
 
-      <div class="side-step" id="ss2" onclick="goTo(2)">
-        <div class="step-ico" id="si2">02</div>
-        <div class="step-info">
-          <div class="step-num-label">SECTION 02</div>
-          <div class="step-title">LANDING PAGE<br>STRUCTURE</div>
-          <div class="step-sub">The What & How</div>
-        </div>
-      </div>
-
-      <div class="side-step" id="ss3" onclick="goTo(3)">
-        <div class="step-ico" id="si3">03</div>
-        <div class="step-info">
-          <div class="step-num-label">SECTION 03</div>
-          <div class="step-title">TECHNICAL<br>LOGISTICS</div>
-          <div class="step-sub">The Where & When</div>
-        </div>
-      </div>
-
-      <div class="side-footer">
-        <div class="side-stat">
-          ISSUED BY // KYRAX<br>
-          RECIPIENT // PTA<br>
-          CLEARANCE // CONFIDENTIAL<br>
-          REV // 2025.01<br>SIGNAL // LIVE
-        </div>
-        <div class="signal-bars"><div class="sig-bar"></div><div class="sig-bar"></div><div class="sig-bar"></div><div class="sig-bar"></div><div class="sig-bar"></div></div>
+    <!-- Marquee -->
+    <div class="marquee-bar marquee-bar-c">
+      <div class="marquee-track" style="animation-duration:22s;">
+        <span class="marquee-item" style="color:var(--w2-text);">Live streamers</span><span class="marquee-sep" style="color:var(--w2-accent);">\u2726</span>
+        <span class="marquee-item" style="color:var(--w2-text);">Content creators</span><span class="marquee-sep" style="color:var(--w2-accent);">\u2726</span>
+        <span class="marquee-item" style="color:var(--w2-text);">Growing together</span><span class="marquee-sep" style="color:var(--w2-accent);">\u2726</span>
+        <span class="marquee-item" style="color:var(--w2-text);">Real community</span><span class="marquee-sep" style="color:var(--w2-accent);">\u2726</span>
+        <span class="marquee-item" style="color:var(--w2-text);">Shared wins</span><span class="marquee-sep" style="color:var(--w2-accent);">\u2726</span>
+        <span class="marquee-item" style="color:var(--w2-text);">Discord family</span><span class="marquee-sep" style="color:var(--w2-accent);">\u2726</span>
+        <span class="marquee-item" style="color:var(--w2-text);">Live streamers</span><span class="marquee-sep" style="color:var(--w2-accent);">\u2726</span>
+        <span class="marquee-item" style="color:var(--w2-text);">Content creators</span><span class="marquee-sep" style="color:var(--w2-accent);">\u2726</span>
+        <span class="marquee-item" style="color:var(--w2-text);">Growing together</span><span class="marquee-sep" style="color:var(--w2-accent);">\u2726</span>
+        <span class="marquee-item" style="color:var(--w2-text);">Real community</span><span class="marquee-sep" style="color:var(--w2-accent);">\u2726</span>
+        <span class="marquee-item" style="color:var(--w2-text);">Shared wins</span><span class="marquee-sep" style="color:var(--w2-accent);">\u2726</span>
+        <span class="marquee-item" style="color:var(--w2-text);">Discord family</span><span class="marquee-sep" style="color:var(--w2-accent);">\u2726</span>
       </div>
     </div>
 
-    <!-- CONTENT -->
-    <div class="content" id="contentArea">
-
-      <!-- ──────────────────────────────
-           PAGE 1: BRAND IDENTITY
-      ─────────────────────────────────── -->
-      <div class="page active" id="page1">
-        <div class="ph">
-          <div class="ph-left">
-            <div class="ph-tag">PAGE 01 OF 03</div>
-            <div class="ph-title glitch">BRAND IDENTITY<br>& <em>VISION</em></div>
-            <div class="ph-sub">The "Who" and "Why" behind Peace Time. Complete all fields — this information directly shapes KYRAX's strategy for your build.</div>
+    <!-- Roster -->
+    <section class="c-section" id="roster">
+      <div class="wrap">
+        <p class="label-row label-row-c">Creator Roster</p>
+        <h2 class="c-section-title reveal">The <strong>faces</strong> of<br><em>Peacetime.</em></h2>
+        <div class="roster-grid reveal">
+          <div class="roster-card">
+            <div class="roster-avatar">\ud83c\udf19</div>
+            <div class="roster-name">Luna Voss</div>
+            <div class="roster-handle">@lunavoss</div>
+            <div class="roster-niche">Lifestyle & evening lives. Known for warm, community-focused streams and high viewer retention.</div>
+            <span class="roster-badge">Rising Star</span>
           </div>
-          <div class="ph-right">
-            <div class="ph-doc-id">DOC-PTA-2025 // SEC-01</div>
-            <div class="ph-stamp">CONFIDENTIAL</div>
+          <div class="roster-card">
+            <div class="roster-avatar">\ud83c\udfae</div>
+            <div class="roster-name">Kai Storm</div>
+            <div class="roster-handle">@kaistorm.tt</div>
+            <div class="roster-niche">Gaming live streams with interactive challenges. Strong gifting culture and loyal fanbase.</div>
+            <span class="roster-badge">Top Performer</span>
           </div>
-        </div>
-
-        <!-- Q1 -->
-        <div class="q" style="animation-delay:.05s">
-          <div class="q-header">
-            <div class="q-id">// Q.01</div>
-            <div class="q-title">THE ELEVATOR PITCH</div>
+          <div class="roster-card">
+            <div class="roster-avatar">\ud83c\udf3f</div>
+            <div class="roster-name">Sage Ellery</div>
+            <div class="roster-handle">@sageellery</div>
+            <div class="roster-niche">Wellness and mindfulness content. Slow growth, deep engagement. Community-first creator.</div>
+            <span class="roster-badge">Community Fave</span>
           </div>
-          <div class="q-desc">In 2–3 sentences, what does Peace Time Agency do, and what is the primary problem you solve for your clients?</div>
-          <div class="input-wrap">
-            <textarea id="q1" rows="4" placeholder="e.g. Peace Time Agency removes the operational chaos from a creator's world — handling strategy, partnerships, and growth so founders can focus on what they do best…"></textarea>
+          <div class="roster-card">
+            <div class="roster-avatar">\ud83c\udfa8</div>
+            <div class="roster-name">Rio Park</div>
+            <div class="roster-handle">@riopark.creates</div>
+            <div class="roster-niche">Art process lives and tutorials. High watch-time, strong creative following.</div>
+            <span class="roster-badge">Creative</span>
           </div>
-        </div>
-
-        <!-- Q2 -->
-        <div class="q" style="animation-delay:.1s">
-          <div class="q-header">
-            <div class="q-id">// Q.02</div>
-            <div class="q-title">BRAND PERSONALITY</div>
+          <div class="roster-card">
+            <div class="roster-avatar">\ud83c\udf73</div>
+            <div class="roster-name">Fern & Co.</div>
+            <div class="roster-handle">@fernandco</div>
+            <div class="roster-niche">Food and cooking lives. Warm hosting style with weekly themed cook-along sessions.</div>
+            <span class="roster-badge">Rising Star</span>
           </div>
-          <div class="q-desc">Select all traits that define Peace Time Agency's voice. Hit <strong style="color:var(--cyan);font-weight:400">+</strong> on any to add more context.</div>
-          <div class="multi-hint">// SELECT ALL THAT APPLY · EXPAND FOR DETAIL</div>
-          <div class="opt-grid">
-            <div class="opt-expand-wrap">
-              <label class="opt-card">
-                <input type="checkbox" class="bp" value="Calm & Reassuring">
-                <span class="opt-mark"></span>
-                <span class="opt-text">Calm & Reassuring</span>
-                <span class="opt-expand-icon">+</span>
-              </label>
-              <div class="opt-detail-panel">
-                <textarea class="opt-detail-input" placeholder="How does this calm tone show up — in your copy, client interactions, visuals?"></textarea>
-              </div>
-            </div>
-            <div class="opt-expand-wrap">
-              <label class="opt-card">
-                <input type="checkbox" class="bp" value="Minimalist & Modern">
-                <span class="opt-mark"></span>
-                <span class="opt-text">Minimalist & Modern</span>
-                <span class="opt-expand-icon">+</span>
-              </label>
-              <div class="opt-detail-panel">
-                <textarea class="opt-detail-input" placeholder="Minimal visually, verbally, or both? Any reference sites or brands?"></textarea>
-              </div>
-            </div>
-            <div class="opt-expand-wrap">
-              <label class="opt-card">
-                <input type="checkbox" class="bp" value="High-Energy & Bold">
-                <span class="opt-mark"></span>
-                <span class="opt-text">High-Energy & Bold</span>
-                <span class="opt-expand-icon">+</span>
-              </label>
-              <div class="opt-detail-panel">
-                <textarea class="opt-detail-input" placeholder="What does bold look like for you — copy style, colour choices, campaign tone?"></textarea>
-              </div>
-            </div>
-            <div class="opt-expand-wrap">
-              <label class="opt-card">
-                <input type="checkbox" class="bp" value="Wise & Experienced">
-                <span class="opt-mark"></span>
-                <span class="opt-text">Wise & Experienced</span>
-                <span class="opt-expand-icon">+</span>
-              </label>
-              <div class="opt-detail-panel">
-                <textarea class="opt-detail-input" placeholder="What expertise or credibility do you want the brand to convey?"></textarea>
-              </div>
-            </div>
-            <div class="opt-expand-wrap" style="grid-column:1/-1">
-              <label class="opt-card">
-                <input type="checkbox" class="bp" value="Other" id="bpOther">
-                <span class="opt-mark"></span>
-                <span class="opt-text">Something else entirely</span>
-                <span class="opt-expand-icon">+</span>
-              </label>
-              <div class="opt-detail-panel">
-                <textarea class="opt-detail-input" id="bpOtherTxt" placeholder="Describe your brand voice in your own words…"></textarea>
-              </div>
-            </div>
+          <div class="roster-card">
+            <div class="roster-avatar">\ud83c\udfb5</div>
+            <div class="roster-name">Zephyr Lane</div>
+            <div class="roster-handle">@zephyrlane</div>
+            <div class="roster-niche">Live music performances and originals. Building from the ground up with Peacetime support.</div>
+            <span class="roster-badge">New Member</span>
           </div>
-        </div>
-
-        <!-- Q3 -->
-        <div class="q" style="animation-delay:.15s">
-          <div class="q-header">
-            <div class="q-id">// Q.03</div>
-            <div class="q-title">VISUAL PREFERENCES</div>
+          <div class="roster-card">
+            <div class="roster-avatar">\ud83d\udcda</div>
+            <div class="roster-name">Mara Fen</div>
+            <div class="roster-handle">@marareads</div>
+            <div class="roster-niche">BookTok and reading lives. Highly engaged niche audience with consistent retention.</div>
+            <span class="roster-badge">Community Fave</span>
           </div>
-          <div class="q-desc" style="margin-bottom:8px"><strong style="color:var(--bright);font-weight:400">Colors —</strong> Do you have an existing palette, or should KYRAX explore "peaceful" tones (blues, greens, neutrals)?</div>
-          <div class="input-wrap" style="margin-bottom:24px">
-            <input type="text" id="q3colors" placeholder="e.g. We have navy + gold  —  or  —  explore peaceful tones for us">
-          </div>
-          <div class="q-desc" style="margin-bottom:6px"><strong style="color:var(--bright);font-weight:400">Imagery —</strong> Select all directions that feel right — mix freely. Hit <strong style="color:var(--cyan);font-weight:400">+</strong> to give us more context.</div>
-          <div class="multi-hint">// SELECT ALL THAT APPLY · EXPAND FOR DETAIL</div>
-          <div class="opt-grid">
-            <div class="opt-expand-wrap">
-              <label class="opt-card">
-                <input type="checkbox" class="img-chk" value="Photography">
-                <span class="opt-mark"></span>
-                <span class="opt-text">Photography<span class="opt-sub">Real people / office environments</span></span>
-                <span class="opt-expand-icon">+</span>
-              </label>
-              <div class="opt-detail-panel">
-                <textarea class="opt-detail-input" placeholder="Candid or posed? Lifestyle or professional? Any reference photographers or accounts?"></textarea>
-              </div>
-            </div>
-            <div class="opt-expand-wrap">
-              <label class="opt-card">
-                <input type="checkbox" class="img-chk" value="Abstract Art">
-                <span class="opt-mark"></span>
-                <span class="opt-text">Abstract Art<span class="opt-sub">Mood-driven, conceptual visuals</span></span>
-                <span class="opt-expand-icon">+</span>
-              </label>
-              <div class="opt-detail-panel">
-                <textarea class="opt-detail-input" placeholder="What mood should it evoke? Any colour or texture directions?"></textarea>
-              </div>
-            </div>
-            <div class="opt-expand-wrap">
-              <label class="opt-card">
-                <input type="checkbox" class="img-chk" value="Clean 3D Illustrations">
-                <span class="opt-mark"></span>
-                <span class="opt-text">Clean 3D Illustrations<span class="opt-sub">Modern, polished, product-style</span></span>
-                <span class="opt-expand-icon">+</span>
-              </label>
-              <div class="opt-detail-panel">
-                <textarea class="opt-detail-input" placeholder="Style references? Soft clay, glassmorphism, hard-surface, isometric?"></textarea>
-              </div>
-            </div>
-            <div class="opt-expand-wrap">
-              <label class="opt-card">
-                <input type="checkbox" class="img-chk" value="Open to Direction">
-                <span class="opt-mark"></span>
-                <span class="opt-text">Open to Direction<span class="opt-sub">Trust KYRAX to decide</span></span>
-                <span class="opt-expand-icon">+</span>
-              </label>
-              <div class="opt-detail-panel">
-                <textarea class="opt-detail-input" placeholder="Any brands or sites whose visual identity you admire? Drop names or links…"></textarea>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q4 -->
-        <div class="q" style="animation-delay:.2s">
-          <div class="q-header">
-            <div class="q-id">// Q.04</div>
-            <div class="q-title">THE "PEACE" FACTOR</div>
-          </div>
-          <div class="q-desc">What does "Peace Time" mean in the context of your business? Does it mean you handle the stress so the client doesn't have to?</div>
-          <div class="input-wrap">
-            <textarea id="q4" rows="4" placeholder="Describe what 'peace' represents — for your agency and for your clients…"></textarea>
+          <div class="roster-card" style="border:1px dashed rgba(220,175,90,0.2);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;">
+            <div style="font-size:2rem;">\u2726</div>
+            <div style="font-family:var(--ff-mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--w2-muted);text-align:center;">Your spot awaits</div>
+            <a href="#onboarding" class="btn-v2" style="font-size:0.6rem;padding:8px 18px;">Join us</a>
           </div>
         </div>
       </div>
+    </section>
 
-      <!-- ──────────────────────────────
-           PAGE 2: LANDING PAGE STRUCTURE
-      ─────────────────────────────────── -->
-      <div class="page" id="page2">
-        <div class="ph">
-          <div class="ph-left">
-            <div class="ph-tag">PAGE 02 OF 03</div>
-            <div class="ph-title glitch">LANDING PAGE<br><em>STRUCTURE</em></div>
-            <div class="ph-sub">The "What" and "How" of the first phase. Define the architecture and priority of the Peace Time landing page build.</div>
+    <!-- News & Announcements -->
+    <section class="c-section c-section-alt">
+      <div class="wrap">
+        <p class="label-row label-row-c">Agency News</p>
+        <h2 class="c-section-title reveal">What's <strong>happening</strong><br>at Peacetime.</h2>
+        <div class="news-list reveal">
+          <div class="news-item">
+            <div class="news-date">Feb 2026</div>
+            <div>
+              <div class="news-title">Creator Spotlight: Kai Storm hits Top 100 LIVE Gifting</div>
+              <div class="news-excerpt">Kai crossed a huge milestone this month, entering the top 100 gifting leaderboard after a targeted push strategy developed with the team.</div>
+            </div>
+            <span class="news-tag">Milestone</span>
           </div>
-          <div class="ph-right">
-            <div class="ph-doc-id">DOC-PTA-2025 // SEC-02</div>
-            <div class="ph-stamp">CONFIDENTIAL</div>
+          <div class="news-item">
+            <div class="news-date">Jan 2026</div>
+            <div>
+              <div class="news-title">New Discord channels: Strategy Sessions & Creator Feedback</div>
+              <div class="news-excerpt">Based on community feedback, we've launched two new channels in the Discord for structured critique and weekly strategy breakdowns.</div>
+            </div>
+            <span class="news-tag">Community</span>
           </div>
-        </div>
-
-        <!-- Q5 -->
-        <div class="q" style="animation-delay:.05s">
-          <div class="q-header">
-            <div class="q-id">// Q.05</div>
-            <div class="q-title">PRIMARY GOALS</div>
+          <div class="news-item">
+            <div class="news-date">Jan 2026</div>
+            <div>
+              <div class="news-title">Q1 Growth Playbook now live in resources</div>
+              <div class="news-excerpt">The agency has published its Q1 2026 creator growth playbook, including a full breakdown of the best-performing live formats from Q4 2025.</div>
+            </div>
+            <span class="news-tag">Resource</span>
           </div>
-          <div class="q-desc">What actions do you want visitors to take? Select all that apply — hit <strong style="color:var(--cyan);font-weight:400">+</strong> to tell us how each should work.</div>
-          <div class="multi-hint">// SELECT ALL THAT APPLY · EXPAND FOR DETAIL</div>
-          <div class="opt-grid full">
-            <div class="opt-expand-wrap">
-              <label class="opt-card">
-                <input type="checkbox" class="goal-chk" value="Book a consultation">
-                <span class="opt-mark"></span>
-                <span class="opt-text">Book a consultation</span>
-                <span class="opt-expand-icon">+</span>
-              </label>
-              <div class="opt-detail-panel">
-                <textarea class="opt-detail-input" placeholder="Which tool — Calendly, Google Calendar, direct DM? Discovery call, strategy session, or pitch meeting?"></textarea>
-              </div>
+          <div class="news-item">
+            <div class="news-date">Dec 2025</div>
+            <div>
+              <div class="news-title">Welcome 3 new creators to the Peacetime family</div>
+              <div class="news-excerpt">Luna Voss, Mara Fen, and Zephyr Lane have officially joined the agency. Head to Discord to give them a warm welcome.</div>
             </div>
-            <div class="opt-expand-wrap">
-              <label class="opt-card">
-                <input type="checkbox" class="goal-chk" value="Sign up for newsletter / waitlist">
-                <span class="opt-mark"></span>
-                <span class="opt-text">Sign up for a newsletter / waitlist</span>
-                <span class="opt-expand-icon">+</span>
-              </label>
-              <div class="opt-detail-panel">
-                <textarea class="opt-detail-input" placeholder="What will subscribers receive? How often? Launch waitlist or ongoing newsletter?"></textarea>
-              </div>
-            </div>
-            <div class="opt-expand-wrap">
-              <label class="opt-card">
-                <input type="checkbox" class="goal-chk" value="Download a portfolio / guide">
-                <span class="opt-mark"></span>
-                <span class="opt-text">Download a portfolio / guide</span>
-                <span class="opt-expand-icon">+</span>
-              </label>
-              <div class="opt-detail-panel">
-                <textarea class="opt-detail-input" placeholder="What's the document — media kit, rate card, creator portfolio, or how-to guide? Does it exist yet?"></textarea>
-              </div>
-            </div>
-            <div class="opt-expand-wrap">
-              <label class="opt-card">
-                <input type="checkbox" class="goal-chk" value="Fill out a contact form">
-                <span class="opt-mark"></span>
-                <span class="opt-text">Fill out a contact form</span>
-                <span class="opt-expand-icon">+</span>
-              </label>
-              <div class="opt-detail-panel">
-                <textarea class="opt-detail-input" placeholder="What fields should it capture? Budget, platform, niche? Where should submissions go — email, CRM, Notion?"></textarea>
-              </div>
-            </div>
-            <div class="opt-expand-wrap">
-              <label class="opt-card">
-                <input type="checkbox" class="goal-chk" value="Join the Discord community">
-                <span class="opt-mark"></span>
-                <span class="opt-text">Join the Discord community</span>
-                <span class="opt-expand-icon">+</span>
-              </label>
-              <div class="opt-detail-panel">
-                <textarea class="opt-detail-input" placeholder="Primary CTA or secondary? Any specific channel or role for new members to land in?"></textarea>
-              </div>
-            </div>
-            <div class="opt-expand-wrap">
-              <label class="opt-card">
-                <input type="checkbox" class="goal-chk" value="Other">
-                <span class="opt-mark"></span>
-                <span class="opt-text">Something else</span>
-                <span class="opt-expand-icon">+</span>
-              </label>
-              <div class="opt-detail-panel">
-                <textarea class="opt-detail-input" placeholder="Describe the action you want visitors to take…"></textarea>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q6 -->
-        <div class="q" style="animation-delay:.1s">
-          <div class="q-header">
-            <div class="q-id">// Q.06</div>
-            <div class="q-title">KEY CONTENT SECTIONS</div>
-          </div>
-          <div class="q-desc">Which sections are essential for launch? <strong style="color:var(--bright);font-weight:400">Drag to rank by priority.</strong> Toggle IN / OUT to include or exclude.</div>
-          <div class="rank-list" id="rankList">
-            <div class="rank-card" draggable="true" data-section="Hero Section">
-              <div class="rank-pos">1</div>
-              <div class="rank-grip">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" opacity=".5">
-                  <rect x="3" y="2" width="8" height="1.5" rx=".5"/>
-                  <rect x="3" y="6" width="8" height="1.5" rx=".5"/>
-                  <rect x="3" y="10" width="8" height="1.5" rx=".5"/>
-                </svg>
-              </div>
-              <div class="rank-body">
-                <div class="rank-name">Hero Section</div>
-                <div class="rank-desc">High-impact headline and sub-headline</div>
-              </div>
-              <div class="rank-toggle">
-                <button class="rtgl-btn on-yes" onclick="toggleRank(this,'yes')">IN</button>
-                <button class="rtgl-btn" onclick="toggleRank(this,'no')">OUT</button>
-              </div>
-            </div>
-            <div class="rank-card" draggable="true" data-section="The Process">
-              <div class="rank-pos">2</div>
-              <div class="rank-grip"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" opacity=".5"><rect x="3" y="2" width="8" height="1.5" rx=".5"/><rect x="3" y="6" width="8" height="1.5" rx=".5"/><rect x="3" y="10" width="8" height="1.5" rx=".5"/></svg></div>
-              <div class="rank-body">
-                <div class="rank-name">The Process</div>
-                <div class="rank-desc">A 1-2-3 step breakdown of how you work</div>
-              </div>
-              <div class="rank-toggle">
-                <button class="rtgl-btn on-yes" onclick="toggleRank(this,'yes')">IN</button>
-                <button class="rtgl-btn" onclick="toggleRank(this,'no')">OUT</button>
-              </div>
-            </div>
-            <div class="rank-card" draggable="true" data-section="Social Proof">
-              <div class="rank-pos">3</div>
-              <div class="rank-grip"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" opacity=".5"><rect x="3" y="2" width="8" height="1.5" rx=".5"/><rect x="3" y="6" width="8" height="1.5" rx=".5"/><rect x="3" y="10" width="8" height="1.5" rx=".5"/></svg></div>
-              <div class="rank-body">
-                <div class="rank-name">Social Proof</div>
-                <div class="rank-desc">Client logos or testimonial placeholder</div>
-              </div>
-              <div class="rank-toggle">
-                <button class="rtgl-btn on-yes" onclick="toggleRank(this,'yes')">IN</button>
-                <button class="rtgl-btn" onclick="toggleRank(this,'no')">OUT</button>
-              </div>
-            </div>
-            <div class="rank-card" draggable="true" data-section="Services">
-              <div class="rank-pos">4</div>
-              <div class="rank-grip"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" opacity=".5"><rect x="3" y="2" width="8" height="1.5" rx=".5"/><rect x="3" y="6" width="8" height="1.5" rx=".5"/><rect x="3" y="10" width="8" height="1.5" rx=".5"/></svg></div>
-              <div class="rank-body">
-                <div class="rank-name">Services</div>
-                <div class="rank-desc">A brief "menu" of what you offer</div>
-              </div>
-              <div class="rank-toggle">
-                <button class="rtgl-btn on-yes" onclick="toggleRank(this,'yes')">IN</button>
-                <button class="rtgl-btn" onclick="toggleRank(this,'no')">OUT</button>
-              </div>
-            </div>
-            <div class="rank-card" draggable="true" data-section="About / Founder">
-              <div class="rank-pos">5</div>
-              <div class="rank-grip"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" opacity=".5"><rect x="3" y="2" width="8" height="1.5" rx=".5"/><rect x="3" y="6" width="8" height="1.5" rx=".5"/><rect x="3" y="10" width="8" height="1.5" rx=".5"/></svg></div>
-              <div class="rank-body">
-                <div class="rank-name">About / Founder</div>
-                <div class="rank-desc">A brief bio to build trust</div>
-              </div>
-              <div class="rank-toggle">
-                <button class="rtgl-btn on-yes" onclick="toggleRank(this,'yes')">IN</button>
-                <button class="rtgl-btn" onclick="toggleRank(this,'no')">OUT</button>
-              </div>
-            </div>
-          </div>
-          <div style="margin-top:10px;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text);opacity:.4;letter-spacing:.1em">
-            // DRAG TO REORDER · TOGGLE IN/OUT TO INCLUDE OR EXCLUDE EACH SECTION
-          </div>
-        </div>
-
-        <!-- Q7 -->
-        <div class="q" style="animation-delay:.15s">
-          <div class="q-header">
-            <div class="q-id">// Q.07</div>
-            <div class="q-title">TARGET AUDIENCE</div>
-          </div>
-          <div class="q-desc">Who is the ideal visitor? (e.g., Stressed-out startup founders, corporate HR departments, creative freelancers?) Be as specific as possible.</div>
-          <div class="input-wrap">
-            <textarea id="q7" rows="4" placeholder="Describe your ideal visitor — their role, industry, pain points, and mindset when they discover Peace Time Agency…"></textarea>
+            <span class="news-tag">New Members</span>
           </div>
         </div>
       </div>
+    </section>
 
-      <!-- ──────────────────────────────
-           PAGE 3: TECHNICAL LOGISTICS
-      ─────────────────────────────────── -->
-      <div class="page" id="page3">
-        <div class="ph">
-          <div class="ph-left">
-            <div class="ph-tag">PAGE 03 OF 03</div>
-            <div class="ph-title glitch">TECHNICAL<br><em>LOGISTICS</em></div>
-            <div class="ph-sub">The "Where" and "When" of the build. Final information KYRAX needs before initiating Phase 1 of your creator presence.</div>
+    <!-- Creator Resources -->
+    <section class="c-section">
+      <div class="wrap">
+        <p class="label-row label-row-c">Creator Resources</p>
+        <h2 class="c-section-title reveal">Everything you<br>need to <strong>grow.</strong></h2>
+        <div class="resources-grid reveal">
+          <div class="resource-card">
+            <span class="resource-icon">\ud83d\udcca</span>
+            <div class="resource-title">Analytics Dashboard Guide</div>
+            <div class="resource-desc">Learn how to read your TikTok analytics, identify content trends, and spot opportunities before they pass.</div>
+            <a href="#" class="resource-link">Open guide \u2192</a>
           </div>
-          <div class="ph-right">
-            <div class="ph-doc-id">DOC-PTA-2025 // SEC-03</div>
-            <div class="ph-stamp">CONFIDENTIAL</div>
+          <div class="resource-card">
+            <span class="resource-icon">\ud83c\udfaf</span>
+            <div class="resource-title">LIVE Strategy Playbook</div>
+            <div class="resource-desc">The full breakdown of our most effective live structures, CTA timing, gifting triggers, and retention tactics.</div>
+            <a href="#" class="resource-link">Open playbook \u2192</a>
           </div>
-        </div>
-
-        <!-- Q8 -->
-        <div class="q" style="animation-delay:.05s">
-          <div class="q-header">
-            <div class="q-id">// Q.08</div>
-            <div class="q-title">INVENTORY OF ASSETS</div>
+          <div class="resource-card">
+            <span class="resource-icon">\ud83d\udcac</span>
+            <div class="resource-title">Discord \u2014 Strategy Sessions</div>
+            <div class="resource-desc">Join the weekly strategy session in #strategy-sessions every Monday. Bring questions, get real answers.</div>
+            <a href="#" class="resource-link">Join Discord \u2192</a>
           </div>
-          <div class="q-desc">Do you currently have the following ready to go? Mark each asset as available or not.</div>
-          <div class="asset-grid">
-            <div class="asset-row">
-              <div class="asset-info">
-                <div class="asset-name">Logo / Channel Art</div>
-                <div class="asset-desc">Profile logo, banner, overlay graphics (.ai, .svg, .png)</div>
-              </div>
-              <div class="asset-toggle">
-                <button class="atgl-btn" onclick="setAsset(this,'yes')">YES</button>
-                <button class="atgl-btn" onclick="setAsset(this,'no')">NO</button>
-              </div>
-            </div>
-            <div class="asset-row">
-              <div class="asset-info">
-                <div class="asset-name">Brand Kit / Style Guide</div>
-                <div class="asset-desc">Color palette, fonts, tone-of-voice, usage rules</div>
-              </div>
-              <div class="asset-toggle">
-                <button class="atgl-btn" onclick="setAsset(this,'yes')">YES</button>
-                <button class="atgl-btn" onclick="setAsset(this,'no')">NO</button>
-              </div>
-            </div>
-            <div class="asset-row">
-              <div class="asset-info">
-                <div class="asset-name">Content Library</div>
-                <div class="asset-desc">Existing VODs, clips, reels, or highlight footage ready to use</div>
-              </div>
-              <div class="asset-toggle">
-                <button class="atgl-btn" onclick="setAsset(this,'yes')">YES</button>
-                <button class="atgl-btn" onclick="setAsset(this,'no')">NO</button>
-              </div>
-            </div>
-            <div class="asset-row">
-              <div class="asset-info">
-                <div class="asset-name">Media Kit</div>
-                <div class="asset-desc">Audience demographics, platform stats, past brand deals</div>
-              </div>
-              <div class="asset-toggle">
-                <button class="atgl-btn" onclick="setAsset(this,'yes')">YES</button>
-                <button class="atgl-btn" onclick="setAsset(this,'no')">NO</button>
-              </div>
-            </div>
-            <div class="asset-row">
-              <div class="asset-info">
-                <div class="asset-name">Stream / Content Schedule</div>
-                <div class="asset-desc">Current posting cadence, live schedule, or content calendar</div>
-              </div>
-              <div class="asset-toggle">
-                <button class="atgl-btn" onclick="setAsset(this,'yes')">YES</button>
-                <button class="atgl-btn" onclick="setAsset(this,'no')">NO</button>
-              </div>
-            </div>
-            <div class="asset-row">
-              <div class="asset-info">
-                <div class="asset-name">Creator / Talent Photos</div>
-                <div class="asset-desc">High-res on-brand photography or promo shots</div>
-              </div>
-              <div class="asset-toggle">
-                <button class="atgl-btn" onclick="setAsset(this,'yes')">YES</button>
-                <button class="atgl-btn" onclick="setAsset(this,'no')">NO</button>
-              </div>
-            </div>
-            <div class="asset-row">
-              <div class="asset-info">
-                <div class="asset-name">Merch / Product Catalog</div>
-                <div class="asset-desc">Existing or planned merch line, product images, store link</div>
-              </div>
-              <div class="asset-toggle">
-                <button class="atgl-btn" onclick="setAsset(this,'yes')">YES</button>
-                <button class="atgl-btn" onclick="setAsset(this,'no')">NO</button>
-              </div>
-            </div>
-            <div class="asset-row">
-              <div class="asset-info">
-                <div class="asset-name">Sponsorship / Deal History</div>
-                <div class="asset-desc">List of past or current brand partnerships and rate cards</div>
-              </div>
-              <div class="asset-toggle">
-                <button class="atgl-btn" onclick="setAsset(this,'yes')">YES</button>
-                <button class="atgl-btn" onclick="setAsset(this,'no')">NO</button>
-              </div>
-            </div>
+          <div class="resource-card">
+            <span class="resource-icon">\ud83d\ude80</span>
+            <div class="resource-title">Growth Push Protocol</div>
+            <div class="resource-desc">A step-by-step guide to requesting and executing a focused growth push with agency support and coordination.</div>
+            <a href="#" class="resource-link">Read protocol \u2192</a>
           </div>
-        </div>
-
-        <!-- Q9 -->
-        <div class="q" style="animation-delay:.1s">
-          <div class="q-header">
-            <div class="q-id">// Q.09</div>
-            <div class="q-title">TECHNICAL REQUIREMENTS</div>
+          <div class="resource-card">
+            <span class="resource-icon">\ud83d\udcd8</span>
+            <div class="resource-title">Creator Onboarding Checklist</div>
+            <div class="resource-desc">New to the agency? Start here. Walk through the full onboarding checklist to get set up and ready to grow.</div>
+            <a href="#" class="resource-link">Open checklist \u2192</a>
           </div>
-          <div class="q-desc" style="margin-bottom:10px"><strong style="color:var(--bright);font-weight:400">Domain —</strong> Do you already own the URL? Enter it below if so.</div>
-          <div class="input-wrap" style="margin-bottom:28px">
-            <input type="text" id="q9domain" placeholder="e.g. peacetimeagency.com  —  or leave blank if not yet purchased">
-          </div>
-
-          <div class="q-desc" style="margin-bottom:6px"><strong style="color:var(--bright);font-weight:400">Integrations —</strong> Select every tool you need. Hit <strong style="color:var(--cyan);font-weight:400">+</strong> to add your handle, link, or requirements.</div>
-          <div class="multi-hint">// SELECT ALL THAT APPLY · EXPAND FOR DETAIL</div>
-          <div class="opt-grid">
-            <div class="opt-expand-wrap">
-              <label class="opt-card">
-                <input type="checkbox" class="intg" value="Twitch">
-                <span class="opt-mark"></span>
-                <span class="opt-text">Twitch<span class="opt-sub">Live stream embed / channel link</span></span>
-                <span class="opt-expand-icon">+</span>
-              </label>
-              <div class="opt-detail-panel">
-                <textarea class="opt-detail-input" placeholder="Your Twitch URL? Panel embed or full player? Any alert or sub-goal widgets?"></textarea>
-              </div>
-            </div>
-            <div class="opt-expand-wrap">
-              <label class="opt-card">
-                <input type="checkbox" class="intg" value="YouTube">
-                <span class="opt-mark"></span>
-                <span class="opt-text">YouTube<span class="opt-sub">Channel feed / latest video embed</span></span>
-                <span class="opt-expand-icon">+</span>
-              </label>
-              <div class="opt-detail-panel">
-                <textarea class="opt-detail-input" placeholder="Channel URL? Latest video auto-embed, playlist, or subscribe CTA?"></textarea>
-              </div>
-            </div>
-            <div class="opt-expand-wrap">
-              <label class="opt-card">
-                <input type="checkbox" class="intg" value="TikTok">
-                <span class="opt-mark"></span>
-                <span class="opt-text">TikTok<span class="opt-sub">Profile feed or video embed</span></span>
-                <span class="opt-expand-icon">+</span>
-              </label>
-              <div class="opt-detail-panel">
-                <textarea class="opt-detail-input" placeholder="Your @handle? Feed embed or single featured video? Any content series to highlight?"></textarea>
-              </div>
-            </div>
-            <div class="opt-expand-wrap">
-              <label class="opt-card">
-                <input type="checkbox" class="intg" value="Instagram">
-                <span class="opt-mark"></span>
-                <span class="opt-text">Instagram<span class="opt-sub">Feed embed or profile CTA</span></span>
-                <span class="opt-expand-icon">+</span>
-              </label>
-              <div class="opt-detail-panel">
-                <textarea class="opt-detail-input" placeholder="Your @handle? Grid embed or follow button? Personal or brand account?"></textarea>
-              </div>
-            </div>
-            <div class="opt-expand-wrap">
-              <label class="opt-card">
-                <input type="checkbox" class="intg" value="Discord">
-                <span class="opt-mark"></span>
-                <span class="opt-text">Discord<span class="opt-sub">Community invite widget</span></span>
-                <span class="opt-expand-icon">+</span>
-              </label>
-              <div class="opt-detail-panel">
-                <textarea class="opt-detail-input" placeholder="Invite link? Member count widget or just a CTA button?"></textarea>
-              </div>
-            </div>
-            <div class="opt-expand-wrap">
-              <label class="opt-card">
-                <input type="checkbox" class="intg" value="Patreon / Memberships">
-                <span class="opt-mark"></span>
-                <span class="opt-text">Patreon / Memberships<span class="opt-sub">Supporter tier CTA</span></span>
-                <span class="opt-expand-icon">+</span>
-              </label>
-              <div class="opt-detail-panel">
-                <textarea class="opt-detail-input" placeholder="Patreon URL? Which tiers to feature? What perks to highlight?"></textarea>
-              </div>
-            </div>
-            <div class="opt-expand-wrap">
-              <label class="opt-card">
-                <input type="checkbox" class="intg" value="Shopify / Merch Store">
-                <span class="opt-mark"></span>
-                <span class="opt-text">Shopify / Merch Store<span class="opt-sub">Product embed or store link</span></span>
-                <span class="opt-expand-icon">+</span>
-              </label>
-              <div class="opt-detail-panel">
-                <textarea class="opt-detail-input" placeholder="Store URL? Product grid embed or link out? Any featured drops?"></textarea>
-              </div>
-            </div>
-            <div class="opt-expand-wrap">
-              <label class="opt-card">
-                <input type="checkbox" class="intg" value="Linktree / Beacons">
-                <span class="opt-mark"></span>
-                <span class="opt-text">Linktree / Beacons<span class="opt-sub">Bio link hub redirect</span></span>
-                <span class="opt-expand-icon">+</span>
-              </label>
-              <div class="opt-detail-panel">
-                <textarea class="opt-detail-input" placeholder="Your link-in-bio URL? Main CTA or nav link?"></textarea>
-              </div>
-            </div>
-            <div class="opt-expand-wrap">
-              <label class="opt-card">
-                <input type="checkbox" class="intg" value="Calendly">
-                <span class="opt-mark"></span>
-                <span class="opt-text">Calendly<span class="opt-sub">Brand deal / collab booking</span></span>
-                <span class="opt-expand-icon">+</span>
-              </label>
-              <div class="opt-detail-panel">
-                <textarea class="opt-detail-input" placeholder="Your Calendly link? Inline embed or popup? Which event type?"></textarea>
-              </div>
-            </div>
-            <div class="opt-expand-wrap">
-              <label class="opt-card">
-                <input type="checkbox" class="intg" value="Mailchimp / Klaviyo">
-                <span class="opt-mark"></span>
-                <span class="opt-text">Mailchimp / Klaviyo<span class="opt-sub">Email list / newsletter signup</span></span>
-                <span class="opt-expand-icon">+</span>
-              </label>
-              <div class="opt-detail-panel">
-                <textarea class="opt-detail-input" placeholder="Platform — Mailchimp, Klaviyo, Beehiiv? Sign-up incentive?"></textarea>
-              </div>
-            </div>
-            <div class="opt-expand-wrap">
-              <label class="opt-card">
-                <input type="checkbox" class="intg" value="Streamlabs / StreamElements">
-                <span class="opt-mark"></span>
-                <span class="opt-text">Streamlabs / StreamElements<span class="opt-sub">Donation / alert widgets</span></span>
-                <span class="opt-expand-icon">+</span>
-              </label>
-              <div class="opt-detail-panel">
-                <textarea class="opt-detail-input" placeholder="Donation page link? Live goal widget or tip jar?"></textarea>
-              </div>
-            </div>
-            <div class="opt-expand-wrap">
-              <label class="opt-card">
-                <input type="checkbox" class="intg" value="Spotify / Podcast">
-                <span class="opt-mark"></span>
-                <span class="opt-text">Spotify / Podcast<span class="opt-sub">Episode player embed</span></span>
-                <span class="opt-expand-icon">+</span>
-              </label>
-              <div class="opt-detail-panel">
-                <textarea class="opt-detail-input" placeholder="Show URL? Latest episode auto-embed or featured one? Spotify, Apple, or both?"></textarea>
-              </div>
-            </div>
-            <div class="opt-expand-wrap" style="grid-column:1/-1">
-              <label class="opt-card">
-                <input type="checkbox" class="intg" value="Other" id="intgOther">
-                <span class="opt-mark"></span>
-                <span class="opt-text">Something else</span>
-                <span class="opt-expand-icon">+</span>
-              </label>
-              <div class="opt-detail-panel">
-                <textarea class="opt-detail-input" id="intgOtherTxt" placeholder="Name the tool or platform and describe how you want it integrated…"></textarea>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q10 -->
-        <div class="q" style="animation-delay:.15s">
-          <div class="q-header">
-            <div class="q-id">// Q.10</div>
-            <div class="q-title">SUCCESS METRICS</div>
-          </div>
-          <div class="q-desc">Six months from now, how will we know this landing page was a success? Be specific — numbers, outcomes, milestones.</div>
-          <div class="input-wrap">
-            <textarea id="q10" rows="4" placeholder="e.g. 500+ unique monthly visitors, 50 consultation bookings, 3 brand deal inquiries/month, featured in industry media…"></textarea>
-          </div>
-        </div>
-
-        <div class="pro-tip">
-          <div class="pro-tip-label">// KYRAX NOTE</div>
-          <div class="pro-tip-body">
-            <strong>Keep the "Peace Time" vibe consistent.</strong> If the agency promises tranquility, the website must have generous white space and a layout that never feels cluttered or frantic. KYRAX applies this principle at every design decision from typography scale to animation speed.
+          <div class="resource-card">
+            <span class="resource-icon">\ud83c\udfc6</span>
+            <div class="resource-title">Creator Wins Board</div>
+            <div class="resource-desc">Every milestone, every breakthrough, every win. Celebrate community success and stay motivated.</div>
+            <a href="#" class="resource-link">See wins \u2192</a>
           </div>
         </div>
       </div>
+    </section>
 
-      <!-- ──────────────────────────────
-           SUCCESS
-      ─────────────────────────────────── -->
-      <div id="success">
-        <div class="success-eyebrow">TRANSMISSION CONFIRMED</div>
-        <div class="success-title glitch">BRIEF<br><em>RECEIVED</em></div>
-
-        <div class="success-body">
-          Thank you, Peace Time Agency — your brief has been received and logged in the KYRAX system. The SATCORP team is now reviewing your submission and will personally reach out within <strong style="color:var(--bright)">6–12 hours</strong> to align on next steps and schedule your creator strategy session.
-        </div>
-
-        <div class="success-ref" id="refCode">REF // KYRAX-000000-PTA</div>
-
-        <div class="success-grid">
-          <div class="sg-cell">
-            <div class="sg-label">CLIENT</div>
-            <div class="sg-value green">PTA</div>
-          </div>
-          <div class="sg-cell">
-            <div class="sg-label">STATUS</div>
-            <div class="sg-value cyan">ACTIVE</div>
-          </div>
-          <div class="sg-cell">
-            <div class="sg-label">ETA</div>
-            <div class="sg-value amber">6–12 HRS</div>
-          </div>
-        </div>
-
-        <div class="success-divider">
-          <span>// WHILE YOU WAIT</span>
-        </div>
-
-        <div class="discord-block">
-          <div class="discord-icon">
-            <svg width="28" height="22" viewBox="0 0 28 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M23.7 1.9A22.8 22.8 0 0 0 18.1.3a.1.1 0 0 0-.1.1 15.9 15.9 0 0 0-.7 1.4 21 21 0 0 0-6.3 0A15 15 0 0 0 10.3.4a.1.1 0 0 0-.1 0A22.7 22.7 0 0 0 4.5 2C4.5 2 .7 7.7 0 13.2a23 23 0 0 0 7 3.6.1.1 0 0 0 .1 0 16.5 16.5 0 0 0 1.4-2.3.1.1 0 0 0-.1-.2 15.1 15.1 0 0 1-2.2-1.1.1.1 0 0 1 0-.2l.4-.3a.1.1 0 0 1 .1 0c4.7 2.2 9.7 2.2 14.3 0a.1.1 0 0 1 .1 0l.5.3a.1.1 0 0 1 0 .2 14.9 14.9 0 0 1-2.2 1.1.1.1 0 0 0 0 .2 18.5 18.5 0 0 0 1.4 2.3.1.1 0 0 0 .1 0 22.9 22.9 0 0 0 7-3.6C28 7 24.6 1.9 23.7 1.9ZM9.4 10.7c-1.4 0-2.5-1.3-2.5-2.8s1.1-2.8 2.5-2.8c1.4 0 2.5 1.3 2.5 2.8s-1.1 2.8-2.5 2.8Zm9.3 0c-1.4 0-2.5-1.3-2.5-2.8s1.1-2.8 2.5-2.8c1.4 0 2.5 1.3 2.5 2.8s-1.1 2.8-2.5 2.8Z" fill="#5865F2"/>
-            </svg>
-          </div>
-          <div class="discord-content">
-            <div class="discord-label">// JOIN THE SATCORP COMMUNITY</div>
-            <div class="discord-heading">Get early drops, network with the KYRAX roster, and stay plugged into what's happening across the Board.</div>
-            
-          </div>
-          <a href="https://discord.gg/4xuWB5jGQu" target="_blank" class="discord-btn">
-            JOIN SERVER
-            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2.5 6.5h8M7 3l3.5 3.5L7 10" stroke="currentColor" stroke-width="1.3"/></svg>
-          </a>
-        </div>
-
-        <div class="success-note">
-          The SATCORP review team will reach out via the email you provided. Keep an eye on your inbox and your Discord DMs.
-        </div>
-      </div>
-
-    </div><!-- /content -->
-  </div><!-- /layout -->
-
-  <!-- BOTTOM NAV -->
-  <div class="bottom-nav" id="bottomNav">
-    <div class="nav-progress">
-      <div class="np-track"><div class="np-fill" id="npFill" style="width:33%"></div></div>
-      <div class="np-label">SECTION <span id="npCurrent">1</span> OF 3</div>
+    <!-- Scroll prompt -->
+    <div style="text-align:center;padding:60px 0 40px;border-top:1px solid var(--w2-border);">
+      <p style="font-family:var(--ff-mono);font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--w2-muted);opacity:0.5;margin-bottom:12px;">Behind the scenes</p>
+      <a href="#world-staff" class="btn-v2">Meet the Staff \u2193</a>
     </div>
-    <div class="nav-buttons">
-      <button class="btn btn-ghost" id="btnBack" onclick="goTo(currentPage-1)" style="display:none">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M10 7H4M6 4L3 7l3 3" stroke="currentColor" stroke-width="1.3"/></svg>
-        BACK
-      </button>
-      <button class="btn btn-primary" id="btnNext" onclick="goTo(currentPage+1)">
-        NEXT
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 7h6M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.3"/></svg>
-      </button>
-      <button class="btn btn-success" id="btnSubmit" onclick="submitForm()" style="display:none">
-        TRANSMIT TO KYRAX
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 7h6M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.3"/></svg>
-      </button>
-    </div>
+
+  </div><!-- /world-creators -->
+
+
+  <!-- \u2500\u2500 Divider 2 \u2500\u2500 -->
+  <div class="world-divider wd-creators-staff">
+    <span class="wd-label">Staff</span>
+    <span class="wd-arrow" style="color:var(--w3-accent);">\u2193 The Peacetime Team</span>
   </div>
 
-<div class="ticker-wrap"><div class="ticker-inner">// KYRAX SECURE CHANNEL ACTIVE &nbsp;&nbsp;&nbsp; PTA-ONBOARDING-DOC v3.0 &nbsp;&nbsp;&nbsp; ENCRYPTION: AES-256 &nbsp;&nbsp;&nbsp; STATUS: AWAITING TRANSMISSION &nbsp;&nbsp;&nbsp; CLEARANCE: CONFIDENTIAL &nbsp;&nbsp;&nbsp; ISSUED BY KYRAX TALENT DIVISION &nbsp;&nbsp;&nbsp; ALL DATA ENCRYPTED IN TRANSIT &nbsp;&nbsp;&nbsp; UNAUTHORIZED ACCESS PROHIBITED &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;</div></div>
-</div><!-- /app -->
 
-<script>
-/* ── EXPAND DETAIL PANELS ── */
-/* ── EXPAND PANEL: driven purely by checkbox change events ──
-   No onclick on labels — browser handles check/uncheck natively.
-   We listen to the change event and show/hide the detail panel. */
-
-function applyExpandState(cb) {
-  const wrap = cb.closest('.opt-expand-wrap');
-  if (!wrap) return;
-  if (cb.checked) {
-    wrap.classList.add('expanded');
-    // Focus textarea after CSS transition
-    setTimeout(() => {
-      const ta = wrap.querySelector('.opt-detail-input');
-      if (ta) ta.focus();
-    }, 320);
-  } else {
-    wrap.classList.remove('expanded', 'has-detail');
-    const ta = wrap.querySelector('.opt-detail-input');
-    if (ta) ta.value = '';  // clear detail when deselected
-  }
-}
-
-// Single delegated listener — fires once per checkbox change
-document.addEventListener('change', e => {
-  if (e.target.matches('.opt-expand-wrap input[type="checkbox"]')) {
-    applyExpandState(e.target);
-    syncFormData();
-  }
-});
-
-// Update has-detail dot and re-sync when user types in a detail textarea
-document.addEventListener('input', e => {
-  if (e.target.matches('.opt-detail-input')) {
-    const wrap = e.target.closest('.opt-expand-wrap');
-    if (wrap) wrap.classList.toggle('has-detail', e.target.value.trim().length > 0);
-    syncFormData();
-  }
-});
-
-/* Collect all checked items + their optional detail for a given checkbox class */
-function collectGroup(selector) {
-  const out = [];
-  document.querySelectorAll(selector).forEach(cb => {
-    if (!cb.checked) return;
-    const wrap   = cb.closest('.opt-expand-wrap');
-    const detail = wrap ? (wrap.querySelector('.opt-detail-input') || {}).value || '' : '';
-    out.push(detail.trim() ? cb.value + ': ' + detail.trim() : cb.value);
-  });
-  return out;
-}
-
-/* Re-collect every tracked field and save — called on any expand/detail change */
-function syncFormData() {
-  formData.q2_brand_personality = collectGroup('.bp');
-  formData.q3_imagery           = collectGroup('.img-chk').join(', ');
-  formData.q5_primary_goal      = collectGroup('.goal-chk').join(' | ');
-  formData.q9_integrations      = collectGroup('.intg');
-  saveSession();
-}
-
-/* ══════════════════════════════════════════════════════
-   FORMSPREE — paste your Form ID below to activate email delivery
-   1. Go to https://formspree.io → sign up free → New Form
-   2. Copy your Form ID from the endpoint URL (e.g. xpwzabcd)
-   3. Replace YOUR_FORM_ID below and save
-══════════════════════════════════════════════════════ */
-const FORMSPREE_ID = 'xvzbbqlj';
-const FORMSPREE_URL = 'https://formspree.io/f/xvzbbqlj';
-const FORMSPREE_URL = `https://formspree.io/f/${xvzbbqlj}`;
-
-/* ── FORM DATA STORE ── */
-const formData = {
-  q1_elevator_pitch:    '',
-  q2_brand_personality: [],   // [{value, detail}]
-  q2_brand_other:       '',
-  q3_colors:            '',
-  q3_imagery:           '',   // radio value
-  q4_peace_factor:      '',
-  q5_primary_goal:      '',   // radio value
-  q6_sections:          [],   // [{rank, name, included}] — snapshotted on submit
-  q7_target_audience:   '',
-  q8_assets:            {},   // {name: 'YES'|'NO'}
-  q9_domain:            '',
-  q9_integrations:      [],   // checkbox values
-  q9_other:             '',
-  q10_success_metrics:  '',
-  ref_code:             '',
-  submitted_at:         '',
-};
-
-/* ── SESSION SAVE / RESTORE ── */
-function saveSession() {
-  try { sessionStorage.setItem('kyrax_brief', JSON.stringify(formData)); } catch(e) {}
-}
-
-function restoreSession() {
-  try {
-    const saved = sessionStorage.getItem('kyrax_brief');
-    if (!saved) return;
-    Object.assign(formData, JSON.parse(saved));
-
-    // Q1
-    const q1 = document.getElementById('q1');
-    if (q1 && formData.q1_elevator_pitch) q1.value = formData.q1_elevator_pitch;
-
-    // Q2 checkboxes
-    document.querySelectorAll('.bp').forEach(cb => {
-      const match = (formData.q2_brand_personality || []).find(v =>
-        (typeof v === 'string' ? v : v.value) === cb.value
-      );
-      if (match) cb.checked = true;
-    });
-    const bpOtherTxt = document.getElementById('bpOtherTxt');
-    if (bpOtherTxt && formData.q2_brand_other) bpOtherTxt.value = formData.q2_brand_other;
-
-    // Q3 colors
-    const q3c = document.getElementById('q3colors');
-    if (q3c && formData.q3_colors) q3c.value = formData.q3_colors;
-
-    // Q3 imagery radio
-    if (formData.q3_imagery) {
-      document.querySelectorAll('input[name="img"]').forEach(r => {
-        if (r.value === formData.q3_imagery) r.checked = true;
-      });
-    }
-
-    // Q4
-    const q4 = document.getElementById('q4');
-    if (q4 && formData.q4_peace_factor) q4.value = formData.q4_peace_factor;
-
-    // Q5 radio
-    if (formData.q5_primary_goal) {
-      document.querySelectorAll('input[name="goal"]').forEach(r => {
-        if (r.value === formData.q5_primary_goal) r.checked = true;
-      });
-    }
-
-    // Q7
-    const q7 = document.getElementById('q7');
-    if (q7 && formData.q7_target_audience) q7.value = formData.q7_target_audience;
-
-    // Q9 domain
-    const q9d = document.getElementById('q9domain');
-    if (q9d && formData.q9_domain) q9d.value = formData.q9_domain;
-
-    // Q9 integrations
-    document.querySelectorAll('.intg').forEach(cb => {
-      if ((formData.q9_integrations || []).includes(cb.value)) cb.checked = true;
-    });
-    const intgOther = document.getElementById('intgOtherTxt');
-    if (intgOther && formData.q9_other) intgOther.value = formData.q9_other;
-
-    // Q10
-    const q10 = document.getElementById('q10');
-    if (q10 && formData.q10_success_metrics) q10.value = formData.q10_success_metrics;
-
-  } catch(e) {}
-}
-
-/* ── BIND ALL INPUT TRACKERS ── */
-function bindTrackers() {
-  // Q1
-  document.getElementById('q1')?.addEventListener('input', e => {
-    formData.q1_elevator_pitch = e.target.value; saveSession();
-  });
-
-  // Q2 brand personality, Q3 imagery, Q5 goals, Q9 integrations
-  // are all handled by the delegated change + input listeners above (applyExpandState / syncFormData)
-  // bindTrackers handles the plain text fields only:
-
-  // Q3 — colors
-  document.getElementById('q3colors')?.addEventListener('input', e => {
-    formData.q3_colors = e.target.value; saveSession();
-  });
-
-  // Q4
-  document.getElementById('q4')?.addEventListener('input', e => {
-    formData.q4_peace_factor = e.target.value; saveSession();
-  });
-
-  // Q7
-  document.getElementById('q7')?.addEventListener('input', e => {
-    formData.q7_target_audience = e.target.value; saveSession();
-  });
-
-  // Q9 — domain
-  document.getElementById('q9domain')?.addEventListener('input', e => {
-    formData.q9_domain = e.target.value; saveSession();
-  });
-
-  // Q10
-  document.getElementById('q10')?.addEventListener('input', e => {
-    formData.q10_success_metrics = e.target.value; saveSession();
-  });
-}
-
-/* ── SNAPSHOT Q6 (rank order) + Q8 (asset toggles) at submit time ── */
-function snapshotSelections() {
-  formData.q6_sections = [...document.querySelectorAll('#rankList .rank-card')].map((card, i) => ({
-    rank: i + 1,
-    name: card.dataset.section,
-    included: !!card.querySelector('.rtgl-btn.on-yes'),
-  }));
-
-  formData.q8_assets = {};
-  document.querySelectorAll('.asset-row').forEach(row => {
-    const name = row.querySelector('.asset-name').textContent.trim();
-    const yes  = row.querySelector('.atgl-btn.on-yes');
-    const no   = row.querySelector('.atgl-btn.on-no');
-    formData.q8_assets[name] = yes ? 'YES' : no ? 'NO' : '—';
-  });
-}
-
-/* ── BUILD READABLE EMAIL BODY ── */
-function buildBrief(ref) {
-  const d = formData;
-  const sections = (d.q6_sections || [])
-    .map(s => `  ${s.rank}. ${s.name} [${s.included ? 'INCLUDE' : 'EXCLUDE'}]`)
-    .join('\n') || '  Not answered';
-
-  const assets = Object.entries(d.q8_assets || {})
-    .map(([k, v]) => `  ${k}: ${v}`)
-    .join('\n') || '  Not answered';
-
-  const integrations = [...(d.q9_integrations || [])];
-  if (d.q9_other) integrations.push(`Other: ${d.q9_other}`);
-
-  return `KYRAX ONBOARDING BRIEF — PEACE TIME AGENCY
-============================================
-Ref: ${ref}
-Submitted: ${d.submitted_at}
-
-
-PAGE 01 — BRAND IDENTITY & VISION
-------------------------------------
-Q1. ELEVATOR PITCH
-${d.q1_elevator_pitch || 'Not answered'}
-
-Q2. BRAND PERSONALITY
-${(d.q2_brand_personality || []).join(', ') || 'Not answered'}${d.q2_brand_other ? ' / Other: ' + d.q2_brand_other : ''}
-
-Q3. VISUAL PREFERENCES
-Colors: ${d.q3_colors || 'Not answered'}
-Imagery: ${d.q3_imagery || 'Not answered'}
-
-Q4. THE "PEACE" FACTOR
-${d.q4_peace_factor || 'Not answered'}
-
-
-PAGE 02 — LANDING PAGE STRUCTURE
-------------------------------------
-Q5. PRIMARY GOAL
-${d.q5_primary_goal || 'Not answered'}
-
-Q6. CONTENT SECTIONS (priority order)
-${sections}
-
-Q7. TARGET AUDIENCE
-${d.q7_target_audience || 'Not answered'}
-
-
-PAGE 03 — TECHNICAL LOGISTICS
-------------------------------------
-Q8. ASSET INVENTORY
-${assets}
-
-Q9. DOMAIN
-${d.q9_domain || 'Not provided'}
-
-Q9. INTEGRATIONS
-${integrations.length ? integrations.join(', ') : 'None selected'}
-
-Q10. SUCCESS METRICS
-${d.q10_success_metrics || 'Not answered'}
-
-
-============================================
-KYRAX ONBOARDING SYSTEM // SATCORP
-============================================`;
-}
-
-/* ── SEND TO FORMSPREE ── */
-async function sendToFormspree(ref) {
-  if (FORMSPREE_ID === 'YOUR_FORM_ID') {
-    console.warn('Formspree not configured — add your Form ID to activate email delivery.');
-    return;
-  }
-
-  const d = formData;
-  const integrations = [...(d.q9_integrations || [])];
-  if (d.q9_other) integrations.push(d.q9_other);
-
-  const payload = {
-    _subject: `[KYRAX] New Onboarding Brief — Peace Time Agency // ${ref}`,
-    _replyto: 'noreply@kyrax.co',
-
-    ref_code:      ref,
-    submitted_at:  d.submitted_at,
-
-    q1_elevator_pitch:    d.q1_elevator_pitch,
-    q2_brand_personality: (d.q2_brand_personality || []).join(', '),
-    q2_other:             d.q2_brand_other,
-    q3_colors:            d.q3_colors,
-    q3_imagery:           d.q3_imagery,
-    q4_peace_factor:      d.q4_peace_factor,
-    q5_primary_goal:      d.q5_primary_goal,
-    q6_sections:          (d.q6_sections || []).map(s => `${s.rank}. ${s.name} [${s.included ? 'IN' : 'OUT'}]`).join(' | '),
-    q7_target_audience:   d.q7_target_audience,
-    q8_assets:            Object.entries(d.q8_assets || {}).map(([k,v]) => `${k}: ${v}`).join(' | '),
-    q9_domain:            d.q9_domain,
-    q9_integrations:      integrations.join(', '),
-    q10_success_metrics:  d.q10_success_metrics,
-
-    _full_brief: buildBrief(ref),
-  };
-
-  try {
-    const res = await fetch(FORMSPREE_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    if (!res.ok) console.warn('Formspree error:', res.status, await res.text());
-    else console.log('Brief sent to Formspree successfully.');
-  } catch(err) {
-    console.warn('Formspree send failed:', err.message);
-  }
-}
-
-/* ── CURSOR ── */
-const cur = document.getElementById('cursor');
-const curR = document.getElementById('cursor-ring');
-let mx = 0, my = 0, rx = 0, ry = 0;
-
-document.addEventListener('mousemove', e => {
-  mx = e.clientX; my = e.clientY;
-  cur.style.left  = mx + 'px';
-  cur.style.top   = my + 'px';
-});
-
-(function animRing() {
-  rx += (mx - rx) * 0.12;
-  ry += (my - ry) * 0.12;
-  curR.style.left = rx + 'px';
-  curR.style.top  = ry + 'px';
-  requestAnimationFrame(animRing);
-})();
-
-/* ── CANVAS PARTICLE BG ── */
-const canvas = document.getElementById('bgCanvas');
-const ctx = canvas.getContext('2d');
-let W, H, particles = [];
-
-function resize() {
-  W = canvas.width  = window.innerWidth;
-  H = canvas.height = window.innerHeight;
-}
-
-resize();
-window.addEventListener('resize', resize);
-
-class Particle {
-  constructor() { this.reset(true); }
-  reset(init = false) {
-    this.x  = Math.random() * W;
-    this.y  = init ? Math.random() * H : H + 10;
-    this.vx = (Math.random() - .5) * .3;
-    this.vy = -Math.random() * .6 - .1;
-    this.size  = Math.random() * 1.2 + .3;
-    this.alpha = Math.random() * .5 + .1;
-    this.life  = Math.random() * 400 + 200;
-    this.maxLife = this.life;
-    this.color = Math.random() > .6 ? '#00e5ff' : Math.random() > .5 ? '#00ffb3' : '#8badc8';
-  }
-  update() {
-    this.x += this.vx; this.y += this.vy; this.life--;
-    if (this.life < 0 || this.y < -10) this.reset();
-  }
-  draw() {
-    ctx.save();
-    ctx.globalAlpha = (this.life / this.maxLife) * this.alpha;
-    ctx.fillStyle = this.color;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-  }
-}
-
-for (let i = 0; i < 120; i++) particles.push(new Particle());
-
-// Grid lines
-function drawGrid() {
-  ctx.clearRect(0, 0, W, H);
-  ctx.strokeStyle = 'rgba(22,32,48,0.6)';
-  ctx.lineWidth = 1;
-  const gs = 60;
-  for (let x = 0; x < W; x += gs) {
-    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
-  }
-  for (let y = 0; y < H; y += gs) {
-    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
-  }
-}
-
-function animCanvas() {
-  drawGrid();
-  particles.forEach(p => { p.update(); p.draw(); });
-  requestAnimationFrame(animCanvas);
-}
-animCanvas();
-
-/* ── BOOT SEQUENCE ── */
-const bootLines = [
-  { text: 'KYRAX OS v4.1.2 — KERNEL LOADED', cls: 'ok' },
-  { text: 'SECURE CHANNEL ESTABLISHED', cls: 'ok' },
-  { text: 'CLIENT PROFILE: PEACE TIME AGENCY', cls: 'ok' },
-  { text: 'DOCUMENT CLASS: CONFIDENTIAL ONBOARDING', cls: 'warn' },
-  { text: 'LOADING INTAKE MODULES…', cls: '' },
-  { text: 'ENCRYPTION: AES-256 ACTIVE', cls: 'ok' },
-];
-
-const bootSeq = document.getElementById('bootSeq');
-const bootBar = document.getElementById('bootBar');
-const bootLabel = document.getElementById('bootBarLabel');
-
-function runBoot() {
-  let i = 0;
-  function nextLine() {
-    if (i >= bootLines.length) {
-      bootBar.style.width = '100%';
-      bootLabel.textContent = 'SESSION READY — LOADING INTERFACE';
-      setTimeout(launchApp, 800);
-      return;
-    }
-    const div = document.createElement('div');
-    div.className = 'boot-line ' + bootLines[i].cls;
-    div.style.animationDelay = '0s';
-    div.textContent = '> ' + bootLines[i].text;
-    bootSeq.appendChild(div);
-    bootBar.style.width = ((i + 1) / bootLines.length * 85) + '%';
-    i++;
-    setTimeout(nextLine, 300 + Math.random() * 200);
-  }
-  setTimeout(nextLine, 400);
-}
-
-function launchApp() {
-  const boot = document.getElementById('boot');
-  boot.style.transition = 'opacity .6s ease';
-  boot.style.opacity = '0';
-  setTimeout(() => {
-    boot.style.display = 'none';
-    document.getElementById('app').classList.add('visible');
-  }, 600);
-}
-
-runBoot();
-
-/* ── PAGE NAVIGATION ── */
-let currentPage = 1;
-
-function goTo(page) {
-  if (page < 1 || page > 3) return;
-
-  document.getElementById('page' + currentPage)?.classList.remove('active');
-  document.getElementById('page' + page)?.classList.add('active');
-
-  currentPage = page;
-  document.getElementById('contentArea').scrollTop = 0;
-
-  // Sidebar
-  [1,2,3].forEach(i => {
-    const ss = document.getElementById('ss' + i);
-    const si = document.getElementById('si' + i);
-    ss.classList.remove('active','done');
-    si.textContent = i < page ? '' : i;
-    if (i < page) {
-      ss.classList.add('done');
-      si.textContent = '';
-    }
-    if (i === page) ss.classList.add('active');
-  });
-
-  // Progress
-  const pct = { 1: 33, 2: 66, 3: 100 };
-  document.getElementById('npFill').style.width = pct[page] + '%';
-  document.getElementById('npCurrent').textContent = page;
-
-  // Buttons
-  document.getElementById('btnBack').style.display  = page > 1 ? 'flex' : 'none';
-  document.getElementById('btnNext').style.display   = page < 3 ? 'flex' : 'none';
-  document.getElementById('btnSubmit').style.display = page === 3 ? 'flex' : 'none';
-}
-
-/* ── RANK DRAG ── */
-let dragSrc = null;
-
-document.querySelectorAll('.rank-card').forEach(card => {
-  card.addEventListener('dragstart', e => {
-    dragSrc = card; card.classList.add('dragging');
-    e.dataTransfer.effectAllowed = 'move';
-  });
-  card.addEventListener('dragend', () => {
-    card.classList.remove('dragging');
-    document.querySelectorAll('.rank-card').forEach(c => c.classList.remove('over'));
-    reorderNums();
-  });
-  card.addEventListener('dragover', e => {
-    e.preventDefault();
-    if (card !== dragSrc) {
-      document.querySelectorAll('.rank-card').forEach(c => c.classList.remove('over'));
-      card.classList.add('over');
-    }
-  });
-  card.addEventListener('drop', e => {
-    e.preventDefault();
-    if (dragSrc && dragSrc !== card) {
-      const list = card.parentNode;
-      const items = [...list.querySelectorAll('.rank-card')];
-      const si = items.indexOf(dragSrc);
-      const ti = items.indexOf(card);
-      list.insertBefore(dragSrc, si < ti ? card.nextSibling : card);
-    }
-  });
-});
-
-function reorderNums() {
-  document.querySelectorAll('#rankList .rank-card').forEach((c, i) => {
-    c.querySelector('.rank-pos').textContent = i + 1;
-  });
-}
-
-function toggleRank(btn, val) {
-  const wrap = btn.closest('.rank-toggle');
-  wrap.querySelectorAll('.rtgl-btn').forEach(b => b.classList.remove('on-yes','on-no'));
-  btn.classList.add(val === 'yes' ? 'on-yes' : 'on-no');
-}
-
-/* ── ASSET TOGGLES ── */
-function setAsset(btn, val) {
-  const wrap = btn.closest('.asset-toggle');
-  wrap.querySelectorAll('.atgl-btn').forEach(b => b.classList.remove('on-yes','on-no'));
-  btn.classList.add(val === 'yes' ? 'on-yes' : 'on-no');
-  btn.closest('.asset-row').style.transition = 'border-color .3s';
-}
-
-/* ── SUBMIT ── */
-function submitForm() {
-  const ref = 'REF // KYRAX-' + Math.floor(100000 + Math.random() * 900000) + '-PTA';
-
-  // Snapshot ranked sections + asset toggles (these can't be tracked live)
-  snapshotSelections();
-
-  // Stamp ref + timestamp
-  formData.ref_code     = ref;
-  formData.submitted_at = new Date().toISOString();
-  saveSession();
-
-  // Fire email delivery
-  sendToFormspree(ref);
-
-  // Trigger transmission burst animation
-  triggerTransmission(() => {
-    document.getElementById('refCode').textContent = ref;
-    [1,2,3].forEach(i => document.getElementById('page' + i)?.classList.remove('active'));
-    document.getElementById('success').classList.add('active');
-    [1,2,3].forEach(i => {
-      const ss = document.getElementById('ss' + i);
-      const si = document.getElementById('si' + i);
-      ss.classList.remove('active');
-      ss.classList.add('done');
-      si.textContent = '';
-    });
-    document.getElementById('bottomNav').style.display = 'none';
-    document.getElementById('npFill').style.width = '100%';
-    document.getElementById('contentArea').scrollTop = 0;
-    typewriterEl(document.querySelector('.success-eyebrow'), 'TRANSMISSION CONFIRMED', 40);
-    startSuccessParticles();
-  });
-}
-
-function startSuccessParticles() {} // canvas already running
-
-/* ══════════════════════════════════════════
-   KYRAX ANIMATION LAYER
-═══════════════════════════════════════════ */
-
-/* ── 1. RADAR SWEEP (sidebar canvas) ── */
-function initRadar() {
-  const c = document.createElement('canvas');
-  c.id = 'radarCanvas';
-  c.style.cssText = `
-    position:absolute; bottom:20px; right:16px;
-    width:80px; height:80px; opacity:0.35; pointer-events:none; z-index:2;
-  `;
-  document.querySelector('.sidebar').appendChild(c);
-  const r = c.getContext('2d');
-  c.width = 80; c.height = 80;
-  const cx = 40, cy = 40, radius = 34;
-  let angle = 0;
-
-  function drawRadar() {
-    r.clearRect(0,0,80,80);
-
-    // Background circles
-    r.strokeStyle = 'rgba(0,229,255,0.12)';
-    r.lineWidth = 1;
-    [34,22,11].forEach(rad => {
-      r.beginPath(); r.arc(cx,cy,rad,0,Math.PI*2); r.stroke();
-    });
-
-    // Cross hairs
-    r.strokeStyle = 'rgba(0,229,255,0.08)';
-    r.beginPath(); r.moveTo(cx-radius,cy); r.lineTo(cx+radius,cy); r.stroke();
-    r.beginPath(); r.moveTo(cx,cy-radius); r.lineTo(cx,cy+radius); r.stroke();
-
-    // Sweep trail
-    const trail = r.createConicalGradient ? null : null;
-    for (let i = 0; i < 60; i++) {
-      const a = angle - (i * Math.PI / 180);
-      const alpha = (1 - i/60) * 0.3;
-      r.beginPath();
-      r.moveTo(cx, cy);
-      r.arc(cx, cy, radius, a, a + 0.03);
-      r.closePath();
-      r.fillStyle = `rgba(0,229,255,${alpha})`;
-      r.fill();
-    }
-
-    // Sweep line
-    r.strokeStyle = 'rgba(0,229,255,0.8)';
-    r.lineWidth = 1;
-    r.beginPath();
-    r.moveTo(cx, cy);
-    r.lineTo(cx + Math.cos(angle)*radius, cy + Math.sin(angle)*radius);
-    r.stroke();
-
-    // Blip dots (static targets)
-    const blips = [{a:0.8,d:18},{a:2.4,d:26},{a:4.1,d:14}];
-    blips.forEach(b => {
-      const bx = cx + Math.cos(b.a)*b.d;
-      const by = cy + Math.sin(b.a)*b.d;
-      const diff = ((angle - b.a) % (Math.PI*2) + Math.PI*2) % (Math.PI*2);
-      const fade = diff < Math.PI ? Math.max(0, 1 - diff/Math.PI) : 0;
-      if (fade > 0) {
-        r.beginPath(); r.arc(bx,by,2,0,Math.PI*2);
-        r.fillStyle = `rgba(0,255,179,${fade * 0.9})`;
-        r.fill();
-        r.beginPath(); r.arc(bx,by,4+fade*2,0,Math.PI*2);
-        r.strokeStyle = `rgba(0,255,179,${fade*0.3})`;
-        r.lineWidth = 1; r.stroke();
-      }
-    });
-
-    angle += 0.025;
-    if (angle > Math.PI*2) angle -= Math.PI*2;
-    requestAnimationFrame(drawRadar);
-  }
-  drawRadar();
-}
-
-/* ── 2. HUD CORNER BRACKETS ── */
-function initHUDCorners() {
-  const corners = [
-    { top:'0', left:'0',  borderTop:'1px solid', borderLeft:'1px solid' },
-    { top:'0', right:'0', borderTop:'1px solid', borderRight:'1px solid' },
-    { bottom:'0', left:'0',  borderBottom:'1px solid', borderLeft:'1px solid' },
-    { bottom:'0', right:'0', borderBottom:'1px solid', borderRight:'1px solid' },
-  ];
-  const app = document.getElementById('app');
-  corners.forEach((s, i) => {
-    const el = document.createElement('div');
-    el.style.cssText = `
-      position:fixed; z-index:200; pointer-events:none;
-      width:24px; height:24px; opacity:0;
-      transition: opacity .4s ease ${0.8 + i*0.1}s;
-    `;
-    Object.assign(el.style, s);
-    Object.assign(el.style, {
-      borderColor: 'rgba(0,229,255,0.3)',
-      borderTop: s.borderTop ? '1px solid rgba(0,229,255,0.3)' : 'none',
-      borderBottom: s.borderBottom ? '1px solid rgba(0,229,255,0.3)' : 'none',
-      borderLeft: s.borderLeft ? '1px solid rgba(0,229,255,0.3)' : 'none',
-      borderRight: s.borderRight ? '1px solid rgba(0,229,255,0.3)' : 'none',
-    });
-    app.appendChild(el);
-    setTimeout(() => el.style.opacity = '1', 50);
-    // Animate corners expanding
-    el.style.width = '4px'; el.style.height = '4px';
-    setTimeout(() => {
-      el.style.transition = `width .5s ease ${0.8+i*0.1}s, height .5s ease ${0.8+i*0.1}s, opacity .4s ease ${0.8+i*0.1}s`;
-      el.style.width = '24px'; el.style.height = '24px'; el.style.opacity = '1';
-    }, 50);
-  });
-}
-
-/* ── 3. DATA STREAM LINES (canvas overlay) ── */
-function initDataStreams() {
-  const sc = document.createElement('canvas');
-  sc.id = 'streamCanvas';
-  sc.style.cssText = 'position:fixed;inset:0;z-index:2;pointer-events:none;opacity:0.18;';
-  document.body.insertBefore(sc, document.body.firstChild);
-  const sx = sc.getContext('2d');
-
-  function resizeStream() { sc.width = window.innerWidth; sc.height = window.innerHeight; }
-  resizeStream();
-  window.addEventListener('resize', resizeStream);
-
-  const streams = Array.from({length: 8}, () => ({
-    x: Math.random() * window.innerWidth,
-    y: Math.random() * window.innerHeight,
-    speed: Math.random() * 1.5 + 0.5,
-    length: Math.random() * 120 + 40,
-    opacity: Math.random() * 0.6 + 0.2,
-    width: Math.random() > 0.7 ? 2 : 1,
-    color: Math.random() > 0.5 ? '#00e5ff' : '#00ffb3',
-    horizontal: Math.random() > 0.6,
-  }));
-
-  function drawStreams() {
-    sx.clearRect(0, 0, sc.width, sc.height);
-    streams.forEach(s => {
-      const grad = s.horizontal
-        ? sx.createLinearGradient(s.x, s.y, s.x + s.length, s.y)
-        : sx.createLinearGradient(s.x, s.y, s.x, s.y + s.length);
-      grad.addColorStop(0, 'transparent');
-      grad.addColorStop(0.5, s.color.replace(')', `,${s.opacity})`).replace('rgb','rgba') || s.color);
-      grad.addColorStop(1, 'transparent');
-      sx.strokeStyle = grad;
-      sx.lineWidth = s.width;
-      sx.beginPath();
-      if (s.horizontal) {
-        sx.moveTo(s.x, s.y); sx.lineTo(s.x + s.length, s.y);
-      } else {
-        sx.moveTo(s.x, s.y); sx.lineTo(s.x, s.y + s.length);
-      }
-      sx.stroke();
-
-      // Move
-      if (s.horizontal) { s.x += s.speed; if (s.x > sc.width + 100) s.x = -s.length; }
-      else { s.y += s.speed; if (s.y > sc.height + 100) s.y = -s.length; }
-    });
-    requestAnimationFrame(drawStreams);
-  }
-  drawStreams();
-}
-
-/* ── 4. TARGET LOCK RETICLE on focused inputs ── */
-function initReticles() {
-  const reticle = document.createElement('div');
-  reticle.id = 'reticle';
-  reticle.style.cssText = `
-    position:fixed; z-index:300; pointer-events:none;
-    width:0; height:0; opacity:0;
-    transition: opacity .2s;
-  `;
-  reticle.innerHTML = `
-    <svg id="reticleSVG" width="200" height="60" viewBox="0 0 200 60" fill="none" style="overflow:visible">
-      <line id="rt" x1="0" y1="0" x2="0" y2="0" stroke="#00e5ff" stroke-width="1" opacity="0"/>
-      <line id="rb" x1="0" y1="0" x2="0" y2="0" stroke="#00e5ff" stroke-width="1" opacity="0"/>
-    </svg>
-  `;
-  document.body.appendChild(reticle);
-
-  // Corner bracket SVGs at each corner of focused input
-  let brackets = [];
-  function clearBrackets() { brackets.forEach(b => b.remove()); brackets = []; }
-
-  function showBrackets(el) {
-    clearBrackets();
-    const rect = el.getBoundingClientRect();
-    const pad = 6;
-    const size = 12;
-    const positions = [
-      { top: rect.top - pad, left: rect.left - pad, bt:'1px solid', bl:'1px solid' },
-      { top: rect.top - pad, left: rect.right + pad - size, bt:'1px solid', br:'1px solid' },
-      { top: rect.bottom + pad - size, left: rect.left - pad, bb:'1px solid', bl:'1px solid' },
-      { top: rect.bottom + pad - size, left: rect.right + pad - size, bb:'1px solid', br:'1px solid' },
-    ];
-    positions.forEach((p, i) => {
-      const b = document.createElement('div');
-      b.style.cssText = `
-        position:fixed; z-index:500; pointer-events:none;
-        width:${size}px; height:${size}px;
-        border-top:${p.bt||'none'};
-        border-bottom:${p.bb||'none'};
-        border-left:${p.bl||'none'};
-        border-right:${p.br||'none'};
-        border-color: rgba(0,229,255,0.7);
-        top:${p.top}px; left:${p.left}px;
-        opacity:0; transform:scale(1.3);
-        transition: opacity .15s ease ${i*0.04}s, transform .2s ease ${i*0.04}s;
-      `;
-      document.body.appendChild(b);
-      brackets.push(b);
-      requestAnimationFrame(() => { b.style.opacity='1'; b.style.transform='scale(1)'; });
-    });
-  }
-
-  document.addEventListener('focusin', e => {
-    if (e.target.matches('input,textarea,select')) showBrackets(e.target);
-  });
-  document.addEventListener('focusout', () => {
-    brackets.forEach(b => { b.style.opacity='0'; b.style.transform='scale(1.3)'; });
-    setTimeout(clearBrackets, 200);
-  });
-  window.addEventListener('scroll', () => {
-    if (document.activeElement?.matches('input,textarea,select')) showBrackets(document.activeElement);
-  }, true);
-}
-
-/* ── 5. TYPEWRITER EFFECT ── */
-function typewriterEl(el, text, speed = 50) {
-  el.textContent = '';
-  let i = 0;
-  const orig = el.style.minWidth;
-  el.style.borderRight = '1px solid currentColor';
-  function type() {
-    if (i < text.length) {
-      el.textContent += text[i++];
-      setTimeout(type, speed + Math.random()*20);
-    } else {
-      el.style.borderRight = 'none';
-    }
-  }
-  type();
-}
-
-/* ── 6. SIGNAL INTERFERENCE on page transitions ── */
-function glitchTransition(cb) {
-  const overlay = document.createElement('div');
-  overlay.style.cssText = `
-    position:fixed; inset:0; z-index:150; pointer-events:none;
-    background: var(--black); opacity:0;
-  `;
-  document.body.appendChild(overlay);
-
-  let frame = 0;
-  const frames = [
-    { op:0.9, tx:-3, ty:1 }, { op:0.0, tx:0, ty:0 },
-    { op:0.7, tx:4, ty:-2 }, { op:0.0, tx:0, ty:0 },
-    { op:0.95, tx:-2, ty:2 }, { op:0.0, tx:0, ty:0 },
-    { op:0.0, tx:0, ty:0 },
-  ];
-
-  function doFrame() {
-    if (frame >= frames.length) {
-      overlay.remove();
-      if (cb) cb();
-      return;
-    }
-    const f = frames[frame++];
-    overlay.style.opacity = f.op;
-    overlay.style.transform = `translate(${f.tx}px,${f.ty}px)`;
-    setTimeout(doFrame, 45);
-  }
-  doFrame();
-}
-
-/* ── 7. TRANSMISSION BURST (submit animation) ── */
-function triggerTransmission(cb) {
-  const burst = document.createElement('div');
-  burst.style.cssText = `
-    position:fixed; inset:0; z-index:500; pointer-events:none;
-    display:flex; align-items:center; justify-content:center;
-    background: rgba(3,5,10,0.97);
-    opacity:0; transition: opacity .3s;
-  `;
-  burst.innerHTML = `
-    <div style="text-align:center; position:relative;">
-      <canvas id="burstCanvas" width="300" height="300" style="display:block;margin:0 auto 24px;"></canvas>
-      <div style="
-        font-family:'Share Tech Mono',monospace; font-size:11px;
-        color:var(--cyan); letter-spacing:.2em; text-transform:uppercase;
-        opacity:0; animation: burstTxt .4s ease .6s forwards;
-      " id="burstTxt">TRANSMITTING TO KYRAX…</div>
+  <!-- \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588
+       WORLD 3 \u2014 STAFF
+  \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588 -->
+  <div class="world-staff" id="world-staff">
+
+    <!-- Staff Hero -->
+    <section class="s-hero">
+      <div class="s-hero-bg"></div>
+      <div class="s-hero-num">III</div>
+      <div class="wrap s-hero-content">
+        <p class="label-row label-row-s s-hero-kicker">The Team \u00b7 Agency Staff</p>
+        <h1 class="s-hero-headline">
+          The people<br>
+          <strong>behind it all.</strong>
+          <em>Meet Peacetime.</em>
+        </h1>
+        <div class="s-hero-bottom">
+          <p class="s-hero-sub">The dedicated team making Peacetime what it is \u2014 strategists, community managers, and creators in their own right.</p>
+          <a href="#team" class="btn-v3">Meet the team \u2192</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Marquee -->
+    <div class="marquee-bar marquee-bar-s">
+      <div class="marquee-track" style="animation-duration:35s;">
+        <span class="marquee-item" style="color:var(--w3-text);">Strategy</span><span class="marquee-sep" style="color:var(--w3-accent);">\u2726</span>
+        <span class="marquee-item" style="color:var(--w3-text);">Community management</span><span class="marquee-sep" style="color:var(--w3-accent);">\u2726</span>
+        <span class="marquee-item" style="color:var(--w3-text);">Creator support</span><span class="marquee-sep" style="color:var(--w3-accent);">\u2726</span>
+        <span class="marquee-item" style="color:var(--w3-text);">Analytics & insights</span><span class="marquee-sep" style="color:var(--w3-accent);">\u2726</span>
+        <span class="marquee-item" style="color:var(--w3-text);">Partnership development</span><span class="marquee-sep" style="color:var(--w3-accent);">\u2726</span>
+        <span class="marquee-item" style="color:var(--w3-text);">Strategy</span><span class="marquee-sep" style="color:var(--w3-accent);">\u2726</span>
+        <span class="marquee-item" style="color:var(--w3-text);">Community management</span><span class="marquee-sep" style="color:var(--w3-accent);">\u2726</span>
+        <span class="marquee-item" style="color:var(--w3-text);">Creator support</span><span class="marquee-sep" style="color:var(--w3-accent);">\u2726</span>
+        <span class="marquee-item" style="color:var(--w3-text);">Analytics & insights</span><span class="marquee-sep" style="color:var(--w3-accent);">\u2726</span>
+        <span class="marquee-item" style="color:var(--w3-text);">Partnership development</span><span class="marquee-sep" style="color:var(--w3-accent);">\u2726</span>
+      </div>
     </div>
-  `;
-  const style = document.createElement('style');
-  style.textContent = '@keyframes burstTxt{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}';
-  document.head.appendChild(style);
-  document.body.appendChild(burst);
 
-  requestAnimationFrame(() => burst.style.opacity = '1');
+    <!-- Team -->
+    <section class="s-section" id="team">
+      <div class="wrap">
+        <p class="label-row label-row-s">Agency Team</p>
+        <h2 class="s-section-title reveal">The <strong>people</strong><br><em>who make it happen.</em></h2>
+        <div class="team-grid reveal">
+          <div class="team-card">
+            <div class="team-avatar">\ud83c\udf3f</div>
+            <div class="team-role">Founder & Director</div>
+            <div class="team-name">Alex Rowe</div>
+            <div class="team-bio">Founder of Peacetime. Former creator turned agency builder. Passionate about ethical creator partnerships and long-term community growth.</div>
+          </div>
+          <div class="team-card">
+            <div class="team-avatar">\ud83d\udcca</div>
+            <div class="team-role">Head of Strategy</div>
+            <div class="team-name">Morgan Ellis</div>
+            <div class="team-bio">Oversees creator analytics, growth playbooks, and individual strategy sessions. Four years deep in TikTok LIVE growth mechanics.</div>
+          </div>
+          <div class="team-card">
+            <div class="team-avatar">\ud83d\udcac</div>
+            <div class="team-role">Community Manager</div>
+            <div class="team-name">Jamie Sol</div>
+            <div class="team-bio">Runs the Discord, facilitates creator connections, and ensures every member feels genuinely supported. The heart of Peacetime day-to-day.</div>
+          </div>
+          <div class="team-card">
+            <div class="team-avatar">\ud83d\udd0d</div>
+            <div class="team-role">Creator Coach</div>
+            <div class="team-name">Reese Arden</div>
+            <div class="team-bio">Works one-on-one with creators on content structure, live strategy, and momentum building. Specialises in early-stage creator growth.</div>
+          </div>
+          <div class="team-card">
+            <div class="team-avatar">\ud83e\udd1d</div>
+            <div class="team-role">Partnerships Lead</div>
+            <div class="team-name">Casey Vane</div>
+            <div class="team-bio">Manages external relationships, creator recruitment, and ensures Peacetime operates with full transparency across all partnerships.</div>
+          </div>
+          <div class="team-card" style="border:1px dashed rgba(100,160,220,0.15);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;text-align:center;">
+            <div style="font-size:2rem;">\u2726</div>
+            <div style="font-family:var(--ff-mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--w3-muted);">We're growing the team</div>
+            <a href="#" class="btn-v3" style="font-size:0.6rem;padding:8px 18px;">Get in touch</a>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  // Animate burst canvas
-  const bc = document.getElementById('burstCanvas');
-  const bx = bc.getContext('2d');
-  const bcx = 150, bcy = 150;
-  let bFrame = 0;
-  const totalFrames = 90;
+    <!-- Staff Resources -->
+    <section class="s-section s-section-alt">
+      <div class="wrap">
+        <p class="label-row label-row-s">Internal Resources</p>
+        <h2 class="s-section-title reveal">Tools for the<br><strong>Peacetime</strong> team.</h2>
+        <div class="staff-resources reveal">
+          <div class="staff-res-card">
+            <span class="sr-icon">\ud83d\udccb</span>
+            <div class="sr-title">Creator CRM</div>
+            <div class="sr-desc">Track creator status, recent analytics reviews, last contact, and active growth plans.</div>
+            <a href="#" class="sr-link">Open CRM \u2192</a>
+          </div>
+          <div class="staff-res-card">
+            <span class="sr-icon">\ud83d\udcc8</span>
+            <div class="sr-title">Analytics Hub</div>
+            <div class="sr-desc">Agency-wide performance dashboard. View roster metrics, growth trends, and flagged opportunities.</div>
+            <a href="#" class="sr-link">Open dashboard \u2192</a>
+          </div>
+          <div class="staff-res-card">
+            <span class="sr-icon">\ud83d\udcdd</span>
+            <div class="sr-title">Creator Review Templates</div>
+            <div class="sr-desc">Standardised templates for analytics reviews, strategy sessions, and creator feedback reports.</div>
+            <a href="#" class="sr-link">Access templates \u2192</a>
+          </div>
+          <div class="staff-res-card">
+            <span class="sr-icon">\ud83d\udd12</span>
+            <div class="sr-title">Staff Discord</div>
+            <div class="sr-desc">Private staff channels for internal coordination, escalations, and team updates.</div>
+            <a href="#" class="sr-link">Open Discord \u2192</a>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  // Animate typewriter on the text
-  const burstTxt = document.getElementById('burstTxt');
-  setTimeout(() => typewriterEl(burstTxt, 'TRANSMITTING TO KYRAX…', 45), 600);
+    <!-- Staff News -->
+    <section class="s-section">
+      <div class="wrap">
+        <p class="label-row label-row-s">Internal Updates</p>
+        <h2 class="s-section-title reveal">What's on the<br><strong>agency</strong> radar.</h2>
+        <div class="s-news-grid reveal">
+          <div class="s-news-card">
+            <span class="s-news-tag">Operations</span>
+            <div class="s-news-title">Q1 Creator Review Schedule Now Published</div>
+            <div class="s-news-excerpt">All scheduled creator analytics reviews for Q1 2026 have been assigned and published in the CRM. Please confirm your sessions by Feb 28th.</div>
+            <div class="s-news-meta">Feb 14, 2026 \u00b7 Alex Rowe</div>
+          </div>
+          <div class="s-news-card">
+            <span class="s-news-tag">Strategy</span>
+            <div class="s-news-title">New Onboarding Flow for Incoming Creators</div>
+            <div class="s-news-excerpt">The onboarding checklist has been updated with two new steps: a welcome call template and a 30-day check-in framework. Review before your next intake.</div>
+            <div class="s-news-meta">Feb 10, 2026 \u00b7 Morgan Ellis</div>
+          </div>
+          <div class="s-news-card">
+            <span class="s-news-tag">Community</span>
+            <div class="s-news-title">Discord Restructure Complete \u2014 New Channels Active</div>
+            <div class="s-news-excerpt">The Discord restructure is complete. Creator feedback channels, strategy sessions, and the wins board are all live. Familiarise yourselves before Monday.</div>
+            <div class="s-news-meta">Jan 28, 2026 \u00b7 Jamie Sol</div>
+          </div>
+          <div class="s-news-card">
+            <span class="s-news-tag">Growth</span>
+            <div class="s-news-title">Roster Expansion: 3 New Creators in February</div>
+            <div class="s-news-excerpt">We're onboarding three new creators this month. Reese is leading the coaching intake. Please review their profiles in the CRM before their first check-ins.</div>
+            <div class="s-news-meta">Jan 20, 2026 \u00b7 Casey Vane</div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  function drawBurst() {
-    bx.clearRect(0,0,300,300);
-    const progress = bFrame / totalFrames;
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div style="max-width:1240px;margin:0 auto;">
+        <div class="footer-inner">
+          <div class="footer-brand">
+            <div class="footer-brand-name">peacetime</div>
+            <p>A transparent, community-driven TikTok creator agency. Ethical partnerships, real support, mutual success.</p>
+          </div>
+          <div class="footer-col">
+            <h5>For Visitors</h5>
+            <a href="#why">Why Peacetime</a>
+            <a href="#onboarding">Onboarding</a>
+            <a href="#world-visitors">\u2191 Back to top</a>
+          </div>
+          <div class="footer-col">
+            <h5>Creators</h5>
+            <a href="#roster">Creator Roster</a>
+            <a href="#roster">Agency News</a>
+            <a href="#roster">Resources</a>
+          </div>
+          <div class="footer-col">
+            <h5>Staff</h5>
+            <a href="#team">Meet the Team</a>
+            <a href="#team">Internal Resources</a>
+            <a href="#team">Staff Updates</a>
+          </div>
+        </div>
+        <p class="footer-copy">\u00a9 2026 Peacetime Agency \u00b7 Creator-first, always.</p>
+      </div>
+    </footer>
 
-    // Expanding rings
-    for (let r = 0; r < 4; r++) {
-      const rad = (progress * 130 + r * 28) % 140;
-      const alpha = Math.max(0, 0.7 - rad/140);
-      bx.beginPath();
-      bx.arc(bcx, bcy, rad, 0, Math.PI*2);
-      bx.strokeStyle = `rgba(0,229,255,${alpha})`;
-      bx.lineWidth = r === 0 ? 1.5 : 1;
-      bx.stroke();
-    }
+  </div><!-- /world-staff -->
 
-    // Rotating dashes
-    for (let i = 0; i < 12; i++) {
-      const a = (i / 12) * Math.PI*2 + progress * Math.PI * 4;
-      const r1 = 50 + Math.sin(progress*Math.PI*6 + i) * 8;
-      const r2 = r1 + 14;
-      bx.beginPath();
-      bx.moveTo(bcx + Math.cos(a)*r1, bcy + Math.sin(a)*r1);
-      bx.lineTo(bcx + Math.cos(a)*r2, bcy + Math.sin(a)*r2);
-      bx.strokeStyle = `rgba(0,255,179,${0.5 + Math.sin(progress*Math.PI*3+i)*0.3})`;
-      bx.lineWidth = 1;
-      bx.stroke();
-    }
 
-    // Center reticle
-    const crossSize = 16 + Math.sin(progress * Math.PI * 8) * 4;
-    bx.strokeStyle = 'rgba(0,229,255,0.9)';
-    bx.lineWidth = 1.5;
-    bx.beginPath(); bx.moveTo(bcx-crossSize,bcy); bx.lineTo(bcx+crossSize,bcy); bx.stroke();
-    bx.beginPath(); bx.moveTo(bcx,bcy-crossSize); bx.lineTo(bcx,bcy+crossSize); bx.stroke();
+  <!-- \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+     JS
+  \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 -->
+  <script>
+  // \u2500\u2500 Custom cursor \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+  const cursor = document.getElementById('cursor');
+  const ring   = document.getElementById('cursor-ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
 
-    // Corner brackets on reticle
-    const br = 24;
-    const bl = 8;
-    const corners2 = [[-1,-1],[1,-1],[1,1],[-1,1]];
-    corners2.forEach(([sx,sy]) => {
-      bx.strokeStyle = `rgba(0,229,255,${0.6+Math.sin(progress*Math.PI*4)*0.3})`;
-      bx.lineWidth = 1.5;
-      bx.beginPath(); bx.moveTo(bcx+sx*br, bcy+sy*(br-bl)); bx.lineTo(bcx+sx*br, bcy+sy*br); bx.lineTo(bcx+sx*(br-bl), bcy+sy*br); bx.stroke();
-    });
-
-    // Data particles shooting outward
-    for (let i = 0; i < 6; i++) {
-      const a = (i/6)*Math.PI*2 + progress*Math.PI*2;
-      const d = progress * 120;
-      const alpha = Math.max(0, 0.8 - d/120);
-      bx.beginPath();
-      bx.arc(bcx + Math.cos(a)*d, bcy + Math.sin(a)*d, 2, 0, Math.PI*2);
-      bx.fillStyle = `rgba(0,255,179,${alpha})`;
-      bx.fill();
-    }
-
-    bFrame++;
-    if (bFrame < totalFrames) {
-      requestAnimationFrame(drawBurst);
-    } else {
-      // Flash white then transition
-      burst.style.background = 'rgba(0,229,255,0.08)';
-      setTimeout(() => {
-        burst.style.opacity = '0';
-        burst.style.transition = 'opacity .5s';
-        setTimeout(() => { burst.remove(); style.remove(); if(cb) cb(); }, 500);
-      }, 400);
-    }
-  }
-  drawBurst();
-}
-
-/* ── 8. SCAN LINE EFFECT on hover over option cards ── */
-function initScanlines() {
   document.addEventListener('mousemove', e => {
-    const card = e.target.closest('.opt-card, .rank-card, .asset-row');
-    if (!card) return;
-    const rect = card.getBoundingClientRect();
-    const pct = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
-    card.style.setProperty('--scan-y', pct + '%');
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top  = my + 'px';
   });
 
-  const scanStyle = document.createElement('style');
-  scanStyle.textContent = `
-    .opt-card, .rank-card, .asset-row {
-      --scan-y: 50%;
-    }
-    .opt-card:hover::after, .rank-card:hover::after, .asset-row:hover::after {
-      content:'';
-      position:absolute; left:0; right:0;
-      top: var(--scan-y);
-      height:1px;
-      background: linear-gradient(90deg, transparent, rgba(0,229,255,0.15), transparent);
-      pointer-events:none;
-    }
-  `;
-  document.head.appendChild(scanStyle);
-}
-
-/* ── 9. LIVE CLOCK + COORDS in header ── */
-function initHUDStats() {
-  const statsEl = document.createElement('div');
-  statsEl.style.cssText = `
-    font-family:'Share Tech Mono',monospace; font-size:9px;
-    color:rgba(139,173,200,0.4); letter-spacing:.1em;
-    display:flex; gap:16px; align-items:center;
-  `;
-  statsEl.id = 'hudStats';
-  document.querySelector('.hdr-left').appendChild(statsEl);
-
-  function updateStats() {
-    const now = new Date();
-    const time = now.toTimeString().slice(0,8);
-    const date = now.toISOString().slice(0,10).replace(/-/g,'.');
-    statsEl.textContent = `${date} // ${time} UTC`;
+  function animRing() {
+    rx += (mx - rx) * 0.1;
+    ry += (my - ry) * 0.1;
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+    requestAnimationFrame(animRing);
   }
-  updateStats();
-  setInterval(updateStats, 1000);
-}
+  animRing();
 
-/* ── 10. STAGGERED QUESTION REVEAL on page load ── */
-function animateQuestionsIn(pageEl) {
-  const qs = pageEl.querySelectorAll('.q');
-  qs.forEach((q, i) => {
-    q.style.opacity = '0';
-    q.style.transform = 'translateY(12px)';
-    q.style.transition = `opacity .4s ease ${i * 0.08}s, transform .4s ease ${i * 0.08}s`;
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      q.style.opacity = '1';
-      q.style.transform = 'none';
-    }));
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform = 'translate(-50%,-50%) scale(2)';
+      ring.style.opacity = '0.2';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.transform = 'translate(-50%,-50%) scale(1)';
+      ring.style.opacity = '0.4';
+    });
   });
-}
 
-/* ── 11. HEADER HEIGHT FLICKER on boot ── */
-function initHdrFlicker() {
-  const hdr = document.querySelector('.hdr-logo');
-  let flicks = 0;
-  function flick() {
-    if (flicks++ > 6) return;
-    hdr.style.opacity = Math.random() > 0.5 ? '0.4' : '1';
-    setTimeout(flick, 60 + Math.random() * 80);
-  }
-  setTimeout(flick, 200);
-}
-
-/* ── ENHANCED PAGE NAVIGATION with glitch ── */
-const _origGoTo = goTo;
-function goToAnimated(page) {
-  if (page === currentPage) return;
-  const prevPage = currentPage;
-  glitchTransition(() => {
-    _origGoTo(page);
-    const pageEl = document.getElementById('page' + page);
-    if (pageEl) animateQuestionsIn(pageEl);
-  });
-}
-
-// Override button handlers
-document.getElementById('btnBack').onclick = () => goToAnimated(currentPage - 1);
-document.getElementById('btnNext').onclick = () => goToAnimated(currentPage + 1);
-
-/* ── INIT ALL ANIMATIONS AFTER APP LAUNCHES ── */
-const origLaunchApp = launchApp;
-function launchApp() {
-  const boot = document.getElementById('boot');
-  boot.style.transition = 'opacity .6s ease';
-  boot.style.opacity = '0';
-  setTimeout(() => {
-    boot.style.display = 'none';
-    document.getElementById('app').classList.add('visible');
-    // Init all effects
-    setTimeout(() => {
-      initRadar();
-      initHUDCorners();
-      initDataStreams();
-      initReticles();
-      initScanlines();
-      initHUDStats();
-      initHdrFlicker();
-      animateQuestionsIn(document.getElementById('page1'));
-      // Bind input trackers + restore any saved session data
-      bindTrackers();
-      restoreSession();
-      // Typewriter on first page title
-      setTimeout(() => {
-        const tag = document.querySelector('#page1 .ph-tag');
-        if (tag) typewriterEl(tag, 'PAGE 01 OF 03', 55);
-      }, 200);
-    }, 100);
-  }, 600);
-}
-</script>
-</body>
-</html>
+  // \u2500\u2500 Scroll-based nav world switching \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+  const nav        = document.getElementById('nav');
+  const wVisitors  = document.getElementById('world-visitors');
+  const wCreators  = document.getElementById('world-creators');
+  const wStaff     = document.getElementById('world-staff');
+  const btnV       = document.getElementById('btn-visitors');
+  const btnC       = document.getElementById('btn-
