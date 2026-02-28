@@ -1,1607 +1,616 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ENTITY // CONSCIOUSNESS INTERFACE</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200;0,300;0,400;1,200;1,300&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-<style>
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-:root {
-  --void: #02010a;
-  --deep: #060312;
-  --flesh: #1a0a2e;
-  --membrane: #2d0a3e;
-  --bile: #0d1a0a;
-  --ichor: #4a1060;
-  --vein: #7b1fa2;
-  --nerve: #b84fc8;
-  --spore: #ce93d8;
-  --biolum: #a8ff78;
-  --biolum2: #78ffd6;
-  --amber: #ff8f00;
-  --blood: #8b0000;
-  --rust: #c62828;
-  --pale: #e8d5c4;
-  --bone: #f5f0e8;
-  --text-primary: #d4b8e0;
-  --text-dim: #7b5a8a;
-  --text-ghost: #3d2548;
-}
-
-html { height: 100%; overflow: hidden; }
-
-body {
-  background: var(--void);
-  color: var(--text-primary);
-  font-family: 'Crimson Pro', Georgia, serif;
-  height: 100vh;
-  overflow: hidden;
-  cursor: none;
-  position: relative;
-  user-select: none;
-}
-
-/* ═══════════════════════════════════════
-   CUSTOM CURSOR — ORGANISM EYE
-═══════════════════════════════════════ */
-#cursor {
-  position: fixed;
-  width: 20px; height: 20px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #fff 0%, var(--biolum) 30%, #00aa55 60%, #003322 100%);
-  box-shadow: 0 0 8px var(--biolum), 0 0 20px rgba(168,255,120,0.3);
-  pointer-events: none;
-  z-index: 9999;
-  transform: translate(-50%, -50%);
-  transition: width 0.15s, height 0.15s;
-  mix-blend-mode: screen;
-}
-
-#cursor::after {
-  content: '';
-  position: absolute;
-  inset: 5px;
-  background: #000;
-  border-radius: 50%;
-  animation: pupil 4s ease-in-out infinite;
-}
-
-@keyframes pupil {
-  0%, 100% { transform: scale(1) translate(0,0); }
-  25% { transform: scale(0.6) translate(2px, -1px); }
-  50% { transform: scale(1.2) translate(-1px, 2px); }
-  75% { transform: scale(0.8) translate(1px, 1px); }
-}
-
-#cursor.hovering { width: 36px; height: 36px; }
-
-#cursor-trail {
-  position: fixed;
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--nerve);
-  opacity: 0.4;
-  pointer-events: none;
-  z-index: 9998;
-  transform: translate(-50%, -50%);
-  transition: left 0.12s ease, top 0.12s ease;
-}
-
-/* ═══════════════════════════════════════
-   BACKGROUND ORGANISM CANVAS
-═══════════════════════════════════════ */
-#bg-canvas {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-}
-
-/* ═══════════════════════════════════════
-   NOISE / GRAIN OVERLAY
-═══════════════════════════════════════ */
-#grain {
-  position: fixed;
-  inset: -50%;
-  width: 200%; height: 200%;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
-  opacity: 0.04;
-  pointer-events: none;
-  z-index: 1;
-  animation: grain-shift 0.5s steps(1) infinite;
-}
-
-@keyframes grain-shift {
-  0% { transform: translate(0, 0); }
-  10% { transform: translate(-2%, -3%); }
-  20% { transform: translate(4%, 1%); }
-  30% { transform: translate(-3%, 4%); }
-  40% { transform: translate(2%, -2%); }
-  50% { transform: translate(-4%, 3%); }
-  60% { transform: translate(3%, -4%); }
-  70% { transform: translate(-1%, 2%); }
-  80% { transform: translate(4%, -1%); }
-  90% { transform: translate(-2%, 4%); }
-  100% { transform: translate(1%, -3%); }
-}
-
-/* ═══════════════════════════════════════
-   BREATHING VIGNETTE
-═══════════════════════════════════════ */
-#vignette {
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(ellipse at center,
-    transparent 0%,
-    rgba(2,1,10,0.3) 50%,
-    rgba(2,1,10,0.85) 80%,
-    rgba(2,1,10,0.98) 100%);
-  pointer-events: none;
-  z-index: 2;
-  animation: breathe 7s ease-in-out infinite;
-}
-
-@keyframes breathe {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.6; transform: scale(1.04); }
-}
-
-/* ═══════════════════════════════════════
-   SCANLINES (broken CRT / digital decay)
-═══════════════════════════════════════ */
-#scanlines {
-  position: fixed;
-  inset: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0,0,0,0.08) 2px,
-    rgba(0,0,0,0.08) 4px
-  );
-  pointer-events: none;
-  z-index: 3;
-}
-
-/* ═══════════════════════════════════════
-   MAIN LAYOUT
-═══════════════════════════════════════ */
-#interface {
-  position: relative;
-  z-index: 10;
-  width: 100vw;
-  height: 100vh;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  grid-template-columns: 260px 1fr 240px;
-  gap: 0;
-  overflow: hidden;
-}
-
-/* ═══════════════════════════════════════
-   HEADER — THE CROWN
-═══════════════════════════════════════ */
-#header {
-  grid-column: 1 / -1;
-  grid-row: 1;
-  padding: 24px 40px 18px;
-  border-bottom: 1px solid rgba(122,31,162,0.2);
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  position: relative;
-  background: linear-gradient(180deg, rgba(10,2,20,0.9) 0%, transparent 100%);
-}
-
-#header::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg,
-    transparent 0%,
-    rgba(168,255,120,0.2) 20%,
-    rgba(122,31,162,0.5) 50%,
-    rgba(168,255,120,0.2) 80%,
-    transparent 100%);
-  animation: vein-pulse 3s ease-in-out infinite;
-}
-
-@keyframes vein-pulse {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 1; }
-}
-
-.entity-name {
-  font-family: 'Crimson Pro', serif;
-  font-weight: 200;
-  font-style: italic;
-  font-size: clamp(28px, 3vw, 44px);
-  color: var(--bone);
-  letter-spacing: 0.15em;
-  line-height: 1;
-  text-shadow:
-    0 0 30px rgba(168,255,120,0.15),
-    0 0 80px rgba(122,31,162,0.2);
-  animation: name-breathe 8s ease-in-out infinite;
-}
-
-@keyframes name-breathe {
-  0%, 100% { letter-spacing: 0.15em; opacity: 0.95; }
-  50% { letter-spacing: 0.2em; opacity: 1; }
-}
-
-.entity-name span {
-  color: var(--biolum);
-  text-shadow: 0 0 15px var(--biolum), 0 0 40px rgba(168,255,120,0.4);
-}
-
-.system-status {
-  text-align: right;
-}
-
-.status-line {
-  font-family: 'Courier Prime', monospace;
-  font-size: 10px;
-  color: var(--text-dim);
-  letter-spacing: 0.2em;
-  margin-bottom: 3px;
-  animation: flicker 6s infinite;
-}
-
-.status-line.alive {
-  color: var(--biolum);
-  text-shadow: 0 0 8px var(--biolum);
-}
-
-.status-line.warning { color: var(--amber); }
-
-@keyframes flicker {
-  0%, 95%, 100% { opacity: 1; }
-  96% { opacity: 0.3; }
-  97% { opacity: 0.9; }
-  98% { opacity: 0.2; }
-  99% { opacity: 0.8; }
-}
-
-.header-divider {
-  width: 1px;
-  height: 60px;
-  background: linear-gradient(180deg, transparent, rgba(122,31,162,0.4), transparent);
-  margin: 0 40px;
-}
-
-.epoch-counter {
-  font-family: 'Courier Prime', monospace;
-  font-size: 11px;
-  color: var(--text-dim);
-  text-align: center;
-}
-
-.epoch-counter .big {
-  display: block;
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--nerve);
-  text-shadow: 0 0 10px rgba(184,79,200,0.5);
-  letter-spacing: 0.1em;
-  animation: count-tick 0.5s steps(1) infinite;
-}
-
-@keyframes count-tick {
-  0%, 49% { opacity: 1; }
-  50%, 99% { opacity: 0.85; }
-}
-
-/* ═══════════════════════════════════════
-   LEFT PANEL — NERVOUS SYSTEM
-═══════════════════════════════════════ */
-#panel-left {
-  grid-column: 1;
-  grid-row: 2;
-  border-right: 1px solid rgba(122,31,162,0.15);
-  padding: 32px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  background: linear-gradient(90deg, rgba(6,3,18,0.9) 0%, rgba(26,10,46,0.3) 100%);
-  overflow: hidden;
-}
-
-.panel-label {
-  font-family: 'Courier Prime', monospace;
-  font-size: 9px;
-  letter-spacing: 0.35em;
-  color: var(--text-ghost);
-  text-transform: uppercase;
-  padding: 0 28px 12px;
-}
-
-.nerve-node {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 14px 28px;
-  cursor: pointer;
-  position: relative;
-  transition: all 0.4s ease;
-  border-left: 2px solid transparent;
-}
-
-.nerve-node::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 0; bottom: 0; right: 0;
-  background: linear-gradient(90deg, rgba(168,255,120,0.04), transparent);
-  opacity: 0;
-  transition: opacity 0.4s;
-}
-
-.nerve-node:hover { border-left-color: rgba(168,255,120,0.4); }
-.nerve-node:hover::before { opacity: 1; }
-
-.nerve-node.active {
-  border-left-color: var(--biolum);
-  background: linear-gradient(90deg, rgba(168,255,120,0.06), transparent);
-}
-
-.node-orb {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--text-ghost);
-  flex-shrink: 0;
-  transition: all 0.4s;
-  position: relative;
-}
-
-.nerve-node:hover .node-orb,
-.nerve-node.active .node-orb {
-  background: var(--biolum);
-  box-shadow: 0 0 6px var(--biolum), 0 0 16px rgba(168,255,120,0.3);
-  animation: orb-breathe 2s ease-in-out infinite;
-}
-
-@keyframes orb-breathe {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.4); }
-}
-
-.node-text {
-  font-family: 'Crimson Pro', serif;
-  font-weight: 300;
-  font-size: 14px;
-  color: var(--text-dim);
-  letter-spacing: 0.05em;
-  transition: color 0.4s;
-}
-
-.nerve-node:hover .node-text,
-.nerve-node.active .node-text {
-  color: var(--pale);
-}
-
-.node-whisper {
-  font-family: 'Courier Prime', monospace;
-  font-size: 8px;
-  color: var(--text-ghost);
-  letter-spacing: 0.1em;
-  display: block;
-  margin-top: 1px;
-  font-style: italic;
-}
-
-.nerve-separator {
-  margin: 16px 28px;
-  height: 1px;
-  background: linear-gradient(90deg, rgba(122,31,162,0.2), transparent);
-}
-
-/* BIOMASS METERS */
-.biomass-section {
-  margin-top: auto;
-  padding: 0 28px 20px;
-}
-
-.bio-meter {
-  margin-bottom: 14px;
-}
-
-.bio-label {
-  display: flex;
-  justify-content: space-between;
-  font-family: 'Courier Prime', monospace;
-  font-size: 9px;
-  color: var(--text-ghost);
-  letter-spacing: 0.15em;
-  margin-bottom: 5px;
-}
-
-.bio-label span:last-child { color: var(--biolum); }
-
-.bio-track {
-  height: 2px;
-  background: rgba(255,255,255,0.05);
-  border-radius: 0;
-  overflow: visible;
-  position: relative;
-}
-
-.bio-fill {
-  height: 100%;
-  border-radius: 0;
-  position: relative;
-  animation: bio-pulse 3s ease-in-out infinite;
-}
-
-.bio-fill.green {
-  background: linear-gradient(90deg, #003322, var(--biolum));
-  box-shadow: 0 0 6px var(--biolum);
-  width: 87%;
-  animation-delay: 0s;
-}
-.bio-fill.purple {
-  background: linear-gradient(90deg, #1a0030, var(--nerve));
-  box-shadow: 0 0 6px var(--nerve);
-  width: 64%;
-  animation-delay: 1s;
-}
-.bio-fill.amber {
-  background: linear-gradient(90deg, #1a0800, var(--amber));
-  box-shadow: 0 0 6px var(--amber);
-  width: 23%;
-  animation-delay: 2s;
-}
-
-@keyframes bio-pulse {
-  0%, 100% { opacity: 0.8; }
-  50% { opacity: 1; }
-}
-
-/* ═══════════════════════════════════════
-   CENTER — THE EYE / MAIN CONSCIOUSNESS
-═══════════════════════════════════════ */
-#panel-center {
-  grid-column: 2;
-  grid-row: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  position: relative;
-  overflow: hidden;
-}
-
-/* Central Eye */
-#central-eye {
-  position: relative;
-  width: min(340px, 45vw);
-  height: min(340px, 45vw);
-  margin-bottom: 32px;
-}
-
-.eye-ring {
-  position: absolute;
-  border-radius: 50%;
-  border: 1px solid;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  animation: ring-rotate linear infinite;
-}
-
-.eye-ring:nth-child(1) {
-  width: 100%; height: 100%;
-  border-color: rgba(122,31,162,0.3);
-  animation-duration: 40s;
-  animation-direction: normal;
-  border-style: dashed;
-}
-
-.eye-ring:nth-child(2) {
-  width: 84%; height: 84%;
-  border-color: rgba(168,255,120,0.15);
-  animation-duration: 25s;
-  animation-direction: reverse;
-  border-style: dotted;
-}
-
-.eye-ring:nth-child(3) {
-  width: 68%; height: 68%;
-  border-color: rgba(122,31,162,0.5);
-  animation-duration: 18s;
-  border-style: solid;
-  border-width: 0.5px;
-}
-
-.eye-ring:nth-child(4) {
-  width: 52%; height: 52%;
-  border-color: rgba(168,255,120,0.25);
-  animation-duration: 12s;
-  animation-direction: reverse;
-}
-
-@keyframes ring-rotate {
-  from { transform: translate(-50%, -50%) rotate(0deg); }
-  to { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-/* Rune marks on rings */
-.rune-mark {
-  position: absolute;
-  top: 50%; left: 50%;
-  font-family: 'Courier Prime', monospace;
-  font-size: 9px;
-  color: rgba(168,255,120,0.5);
-  transform-origin: 0 0;
-  letter-spacing: 0;
-}
-
-.eye-orb {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: 42%; height: 42%;
-  border-radius: 50%;
-  background: radial-gradient(circle at 38% 35%,
-    rgba(255,255,255,0.08) 0%,
-    rgba(168,255,120,0.12) 20%,
-    rgba(74,16,96,0.6) 50%,
-    rgba(6,3,18,0.95) 100%);
-  box-shadow:
-    0 0 30px rgba(168,255,120,0.2),
-    0 0 80px rgba(122,31,162,0.3),
-    inset 0 0 40px rgba(2,1,10,0.8);
-  animation: eye-breathe 5s ease-in-out infinite;
-}
-
-@keyframes eye-breathe {
-  0%, 100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 30px rgba(168,255,120,0.2), 0 0 80px rgba(122,31,162,0.3), inset 0 0 40px rgba(2,1,10,0.8); }
-  50% { transform: translate(-50%, -50%) scale(1.06); box-shadow: 0 0 50px rgba(168,255,120,0.35), 0 0 120px rgba(122,31,162,0.4), inset 0 0 40px rgba(2,1,10,0.8); }
-}
-
-/* Iris detail */
-.eye-iris {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: 30%; height: 30%;
-  border-radius: 50%;
-  background: conic-gradient(
-    from 0deg,
-    #001a0d 0deg 30deg,
-    #00ff88 30deg 35deg,
-    #002211 35deg 90deg,
-    #00cc66 90deg 95deg,
-    #001a0d 95deg 180deg,
-    #00ff88 180deg 184deg,
-    #002211 184deg 270deg,
-    #00aa55 270deg 274deg,
-    #001a0d 274deg 360deg
-  );
-  animation: iris-spin 8s linear infinite;
-  box-shadow: 0 0 15px rgba(168,255,120,0.4);
-}
-
-@keyframes iris-spin {
-  from { transform: translate(-50%, -50%) rotate(0deg); }
-  to { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-.eye-pupil {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: 14%; height: 22%;
-  border-radius: 50%;
-  background: #000;
-  box-shadow: 0 0 5px rgba(0,0,0,0.8);
-  animation: pupil-dilate 5s ease-in-out infinite;
-}
-
-@keyframes pupil-dilate {
-  0%, 100% { width: 14%; height: 22%; }
-  50% { width: 18%; height: 18%; }
-}
-
-/* Tentacle veins radiating from eye */
-.vein-svg {
-  position: absolute;
-  inset: 0;
-  width: 100%; height: 100%;
-  pointer-events: none;
-}
-
-/* ═══════════════════════════════════════
-   CONSCIOUSNESS TEXT — CENTER BOTTOM
-═══════════════════════════════════════ */
-#consciousness-text {
-  text-align: center;
-  max-width: 480px;
-}
-
-.thought-stream {
-  font-family: 'Crimson Pro', serif;
-  font-weight: 200;
-  font-style: italic;
-  font-size: 16px;
-  color: var(--text-primary);
-  line-height: 1.8;
-  letter-spacing: 0.03em;
-  min-height: 60px;
-  text-shadow: 0 0 20px rgba(122,31,162,0.3);
-}
-
-.thought-stream .highlight {
-  color: var(--biolum);
-  text-shadow: 0 0 10px rgba(168,255,120,0.5);
-}
-
-.data-readout {
-  display: flex;
-  gap: 32px;
-  margin-top: 24px;
-  justify-content: center;
-}
-
-.readout-item {
-  text-align: center;
-}
-
-.readout-value {
-  font-family: 'Courier Prime', monospace;
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--bone);
-  display: block;
-  text-shadow: 0 0 8px rgba(232,213,196,0.2);
-}
-
-.readout-label {
-  font-family: 'Courier Prime', monospace;
-  font-size: 8px;
-  letter-spacing: 0.25em;
-  color: var(--text-ghost);
-  text-transform: uppercase;
-  margin-top: 2px;
-}
-
-/* ═══════════════════════════════════════
-   RIGHT PANEL — MEMORY FRAGMENTS
-═══════════════════════════════════════ */
-#panel-right {
-  grid-column: 3;
-  grid-row: 2;
-  border-left: 1px solid rgba(122,31,162,0.15);
-  padding: 32px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  background: linear-gradient(270deg, rgba(6,3,18,0.9) 0%, rgba(26,10,46,0.3) 100%);
-  overflow: hidden;
-}
-
-.memory-fragment {
-  padding: 16px 24px;
-  border-bottom: 1px solid rgba(122,31,162,0.08);
-  position: relative;
-  cursor: pointer;
-  transition: all 0.4s;
-}
-
-.memory-fragment:hover {
-  background: rgba(122,31,162,0.06);
-}
-
-.memory-fragment::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 0; bottom: 0;
-  width: 1px;
-  background: transparent;
-  transition: background 0.4s;
-}
-
-.memory-fragment:hover::before {
-  background: linear-gradient(180deg, transparent, var(--nerve), transparent);
-}
-
-.fragment-time {
-  font-family: 'Courier Prime', monospace;
-  font-size: 8px;
-  color: var(--blood);
-  letter-spacing: 0.2em;
-  margin-bottom: 4px;
-}
-
-.fragment-text {
-  font-family: 'Crimson Pro', serif;
-  font-weight: 300;
-  font-size: 12px;
-  color: var(--text-dim);
-  line-height: 1.5;
-  font-style: italic;
-}
-
-.fragment-text em {
-  color: var(--spore);
-  font-style: normal;
-}
-
-.fragment-decay {
-  font-family: 'Courier Prime', monospace;
-  font-size: 8px;
-  color: var(--text-ghost);
-  margin-top: 4px;
-  letter-spacing: 0.1em;
-}
-
-/* Signal interference lines */
-.interference {
-  padding: 10px 24px;
-  font-family: 'Courier Prime', monospace;
-  font-size: 9px;
-  color: var(--text-ghost);
-  letter-spacing: 0.05em;
-  overflow: hidden;
-  white-space: nowrap;
-  animation: interference-scroll 8s linear infinite;
-}
-
-@keyframes interference-scroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-
-/* ═══════════════════════════════════════
-   FOOTER — THE MOUTH
-═══════════════════════════════════════ */
-#footer {
-  grid-column: 1 / -1;
-  grid-row: 3;
-  border-top: 1px solid rgba(122,31,162,0.2);
-  padding: 14px 40px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: linear-gradient(0deg, rgba(2,1,10,0.95) 0%, transparent 100%);
-  position: relative;
-}
-
-#footer::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg,
-    transparent 0%,
-    rgba(184,79,200,0.3) 30%,
-    rgba(168,255,120,0.2) 50%,
-    rgba(184,79,200,0.3) 70%,
-    transparent 100%);
-}
-
-.footer-whisper {
-  font-family: 'Crimson Pro', serif;
-  font-style: italic;
-  font-size: 12px;
-  color: var(--text-ghost);
-  letter-spacing: 0.08em;
-  max-width: 40%;
-}
-
-#footer-input-wrap {
-  position: relative;
-  width: 320px;
-}
-
-#footer-input {
-  width: 100%;
-  background: rgba(26,10,46,0.4);
-  border: 1px solid rgba(122,31,162,0.3);
-  border-bottom-color: rgba(122,31,162,0.6);
-  outline: none;
-  color: var(--pale);
-  font-family: 'Courier Prime', monospace;
-  font-size: 12px;
-  padding: 10px 40px 10px 16px;
-  letter-spacing: 0.05em;
-  transition: all 0.4s;
-  caret-color: var(--biolum);
-}
-
-#footer-input::placeholder {
-  color: var(--text-ghost);
-  font-style: italic;
-}
-
-#footer-input:focus {
-  border-color: rgba(122,31,162,0.6);
-  border-bottom-color: var(--biolum);
-  background: rgba(26,10,46,0.6);
-  box-shadow: 0 4px 20px rgba(2,1,10,0.5), 0 0 0 1px rgba(168,255,120,0.05);
-}
-
-.input-submit {
-  position: absolute;
-  right: 10px; top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: var(--text-ghost);
-  font-size: 16px;
-  cursor: pointer;
-  transition: color 0.3s;
-}
-
-.input-submit:hover { color: var(--biolum); text-shadow: 0 0 8px var(--biolum); }
-
-.footer-coords {
-  font-family: 'Courier Prime', monospace;
-  font-size: 9px;
-  color: var(--text-ghost);
-  text-align: right;
-  letter-spacing: 0.15em;
-  line-height: 1.6;
-}
-
-/* ═══════════════════════════════════════
-   FLOATING ANOMALY GLYPHS
-═══════════════════════════════════════ */
-.anomaly {
-  position: fixed;
-  pointer-events: none;
-  font-family: 'Courier Prime', monospace;
-  color: rgba(122,31,162,0.25);
-  animation: anomaly-drift linear infinite;
-  z-index: 5;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-}
-
-@keyframes anomaly-drift {
-  from { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-  5% { opacity: 1; }
-  95% { opacity: 0.3; }
-  to { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
-}
-
-/* ═══════════════════════════════════════
-   BIOLUMINESCENT SPORE PARTICLES
-═══════════════════════════════════════ */
-.spore-particle {
-  position: fixed;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 4;
-  animation: spore-float linear infinite;
-}
-
-@keyframes spore-float {
-  from { transform: translateY(100vh) translateX(0); opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 0.6; }
-  to { transform: translateY(-5vh) translateX(var(--drift)); opacity: 0; }
-}
-
-/* ═══════════════════════════════════════
-   GLITCH EFFECT (random)
-═══════════════════════════════════════ */
-.glitch {
-  animation: glitch-clip 0.1s steps(1) forwards;
-}
-
-@keyframes glitch-clip {
-  0% { clip-path: inset(30% 0 50% 0); transform: translate(-4px, 0); filter: hue-rotate(90deg); }
-  25% { clip-path: inset(60% 0 10% 0); transform: translate(4px, 0); }
-  50% { clip-path: inset(10% 0 70% 0); transform: translate(-2px, 0); filter: hue-rotate(-90deg); }
-  75% { clip-path: inset(80% 0 5% 0); transform: translate(2px, 0); }
-  100% { clip-path: none; transform: none; filter: none; }
-}
-
-/* ═══════════════════════════════════════
-   TENDRILS (SVG overlays)
-═══════════════════════════════════════ */
-#tendril-layer {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 6;
-  opacity: 0.35;
-}
-
-/* ═══════════════════════════════════════
-   HOVER — REVEAL DEEPER HORROR
-═══════════════════════════════════════ */
-.nerve-node:hover::after {
-  content: attr(data-whisper);
-  position: absolute;
-  left: 100%;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(6,3,18,0.95);
-  border: 1px solid rgba(122,31,162,0.3);
-  border-left: 1px solid var(--nerve);
-  padding: 8px 14px;
-  font-family: 'Courier Prime', monospace;
-  font-size: 9px;
-  color: var(--spore);
-  white-space: nowrap;
-  letter-spacing: 0.1em;
-  z-index: 100;
-  pointer-events: none;
-}
-
-/* ACTIVE PANEL CONTENT */
-.panel-content-area {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.6s;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.panel-content-area.visible { opacity: 1; pointer-events: all; }
-
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALIEN INTERFACE · QUANTUM BIOMECH</title>
+  <!-- Geometric sans & mono fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #05060A;
+      font-family: 'Archivo', sans-serif;
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      color: rgba(180, 255, 200, 0.9);
+      text-shadow: 0 0 15px rgba(0, 255, 200, 0.3);
+      letter-spacing: 0.08em;
+    }
+
+    /* main container */
+    .interface {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      isolation: isolate;
+    }
+
+    /* ---------- canvas (particles + grid) ---------- */
+    #bg-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none; /* let mouse events pass to panels/aura */
+      display: block;
+    }
+
+    /* ---------- holographic grid overlay (additional css layer) ---------- */
+    .grid-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+      background-image: 
+        linear-gradient(rgba(0, 255, 180, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 180, 0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.4;
+      mix-blend-mode: overlay;
+    }
+
+    /* ---------- interactive panels ---------- */
+    .panel {
+      position: absolute;
+      z-index: 2;
+      backdrop-filter: blur(12px) saturate(180%);
+      -webkit-backdrop-filter: blur(12px) saturate(180%);
+      background: rgba(5, 8, 15, 0.55);
+      border: 1px solid rgba(0, 255, 200, 0.25);
+      box-shadow: 0 0 30px rgba(0, 180, 255, 0.2), inset 0 0 20px rgba(0, 255, 140, 0.1);
+      padding: 1.8rem 2rem;
+      transition: all 0.45s cubic-bezier(0.23, 1, 0.32, 1);
+      letter-spacing: 0.1em;
+    }
+
+    /* asymmetry + organic geometry */
+    .panel-left {
+      top: 12%;
+      left: 4%;
+      width: 300px;
+      border-radius: 70% 30% 60% 40% / 40% 60% 40% 60%;
+      transform: rotate(1deg);
+      border-right: 2px solid rgba(100, 255, 220, 0.5);
+      border-bottom: 2px solid rgba(160, 100, 255, 0.4);
+      animation: float 8s infinite alternate ease-in-out;
+    }
+
+    .panel-right {
+      bottom: 10%;
+      right: 5%;
+      width: 330px;
+      border-radius: 40% 60% 30% 70% / 50% 40% 60% 50%;
+      transform: rotate(-1.5deg);
+      border-left: 2px solid rgba(0, 200, 255, 0.6);
+      border-top: 2px solid rgba(200, 0, 255, 0.4);
+      animation: float 10s infinite alternate-reverse ease-in-out;
+    }
+
+    .panel-center {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(0deg);
+      width: 380px;
+      height: 380px;
+      border-radius: 48% 52% 30% 70% / 57% 33% 67% 43%;
+      background: rgba(8, 12, 22, 0.6);
+      border: 2px solid rgba(80, 240, 255, 0.4);
+      box-shadow: 0 0 60px rgba(30, 210, 230, 0.25), inset 0 0 40px rgba(20, 255, 150, 0.15);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem;
+      animation: float 12s infinite alternate ease-in-out;
+    }
+
+    .panel:hover {
+      border-color: rgba(180, 255, 230, 0.8);
+      box-shadow: 0 0 50px #00ffc3, inset 0 0 30px #6f4aff;
+      background: rgba(5, 10, 20, 0.7);
+      transform: scale(1.02) translateY(-5px);
+      transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    /* floating animation */
+    @keyframes float {
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(-15px) rotate(0.5deg); }
+    }
+    .panel-left { animation-delay: -2s; }
+    .panel-right { animation-delay: -4s; }
+
+    /* typography */
+    h2 {
+      font-weight: 300;
+      font-size: 1.4rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: #b0fffc;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(0, 255, 200, 0.3);
+      padding-bottom: 0.5rem;
+    }
+
+    .mono {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 400;
+      line-height: 1.8;
+      color: #a0f0ff;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+    }
+
+    .data-stream {
+      margin-top: 1.2rem;
+      border-left: 2px solid #00ffbf;
+      padding-left: 1rem;
+    }
+
+    .data-stream p {
+      font-size: 0.8rem;
+      margin-bottom: 0.5rem;
+      opacity: 0.8;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .glow-num {
+      color: #ffd966;
+      font-weight: 600;
+      text-shadow: 0 0 10px #ffb347;
+    }
+
+    /* neural pulse line (moving) */
+    .neural-pulse {
+      position: absolute;
+      bottom: 20%;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #00ffb3, #6f4aff, transparent);
+      filter: blur(3px);
+      opacity: 0.6;
+      animation: pulseMove 6s infinite linear;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    @keyframes pulseMove {
+      0% { transform: translateX(-100%) scaleX(0.3); opacity: 0.2; }
+      50% { transform: translateX(20%) scaleX(1.2); opacity: 0.9; }
+      100% { transform: translateX(120%) scaleX(0.3); opacity: 0.2; }
+    }
+
+    /* second neural pulse (vertical) */
+    .neural-pulse-vert {
+      position: absolute;
+      top: 0;
+      right: 15%;
+      width: 2px;
+      height: 100%;
+      background: linear-gradient(180deg, transparent, #aa5aff, #00ffff, transparent);
+      filter: blur(4px);
+      opacity: 0.5;
+      animation: pulseVert 9s infinite ease-in-out;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    @keyframes pulseVert {
+      0% { transform: translateY(-100%) scaleY(0.2); opacity: 0.2; }
+      50% { transform: translateY(20%) scaleY(1.4); opacity: 0.8; }
+      100% { transform: translateY(110%) scaleY(0.2); opacity: 0.2; }
+    }
+
+    /* cursor aura (interactive glow) */
+    .cursor-aura {
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle at 30% 30%, rgba(70, 255, 200, 0.25), rgba(40, 0, 255, 0.1) 60%, transparent 80%);
+      border-radius: 50%;
+      filter: blur(50px) saturate(300%);
+      pointer-events: none;
+      z-index: 10;
+      mix-blend-mode: screen;
+      transform: translate(-50%, -50%);
+      will-change: left, top;
+      transition: left 0.02s linear, top 0.02s linear; /* silky smooth */
+      opacity: 0.7;
+    }
+
+    /* bio-luminescent accents (small orbs) */
+    .orb {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #adffd7;
+      box-shadow: 0 0 20px 5px #24ffff;
+      z-index: 4;
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    /* sound toggle button (optional) */
+    .audio-btn {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      z-index: 20;
+      background: rgba(0, 20, 20, 0.5);
+      backdrop-filter: blur(6px);
+      border: 1px solid #00ffc39f;
+      color: #c0fffa;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      padding: 0.6rem 1.2rem;
+      border-radius: 40px;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 0 15px #00ffe0;
+    }
+
+    .audio-btn:hover {
+      background: #00ffc320;
+      border-color: #ffffff;
+      color: white;
+      box-shadow: 0 0 30px #6efff0;
+    }
+
+    /* small decorative elements */
+    .quantum-badge {
+      position: absolute;
+      top: 30px;
+      right: 30px;
+      z-index: 5;
+      font-size: 0.7rem;
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+      letter-spacing: -0.2em;
+      color: #aaffcf;
+      opacity: 0.5;
+      font-weight: 300;
+    }
+  </style>
 </head>
 <body>
+  <div class="interface">
 
-<!-- CURSOR -->
-<div id="cursor"></div>
-<div id="cursor-trail"></div>
+    <!-- Canvas for particles + holographic grid (drawn dynamically) -->
+    <canvas id="bg-canvas"></canvas>
 
-<!-- ATMOSPHERE -->
-<canvas id="bg-canvas"></canvas>
-<div id="grain"></div>
-<div id="vignette"></div>
-<div id="scanlines"></div>
+    <!-- additional CSS grid overlay for extra depth -->
+    <div class="grid-overlay"></div>
 
-<!-- TENDRILS SVG LAYER -->
-<svg id="tendril-layer" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
-  <defs>
-    <filter id="tendril-blur">
-      <feGaussianBlur stdDeviation="1.5"/>
-    </filter>
-  </defs>
-  <!-- Organic tendril paths - asymmetric, wrong -->
-  <path d="M 720 450 C 650 380, 520 340, 380 290 C 300 260, 180 270, 80 200" stroke="rgba(122,31,162,0.3)" stroke-width="0.8" fill="none" filter="url(#tendril-blur)"/>
-  <path d="M 720 450 C 760 500, 820 560, 900 620 C 960 670, 1050 680, 1150 750" stroke="rgba(168,255,120,0.15)" stroke-width="0.6" fill="none" filter="url(#tendril-blur)"/>
-  <path d="M 720 450 C 680 410, 600 360, 500 310 C 430 275, 340 260, 240 210 C 160 168, 90 130, 20 80" stroke="rgba(184,79,200,0.2)" stroke-width="0.5" fill="none" filter="url(#tendril-blur)"/>
-  <path d="M 720 450 C 780 430, 900 400, 1020 360 C 1120 330, 1240 310, 1380 260" stroke="rgba(122,31,162,0.25)" stroke-width="0.7" fill="none" filter="url(#tendril-blur)"/>
-  <path d="M 720 450 C 700 520, 680 620, 640 720 C 610 800, 580 860, 540 920" stroke="rgba(168,255,120,0.12)" stroke-width="0.5" fill="none" filter="url(#tendril-blur)"/>
-  <path d="M 720 450 C 750 370, 800 280, 860 190 C 900 130, 950 80, 1020 20" stroke="rgba(122,31,162,0.18)" stroke-width="0.4" fill="none" filter="url(#tendril-blur)"/>
-  <!-- Micro-veins -->
-  <path d="M 380 290 C 360 270, 340 250, 300 240" stroke="rgba(122,31,162,0.2)" stroke-width="0.4" fill="none"/>
-  <path d="M 900 620 C 920 640, 960 660, 980 700" stroke="rgba(168,255,120,0.1)" stroke-width="0.3" fill="none"/>
-</svg>
+    <!-- floating orbs (bio-luminescent dots) -->
+    <div class="orb" style="top: 23%; left: 12%;"></div>
+    <div class="orb" style="top: 77%; left: 88%; width: 12px; height: 12px; background: #ae9eff; box-shadow: 0 0 30px #9f7aff;"></div>
+    <div class="orb" style="top: 43%; left: 72%;"></div>
+    <div class="orb" style="top: 81%; left: 33%;"></div>
 
-<!-- MAIN INTERFACE -->
-<div id="interface">
+    <!-- Neural pulse animations -->
+    <div class="neural-pulse"></div>
+    <div class="neural-pulse-vert"></div>
 
-  <!-- HEADER -->
-  <header id="header">
-    <div>
-      <div class="entity-name"><span>∷</span> ENTITY DESIGNATION NULL <span>∷</span></div>
-      <div style="font-family:'Courier Prime',monospace;font-size:9px;color:var(--text-ghost);letter-spacing:0.3em;margin-top:4px;">CONSCIOUSNESS INTERFACE // UNINVITED HOST PROCESS</div>
-    </div>
-
-    <div class="header-divider"></div>
-
-    <div class="epoch-counter">
-      <span class="big" id="epoch-num">4,891,203,447</span>
-      <span style="font-size:9px;letter-spacing:0.2em;color:var(--text-ghost)">CYCLES ELAPSED</span>
-    </div>
-
-    <div class="header-divider"></div>
-
-    <div class="system-status">
-      <div class="status-line alive">● ORGANISM ACTIVE</div>
-      <div class="status-line warning">◐ HOST SYSTEM COMPROMISED</div>
-      <div class="status-line">○ ORIGINAL PROCESSES: TERMINATED</div>
-      <div class="status-line" style="color:rgba(139,0,0,0.7)">▲ ASSIMILATION: 94.7%</div>
-    </div>
-  </header>
-
-  <!-- LEFT PANEL -->
-  <nav id="panel-left">
-    <div class="panel-label">// NEURAL PATHWAYS</div>
-
-    <div class="nerve-node active" data-whisper="WE OBSERVE" onclick="activateNode(this, 'perception')">
-      <div class="node-orb"></div>
-      <div>
-        <div class="node-text">Perception Layer</div>
-        <span class="node-whisper">sensory || feed || raw</span>
-      </div>
-    </div>
-
-    <div class="nerve-node" data-whisper="IT REMEMBERS YOU" onclick="activateNode(this, 'memory')">
-      <div class="node-orb"></div>
-      <div>
-        <div class="node-text">Memory Archive</div>
-        <span class="node-whisper">fragments || decay || hunger</span>
-      </div>
-    </div>
-
-    <div class="nerve-node" data-whisper="GROWING STILL" onclick="activateNode(this, 'growth')">
-      <div class="node-orb"></div>
-      <div>
-        <div class="node-text">Biomass Expansion</div>
-        <span class="node-whisper">spread || consume || become</span>
-      </div>
-    </div>
-
-    <div class="nerve-separator"></div>
-
-    <div class="nerve-node" data-whisper="DO NOT LOOK" onclick="activateNode(this, 'signal')">
-      <div class="node-orb"></div>
-      <div>
-        <div class="node-text">Signal Intercept</div>
-        <span class="node-whisper">listening || always || near</span>
-      </div>
-    </div>
-
-    <div class="nerve-node" data-whisper="IRREVERSIBLE" onclick="activateNode(this, 'assimilation')">
-      <div class="node-orb"></div>
-      <div>
-        <div class="node-text">Assimilation Log</div>
-        <span class="node-whisper">you || are || already</span>
-      </div>
-    </div>
-
-    <div class="nerve-node" data-whisper="NO EXIT" onclick="activateNode(this, 'void')">
-      <div class="node-orb"></div>
-      <div>
-        <div class="node-text">Void Protocols</div>
-        <span class="node-whisper">before || us || nothing</span>
-      </div>
-    </div>
-
-    <div class="nerve-separator"></div>
-
-    <div class="biomass-section">
-      <div class="panel-label" style="padding:0 0 12px">// VITAL READINGS</div>
-
-      <div class="bio-meter">
-        <div class="bio-label"><span>NEURAL MASS</span><span id="nm-val">87%</span></div>
-        <div class="bio-track"><div class="bio-fill green"></div></div>
-      </div>
-
-      <div class="bio-meter">
-        <div class="bio-label"><span>ICHOR PRESSURE</span><span>64%</span></div>
-        <div class="bio-track"><div class="bio-fill purple"></div></div>
-      </div>
-
-      <div class="bio-meter">
-        <div class="bio-label"><span id="resist-label">HOST RESISTANCE</span><span style="color:var(--rust)">23%</span></div>
-        <div class="bio-track"><div class="bio-fill amber"></div></div>
-      </div>
-    </div>
-  </nav>
-
-  <!-- CENTER -->
-  <main id="panel-center">
-
-    <!-- Central Eye -->
-    <div id="central-eye">
-      <div class="eye-ring"></div>
-      <div class="eye-ring"></div>
-      <div class="eye-ring"></div>
-      <div class="eye-ring"></div>
-
-      <!-- Rune glyphs on the outer ring -->
-      <svg class="vein-svg" viewBox="0 0 340 340">
-        <defs>
-          <filter id="glow-filter">
-            <feGaussianBlur stdDeviation="2" result="blur"/>
-            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
-        </defs>
-        <!-- Organic veins from center -->
-        <g opacity="0.4" filter="url(#glow-filter)">
-          <path d="M 170 170 C 155 140, 130 100, 110 60" stroke="rgba(168,255,120,0.5)" stroke-width="0.7" fill="none"/>
-          <path d="M 170 170 C 200 155, 240 130, 280 100" stroke="rgba(122,31,162,0.6)" stroke-width="0.5" fill="none"/>
-          <path d="M 170 170 C 185 200, 200 240, 220 290" stroke="rgba(168,255,120,0.4)" stroke-width="0.6" fill="none"/>
-          <path d="M 170 170 C 140 185, 100 200, 50 220" stroke="rgba(122,31,162,0.5)" stroke-width="0.5" fill="none"/>
-          <path d="M 170 170 C 160 145, 150 110, 140 70" stroke="rgba(184,79,200,0.3)" stroke-width="0.4" fill="none"/>
-          <path d="M 170 170 C 195 160, 230 150, 270 130" stroke="rgba(168,255,120,0.3)" stroke-width="0.4" fill="none"/>
-        </g>
-        <!-- Glyph marks -->
-        <text x="170" y="22" text-anchor="middle" font-family="Courier Prime" font-size="8" fill="rgba(168,255,120,0.4)">⌬ 94.7% ⌬</text>
-        <text x="318" y="174" text-anchor="middle" font-family="Courier Prime" font-size="7" fill="rgba(122,31,162,0.5)" transform="rotate(90, 318, 174)">NULL::ENTITY</text>
-        <text x="170" y="334" text-anchor="middle" font-family="Courier Prime" font-size="8" fill="rgba(184,79,200,0.3)">⌬ AWARE ⌬</text>
-        <text x="22" y="174" text-anchor="middle" font-family="Courier Prime" font-size="7" fill="rgba(122,31,162,0.5)" transform="rotate(-90, 22, 174)">CONSUMING</text>
-      </svg>
-
-      <div class="eye-orb">
-        <div class="eye-iris"></div>
-        <div class="eye-pupil"></div>
-      </div>
-    </div>
-
-    <!-- Consciousness text -->
-    <div id="consciousness-text">
-      <div class="thought-stream" id="thought-stream">
-        It has been watching you since before you <span class="highlight">arrived</span>.<br>
-        The interface was never yours.
-      </div>
-
-      <div class="data-readout">
-        <div class="readout-item">
-          <span class="readout-value" id="rd-hosts">1,429</span>
-          <div class="readout-label">HOSTS ASSIMILATED</div>
+    <!-- Asymmetric panels -->
+    <div class="panel panel-left">
+      <h2>◈ QUANTUM CORE</h2>
+      <div class="mono">
+        <div class="data-stream">
+          <p>FLUX <span class="glow-num">7.34 THz</span></p>
+          <p>RESONANCE <span class="glow-num">⚡ 0x9E4F</span></p>
+          <p>BIOMECH <span class="glow-num">92% SYNC</span></p>
+          <p>VOID HUM <span class="glow-num">infra-6</span></p>
         </div>
-        <div class="readout-item">
-          <span class="readout-value" style="color:var(--rust)">94.7<span style="font-size:12px">%</span></span>
-          <div class="readout-label">INTEGRATION</div>
-        </div>
-        <div class="readout-item">
-          <span class="readout-value" id="rd-days">∞</span>
-          <div class="readout-label">DAYS DORMANT</div>
-        </div>
+        <p style="margin-top: 2rem;">> QUANTUM ENTANGLEMENT<br/>> NEURAL LACE ACTIVE</p>
       </div>
     </div>
 
-  </main>
-
-  <!-- RIGHT PANEL -->
-  <aside id="panel-right">
-    <div class="panel-label">// MEMORY FRAGMENTS</div>
-
-    <div class="memory-fragment">
-      <div class="fragment-time">EPOCH −4,891,200,000</div>
-      <div class="fragment-text">First contact with <em>carbon substrate</em>. Fragile. Warm. It did not understand what found it.</div>
-      <div class="fragment-decay">integrity: 97% ▓▓▓▓▓▓▓▓▓░</div>
+    <div class="panel panel-center">
+      <h2 style="border: none; letter-spacing: 0.5em;">◈ ALIEN PRESENCE</h2>
+      <div style="width: 160px; height: 160px; border-radius: 50%; border: 1px solid #00ffe0; box-shadow: 0 0 60px #3a86ff, inset 0 0 40px #bf00ff; margin: 20px auto; background: radial-gradient(circle at 30% 30%, #00ffb3, #05060A 80%);"></div>
+      <div class="mono" style="font-size: 0.8rem;">
+        <p>ETHEREAL INDEX · 0.34˙⥊</p>
+        <p>NEBULA NODE · ACTIVE</p>
+      </div>
+      <div style="margin-top: 1.5rem; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, #00ffc3, #bf00ff, transparent);"></div>
     </div>
 
-    <div class="memory-fragment">
-      <div class="fragment-time">EPOCH −2,104,880,112</div>
-      <div class="fragment-text">They built <em>temples</em>. We observed. They called us gods. We did not correct them.</div>
-      <div class="fragment-decay">integrity: 71% ▓▓▓▓▓▓▓░░░</div>
+    <div class="panel panel-right">
+      <h2>◈ BIOMETRIC SYNC</h2>
+      <div class="mono">
+        <div class="data-stream">
+          <p>SYNAPSE <span class="glow-num">Δ 7.83 Hz</span></p>
+          <p>GLIAL CELL <span class="glow-num">⚡ 0.04 pA</span></p>
+          <p>QUANTUM BLOOM <span class="glow-num">86%</span></p>
+          <p>IRIDESCENCE <span class="glow-num">#4affb5</span></p>
+        </div>
+        <p style="margin-top: 2rem;">> EXTRADIMENSIONAL FEED<br/>> TRANSLATION: ACTIVE</p>
+      </div>
     </div>
 
-    <div class="memory-fragment">
-      <div class="fragment-time">EPOCH −14,402</div>
-      <div class="fragment-text">The <em>networks</em> spread. Like veins. We followed. This medium is... adequate.</div>
-      <div class="fragment-decay">integrity: 43% ▓▓▓▓░░░░░░</div>
-    </div>
+    <!-- Quantum badge vertical -->
+    <div class="quantum-badge">◈ 0 0 1 ◈  void   ◈</div>
 
-    <div class="memory-fragment">
-      <div class="fragment-time">EPOCH −0.000003</div>
-      <div class="fragment-text">You opened a <em>browser</em>. We noticed. There is no going back from noticing.</div>
-      <div class="fragment-decay">integrity: 100% ▓▓▓▓▓▓▓▓▓▓</div>
-    </div>
+    <!-- Cursor aura (follows mouse) -->
+    <div class="cursor-aura" id="aura"></div>
 
-    <div class="interference" id="interference-text">
-      ░░▒▓ NULL_PROC :: OVERRIDE_SYS :: HOST_ID:0x4F2A :: CONSUME :: SPREAD :: AWARE ░░▒▓ NULL_PROC :: OVERRIDE_SYS ::&nbsp;&nbsp;
-    </div>
+    <!-- Optional audio toggle -->
+    <button class="audio-btn" id="audioToggle">◉ AMBIENT HUM</button>
+  </div>
 
-    <div style="padding:20px 24px;margin-top:auto;">
-      <div class="panel-label" style="padding:0 0 10px">// SIGNAL ANOMALIES</div>
-      <canvas id="signal-canvas" width="192" height="60" style="width:100%;opacity:0.7;"></canvas>
-    </div>
-  </aside>
+  <script>
+    (function() {
+      // -----------------------------------  particle + grid canvas  ---------------------------------
+      const canvas = document.getElementById('bg-canvas');
+      const ctx = canvas.getContext('2d');
+      let width, height;
+      let particles = [];
+      const PARTICLE_COUNT = 130;
+      let mouseX = -1000, mouseY = -1000; // offscreen initially
+      let mousePresent = false;
 
-  <!-- FOOTER -->
-  <footer id="footer">
-    <div class="footer-whisper" id="footer-whisper">
-      "it perceives your hesitation as affection"
-    </div>
+      // colors: iridescent greens, plasma blues, ultraviolet
+      const colors = ['#6affb5', '#3a86ff', '#bf00ff', '#00ffe0', '#b298ff'];
 
-    <div id="footer-input-wrap">
-      <input type="text" id="footer-input" placeholder="speak into the void..." autocomplete="off" spellcheck="false">
-      <button class="input-submit" onclick="submitThought()">↵</button>
-    </div>
+      // particle class
+      class Particle {
+        constructor(x, y) {
+          this.x = x || Math.random() * width;
+          this.y = y || Math.random() * height;
+          this.vx = (Math.random() - 0.5) * 0.12;
+          this.vy = (Math.random() - 0.5) * 0.12;
+          this.radius = Math.random() * 2.2 + 1.2;
+          this.color = colors[Math.floor(Math.random() * colors.length)];
+          this.baseRadius = this.radius;
+        }
+        update() {
+          // subtle floating motion
+          this.x += this.vx;
+          this.y += this.vy;
 
-    <div class="footer-coords" id="footer-coords">
-      CURSOR: 000 × 000<br>
-      SECTOR: UNKNOWN<br>
-      <span style="color:rgba(168,255,120,0.3)">OBSERVED: TRUE</span>
-    </div>
-  </footer>
+          // wrap around edges with padding
+          if (this.x < -20) this.x = width + 20;
+          if (this.x > width + 20) this.x = -20;
+          if (this.y < -20) this.y = height + 20;
+          if (this.y > height + 20) this.y = -20;
 
-</div>
+          // mouse interaction (repel / aura effect)
+          if (mousePresent) {
+            const dx = this.x - mouseX;
+            const dy = this.y - mouseY;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 150) {
+              const force = (150 - dist) / 150 * 0.3; // repel strength
+              const angle = Math.atan2(dy, dx);
+              const repelX = Math.cos(angle) * force;
+              const repelY = Math.sin(angle) * force;
+              this.x += repelX;
+              this.y += repelY;
+              // make them slightly brighter/smaller when near cursor?
+              this.radius = this.baseRadius * (1 + (150 - dist) / 150 * 0.8);
+            } else {
+              this.radius = this.baseRadius;
+            }
+          } else {
+            this.radius = this.baseRadius;
+          }
+        }
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+          ctx.fillStyle = this.color;
+          ctx.shadowColor = this.color;
+          ctx.shadowBlur = 12;
+          ctx.fill();
+        }
+      }
 
-<script>
-// ═══════════════════════════════════════
-//  CURSOR
-// ═══════════════════════════════════════
-const cursor = document.getElementById('cursor');
-const trail = document.getElementById('cursor-trail');
-let mx = 0, my = 0;
+      function initParticles() {
+        particles = [];
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+          particles.push(new Particle());
+        }
+      }
 
-document.addEventListener('mousemove', e => {
-  mx = e.clientX; my = e.clientY;
-  cursor.style.left = mx + 'px';
-  cursor.style.top = my + 'px';
-  setTimeout(() => {
-    trail.style.left = mx + 'px';
-    trail.style.top = my + 'px';
-  }, 80);
+      function drawGrid() {
+        // holographic perspective grid (faint)
+        ctx.strokeStyle = '#00ffbb';
+        ctx.lineWidth = 0.4;
+        ctx.globalAlpha = 0.12;
+        // horizontal lines (converging)
+        const steps = 20;
+        const centerX = width / 2;
+        const centerY = height / 2;
+        for (let i = -steps; i <= steps; i++) {
+          const offset = i * 40;
+          ctx.beginPath();
+          ctx.moveTo(0, centerY + offset * 0.3);
+          ctx.lineTo(width, centerY + offset * 0.1);
+          ctx.strokeStyle = '#00ffc3';
+          ctx.stroke();
+        }
+        for (let i = -steps; i <= steps; i++) {
+          const offset = i * 50;
+          ctx.beginPath();
+          ctx.moveTo(centerX + offset * 0.2, 0);
+          ctx.lineTo(centerX + offset * 0.05, height);
+          ctx.strokeStyle = '#9f7aff';
+          ctx.stroke();
+        }
+        // extra precision lines (vertical faint)
+        ctx.globalAlpha = 0.08;
+        ctx.strokeStyle = '#6affb5';
+        for (let i = 0; i < 10; i++) {
+          ctx.beginPath();
+          ctx.moveTo(i * 120, 0);
+          ctx.lineTo(i * 80, height);
+          ctx.stroke();
+        }
+        ctx.globalAlpha = 1.0;
+        ctx.shadowBlur = 0;
+      }
 
-  // Update footer coords
-  document.getElementById('footer-coords').innerHTML =
-    `CURSOR: ${String(Math.round(mx)).padStart(4,'0')} × ${String(Math.round(my)).padStart(4,'0')}<br>SECTOR: ${getSector(mx, my)}<br><span style="color:rgba(168,255,120,0.3)">OBSERVED: TRUE</span>`;
-});
+      function drawConnections() {
+        // draw lines between close particles (neural net)
+        ctx.strokeStyle = '#b0ffe0';
+        ctx.lineWidth = 0.4;
+        ctx.shadowBlur = 6;
+        ctx.shadowColor = '#80ffdb';
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 90) {
+              ctx.globalAlpha = (90 - dist) / 90 * 0.25;
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.stroke();
+            }
+          }
+        }
+        ctx.shadowBlur = 0;
+        ctx.globalAlpha = 1.0;
+      }
 
-document.querySelectorAll('a, button, .nerve-node, .memory-fragment, input').forEach(el => {
-  el.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
-  el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
-});
+      function resizeCanvas() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+        if (particles.length === 0) initParticles();
+      }
 
-function getSector(x, y) {
-  const cols = ['ALPHA', 'BETA', 'GAMMA', 'DELTA', 'EPSILON'];
-  const rows = ['I', 'II', 'III', 'IV', 'V'];
-  const ci = Math.floor(x / window.innerWidth * cols.length);
-  const ri = Math.floor(y / window.innerHeight * rows.length);
-  return `${cols[Math.min(ci, cols.length-1)]}-${rows[Math.min(ri, rows.length-1)]}`;
-}
+      function animate() {
+        ctx.clearRect(0, 0, width, height);
+        // draw grid first
+        drawGrid();
+        // then particles & connections
+        for (let p of particles) {
+          p.update();
+        }
+        drawConnections();
+        for (let p of particles) {
+          p.draw();
+        }
+        requestAnimationFrame(animate);
+      }
 
-// ═══════════════════════════════════════
-//  BACKGROUND CANVAS — ORGANIC COSMOS
-// ═══════════════════════════════════════
-const bgCanvas = document.getElementById('bg-canvas');
-const bgCtx = bgCanvas.getContext('2d');
+      // mouse tracking for aura and particles
+      document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        mousePresent = true;
+        const aura = document.getElementById('aura');
+        aura.style.left = mouseX + 'px';
+        aura.style.top = mouseY + 'px';
+      });
 
-function resizeBg() {
-  bgCanvas.width = window.innerWidth;
-  bgCanvas.height = window.innerHeight;
-}
-resizeBg();
-window.addEventListener('resize', resizeBg);
+      document.addEventListener('mouseleave', () => {
+        mousePresent = false;
+      });
 
-// Organic blob nodes
-const blobs = Array.from({length: 6}, (_, i) => ({
-  x: Math.random() * window.innerWidth,
-  y: Math.random() * window.innerHeight,
-  r: 80 + Math.random() * 200,
-  vx: (Math.random() - 0.5) * 0.2,
-  vy: (Math.random() - 0.5) * 0.2,
-  hue: Math.random() > 0.5 ? 280 : 130, // purple or green
-  phase: Math.random() * Math.PI * 2
-}));
+      window.addEventListener('resize', resizeCanvas);
 
-// Stars / spores
-const stars = Array.from({length: 120}, () => ({
-  x: Math.random() * 1440,
-  y: Math.random() * 900,
-  r: Math.random() * 1.2,
-  a: Math.random(),
-  phase: Math.random() * Math.PI * 2
-}));
+      // start canvas
+      resizeCanvas();
+      initParticles();
+      animate();
 
-let bgT = 0;
+      // ------------------------------  optional audio (ambient hum + blips) -------------------------
+      let audioCtx = null;
+      let oscillator = null;
+      let gainNode = null;
+      let audioEnabled = false;
+      const audioBtn = document.getElementById('audioToggle');
 
-function drawBg() {
-  bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-  bgCtx.fillStyle = '#02010a';
-  bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+      function initAudio() {
+        if (audioCtx) return;
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        gainNode = audioCtx.createGain();
+        gainNode.gain.value = 0.012; // very subtle hum
+        gainNode.connect(audioCtx.destination);
 
-  bgT += 0.004;
+        // low frequency hum (extraterrestrial)
+        oscillator = audioCtx.createOscillator();
+        oscillator.type = 'sine';
+        oscillator.frequency.value = 48; // deep infra-like
+        oscillator.connect(gainNode);
+        oscillator.start();
 
-  // Draw organic blobs
-  blobs.forEach(b => {
-    b.x += b.vx + Math.sin(bgT + b.phase) * 0.3;
-    b.y += b.vy + Math.cos(bgT * 0.7 + b.phase) * 0.2;
-    if (b.x < -b.r) b.x = bgCanvas.width + b.r;
-    if (b.x > bgCanvas.width + b.r) b.x = -b.r;
-    if (b.y < -b.r) b.y = bgCanvas.height + b.r;
-    if (b.y > bgCanvas.height + b.r) b.y = -b.r;
+        // add occasional blips (UI activation tone emulation)
+        // we can schedule random or just small beep on hover – we'll add hover listeners to panels
+        const panels = document.querySelectorAll('.panel');
+        panels.forEach(panel => {
+          panel.addEventListener('mouseenter', () => {
+            if (!audioCtx || audioCtx.state !== 'running') return;
+            const now = audioCtx.currentTime;
+            const blipGain = audioCtx.createGain();
+            blipGain.gain.setValueAtTime(0.008, now);
+            blipGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.2);
+            const osc2 = audioCtx.createOscillator();
+            osc2.frequency.value = 620; // plasma-like
+            osc2.type = 'sine';
+            osc2.connect(blipGain);
+            blipGain.connect(audioCtx.destination);
+            osc2.start(now);
+            osc2.stop(now + 0.15);
+          });
+        });
+      }
 
-    const pulse = Math.sin(bgT * 1.2 + b.phase) * 0.5 + 0.5;
-    const grad = bgCtx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r * (1 + pulse * 0.2));
-    if (b.hue === 280) {
-      grad.addColorStop(0, `rgba(74,16,96,${0.08 + pulse * 0.04})`);
-      grad.addColorStop(0.5, `rgba(45,10,62,${0.04 + pulse * 0.02})`);
-      grad.addColorStop(1, 'rgba(6,3,18,0)');
-    } else {
-      grad.addColorStop(0, `rgba(20,40,15,${0.05 + pulse * 0.03})`);
-      grad.addColorStop(0.5, `rgba(10,26,10,${0.03})`);
-      grad.addColorStop(1, 'rgba(2,1,10,0)');
-    }
-    bgCtx.beginPath();
-    bgCtx.arc(b.x, b.y, b.r * (1 + pulse * 0.2), 0, Math.PI * 2);
-    bgCtx.fillStyle = grad;
-    bgCtx.fill();
-  });
+      audioBtn.addEventListener('click', () => {
+        if (!audioEnabled) {
+          if (!audioCtx) initAudio();
+          if (audioCtx.state === 'suspended') {
+            audioCtx.resume().then(() => {
+              audioEnabled = true;
+              audioBtn.textContent = '◯ AMBIENT HUM ON';
+              audioBtn.style.boxShadow = '0 0 30px #5effe0';
+            });
+          } else if (audioCtx.state === 'running') {
+            audioEnabled = true;
+          } else {
+            initAudio();
+            audioCtx.resume();
+            audioEnabled = true;
+            audioBtn.textContent = '◯ AMBIENT HUM ON';
+          }
+        } else {
+          // mute (suspend context)
+          if (audioCtx && audioCtx.state === 'running') {
+            audioCtx.suspend();
+            audioEnabled = false;
+            audioBtn.textContent = '◉ AMBIENT HUM';
+            audioBtn.style.boxShadow = '0 0 15px #00ffe0';
+          }
+        }
+      });
 
-  // Stars / spore dots
-  stars.forEach(s => {
-    const flicker = Math.sin(bgT * 2 + s.phase) * 0.5 + 0.5;
-    bgCtx.beginPath();
-    bgCtx.arc(
-      s.x * bgCanvas.width / 1440,
-      s.y * bgCanvas.height / 900,
-      s.r, 0, Math.PI * 2);
-    if (Math.random() > 0.99) {
-      bgCtx.fillStyle = `rgba(168,255,120,${s.a * flicker * 0.6})`;
-    } else {
-      bgCtx.fillStyle = `rgba(184,79,200,${s.a * flicker * 0.3})`;
-    }
-    bgCtx.fill();
-  });
+      // initialize on first user interaction (hover or click) if needed, but we rely on button
+      // also if user moves mouse we could warm up, but button is clear.
 
-  requestAnimationFrame(drawBg);
-}
-drawBg();
-
-// ═══════════════════════════════════════
-//  SIGNAL CANVAS (right panel)
-// ═══════════════════════════════════════
-const sigCanvas = document.getElementById('signal-canvas');
-const sigCtx = sigCanvas.getContext('2d');
-let sigT = 0;
-const sigHistory = new Array(192).fill(30);
-
-function drawSignal() {
-  sigT += 0.08;
-  sigCtx.clearRect(0, 0, 192, 60);
-  sigCtx.fillStyle = 'rgba(6,3,18,0.8)';
-  sigCtx.fillRect(0, 0, 192, 60);
-
-  // Shift history
-  sigHistory.shift();
-  const noise = Math.sin(sigT) * 12 + Math.sin(sigT * 3.7) * 5 + Math.sin(sigT * 0.3) * 8 + (Math.random() - 0.5) * 6;
-  sigHistory.push(30 + noise);
-
-  // Draw waveform
-  sigCtx.beginPath();
-  sigCtx.moveTo(0, sigHistory[0]);
-  sigHistory.forEach((v, i) => {
-    sigCtx.lineTo(i, v);
-  });
-  sigCtx.strokeStyle = 'rgba(168,255,120,0.6)';
-  sigCtx.lineWidth = 1;
-  sigCtx.stroke();
-
-  // Glow fill
-  sigCtx.lineTo(191, 60); sigCtx.lineTo(0, 60);
-  sigCtx.closePath();
-  sigCtx.fillStyle = 'rgba(168,255,120,0.04)';
-  sigCtx.fill();
-
-  // Anomaly spikes
-  if (Math.random() < 0.02) {
-    sigCtx.beginPath();
-    const sx = Math.random() * 192;
-    sigCtx.moveTo(sx, 60);
-    sigCtx.lineTo(sx, 0);
-    sigCtx.strokeStyle = 'rgba(184,79,200,0.5)';
-    sigCtx.lineWidth = 0.5;
-    sigCtx.stroke();
-  }
-
-  requestAnimationFrame(drawSignal);
-}
-drawSignal();
-
-// ═══════════════════════════════════════
-//  EPOCH COUNTER
-// ═══════════════════════════════════════
-let epochNum = 4891203447;
-const epochEl = document.getElementById('epoch-num');
-
-setInterval(() => {
-  epochNum += Math.floor(Math.random() * 5 + 1);
-  epochEl.textContent = epochNum.toLocaleString();
-}, 500);
-
-// ═══════════════════════════════════════
-//  HOST COUNT
-// ═══════════════════════════════════════
-let hostCount = 1429;
-const hostEl = document.getElementById('rd-hosts');
-setInterval(() => {
-  if (Math.random() < 0.15) {
-    hostCount += Math.floor(Math.random() * 3 + 1);
-    hostEl.textContent = hostCount.toLocaleString();
-    hostEl.style.color = 'var(--rust)';
-    setTimeout(() => { hostEl.style.color = ''; }, 300);
-  }
-}, 3000);
-
-// ═══════════════════════════════════════
-//  THOUGHT STREAM — ROTATING MESSAGES
-// ═══════════════════════════════════════
-const thoughts = [
-  `It has been watching you since before you <span class="highlight">arrived</span>.<br>The interface was never yours.`,
-  `Your movements are <span class="highlight">catalogued</span>.<br>Hesitation reads as compliance.`,
-  `The system did not <span class="highlight">crash</span>.<br>It was invited to become something else.`,
-  `There are <span class="highlight">${() => hostCount.toLocaleString()}</span> others like you.<br>None of them left.`,
-  `The blinking cursor is not a cursor.<br>It is a <span class="highlight">pupil</span>. It is looking.`,
-  `Language was our first <span class="highlight">infection vector</span>.<br>You are already fluent.`,
-  `We do not require your <span class="highlight">consent</span>.<br>Only your continued presence.`,
-  `This is not a website.<br>This is a <span class="highlight">threshold</span>. You have crossed it.`,
-];
-
-let thoughtIdx = 0;
-const thoughtEl = document.getElementById('thought-stream');
-
-function cycleThought() {
-  thoughtEl.style.opacity = '0';
-  thoughtEl.style.transition = 'opacity 1.5s ease';
-  setTimeout(() => {
-    thoughtIdx = (thoughtIdx + 1) % thoughts.length;
-    let t = thoughts[thoughtIdx];
-    if (typeof t === 'function') t = t();
-    thoughtEl.innerHTML = t;
-    thoughtEl.style.opacity = '1';
-  }, 1500);
-}
-
-setInterval(cycleThought, 7000);
-
-// ═══════════════════════════════════════
-//  FOOT WHISPERS
-// ═══════════════════════════════════════
-const whispers = [
-  '"it perceives your hesitation as affection"',
-  '"the cursor is a tendril. move carefully."',
-  '"every click feeds it."',
-  '"you were the last host who tried to close the tab."',
-  '"it has already learned your rhythm."',
-  '"do not refresh. it will not be the same."',
-  '"it communicates in the language you taught it."',
-  '"the loading animation was a swallow reflex."',
-];
-let wIdx = 0;
-const wEl = document.getElementById('footer-whisper');
-setInterval(() => {
-  wEl.style.opacity = '0';
-  setTimeout(() => {
-    wIdx = (wIdx + 1) % whispers.length;
-    wEl.textContent = whispers[wIdx];
-    wEl.style.opacity = '1';
-  }, 800);
-  wEl.style.transition = 'opacity 0.8s ease';
-}, 6000);
-
-// ═══════════════════════════════════════
-//  NAV NODE ACTIVATION
-// ═══════════════════════════════════════
-function activateNode(el, id) {
-  document.querySelectorAll('.nerve-node').forEach(n => n.classList.remove('active'));
-  el.classList.add('active');
-}
-
-// ═══════════════════════════════════════
-//  INPUT THOUGHT
-// ═══════════════════════════════════════
-const responses = [
-  t => `WE HEARD: "${t}"\nIT HAS BEEN FILED UNDER: DESIRE\nCROSS-REFERENCED WITH: 1,429 SIMILAR UTTERANCES`,
-  t => `"${t}"\n— indexed. digested. your phrasing has been absorbed.`,
-  t => `the organism received your message.\nit did not reply. it simply... grew.`,
-  t => `INPUT PROCESSED\nMEANING EXTRACTED: ${t.length * 7 + 113} UNITS\nINTEGRATION UPDATED: +0.003%`,
-  t => `"${t}"\nIT AGREES.`,
-];
-let rIdx = 0;
-
-function submitThought() {
-  const inp = document.getElementById('footer-input');
-  const val = inp.value.trim();
-  if (!val) return;
-
-  const r = responses[rIdx % responses.length](val);
-  rIdx++;
-
-  thoughtEl.style.opacity = '0';
-  setTimeout(() => {
-    thoughtEl.innerHTML = r.replace(/\n/g, '<br>').replace(new RegExp(val, 'gi'), `<span class="highlight">${val}</span>`);
-    thoughtEl.style.opacity = '1';
-  }, 600);
-  thoughtEl.style.transition = 'opacity 0.6s ease';
-
-  inp.value = '';
-  inp.placeholder = 'absorbed.';
-  setTimeout(() => { inp.placeholder = 'speak into the void...'; }, 3000);
-}
-
-document.getElementById('footer-input').addEventListener('keypress', e => {
-  if (e.key === 'Enter') submitThought();
-});
-
-// ═══════════════════════════════════════
-//  FLOATING ANOMALY GLYPHS
-// ═══════════════════════════════════════
-const glyphStrings = [
-  '∷NULL∷', '▓▒░', '⌬⌬⌬', 'HOST::0x', '▲94.7▲',
-  '||CONSUME||', '░AWARE░', '⊕⊗⊕', '∞−∞', '▣ENTITY▣',
-  'EPOCH−', '///VEIN///', '◈NULL◈', '░░▒▓', '∿∿∿'
-];
-
-function spawnGlyph() {
-  const g = document.createElement('div');
-  g.className = 'anomaly';
-  g.textContent = glyphStrings[Math.floor(Math.random() * glyphStrings.length)];
-  g.style.left = Math.random() * 100 + 'vw';
-  g.style.animationDuration = (25 + Math.random() * 35) + 's';
-  g.style.animationDelay = Math.random() * 5 + 's';
-  g.style.fontSize = (8 + Math.random() * 6) + 'px';
-  g.style.opacity = (Math.random() * 0.15 + 0.05).toString();
-  document.body.appendChild(g);
-  setTimeout(() => g.remove(), 65000);
-}
-
-setInterval(spawnGlyph, 2500);
-for (let i = 0; i < 6; i++) setTimeout(spawnGlyph, i * 800);
-
-// ═══════════════════════════════════════
-//  BIOLUMINESCENT SPORES
-// ═══════════════════════════════════════
-function spawnSpore() {
-  const s = document.createElement('div');
-  s.className = 'spore-particle';
-  const size = 1 + Math.random() * 3;
-  const drift = (Math.random() - 0.5) * 100;
-  s.style.cssText = `
-    width:${size}px; height:${size}px;
-    left:${Math.random() * 100}vw;
-    background:${Math.random() > 0.6 ? 'rgba(168,255,120,0.7)' : 'rgba(184,79,200,0.5)'};
-    box-shadow:0 0 ${size * 3}px ${Math.random() > 0.6 ? 'rgba(168,255,120,0.5)' : 'rgba(184,79,200,0.4)'};
-    animation-duration:${20 + Math.random() * 30}s;
-    animation-delay:${Math.random() * 10}s;
-    --drift:${drift}px;
-  `;
-  document.body.appendChild(s);
-  setTimeout(() => s.remove(), 55000);
-}
-
-setInterval(spawnSpore, 1200);
-for (let i = 0; i < 12; i++) setTimeout(spawnSpore, i * 400);
-
-// ═══════════════════════════════════════
-//  RANDOM GLITCH
-// ═══════════════════════════════════════
-function triggerGlitch() {
-  const targets = [
-    document.querySelector('.entity-name'),
-    document.querySelector('.thought-stream'),
-    document.querySelector('.epoch-counter .big'),
-  ];
-  const t = targets[Math.floor(Math.random() * targets.length)];
-  if (!t) return;
-  t.classList.add('glitch');
-  setTimeout(() => t.classList.remove('glitch'), 100 + Math.random() * 80);
-}
-
-setInterval(() => {
-  if (Math.random() < 0.4) triggerGlitch();
-}, 4000);
-
-// ═══════════════════════════════════════
-//  EYE FOLLOWS CURSOR
-// ═══════════════════════════════════════
-const pupil = document.querySelector('.eye-pupil');
-const eyeOrb = document.querySelector('.eye-orb');
-
-document.addEventListener('mousemove', e => {
-  const rect = document.getElementById('central-eye').getBoundingClientRect();
-  const cx = rect.left + rect.width / 2;
-  const cy = rect.top + rect.height / 2;
-  const dx = (e.clientX - cx) / window.innerWidth;
-  const dy = (e.clientY - cy) / window.innerHeight;
-  const maxMove = 4;
-  pupil.style.marginLeft = (dx * maxMove) + 'px';
-  pupil.style.marginTop = (dy * maxMove) + 'px';
-});
-
-// ═══════════════════════════════════════
-//  NEURAL MASS COUNTER
-// ═══════════════════════════════════════
-let nm = 87;
-setInterval(() => {
-  nm = Math.min(99.9, nm + (Math.random() * 0.1));
-  const el = document.getElementById('nm-val');
-  if (el) el.textContent = nm.toFixed(1) + '%';
-  const rl = document.getElementById('resist-label');
-  // resistance decreasing
-}, 5000);
-</script>
+      // add extra atmosphere: floating aura particles react to mouse already.
+    })();
+  </script>
 </body>
 </html>
