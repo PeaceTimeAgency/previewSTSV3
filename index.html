@@ -1,1691 +1,1412 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Peacetime Agency \u2014 Creator-First, Always</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
-
-  <style>
-  /* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-     TOKENS
-  \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SATCORP | Client Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
   :root {
-    /* World 1 \u2014 Visitor (deep forest night) */
-    --w1-bg:      #0d1a0f;
-    --w1-surface: #111f13;
-    --w1-border:  rgba(144,196,130,0.12);
-    --w1-text:    #d4e8cc;
-    --w1-muted:   rgba(212,232,204,0.45);
-    --w1-accent:  #7ec870;
-    --w1-gold:    #c8a84b;
-
-    /* World 2 \u2014 Creators (warm amber dusk) */
-    --w2-bg:      #1a1108;
-    --w2-surface: #221808;
-    --w2-border:  rgba(220,175,90,0.14);
-    --w2-text:    #f0ddb0;
-    --w2-muted:   rgba(240,221,176,0.45);
-    --w2-accent:  #dcaf5a;
-    --w2-pop:     #e86b3a;
-
-    /* World 3 \u2014 Staff (cool slate navy) */
-    --w3-bg:      #09111f;
-    --w3-surface: #0d1828;
-    --w3-border:  rgba(100,160,220,0.12);
-    --w3-text:    #c8daf0;
-    --w3-muted:   rgba(200,218,240,0.45);
-    --w3-accent:  #64a0dc;
-    --w3-pop:     #a87fe8;
-
-    --ff-display: 'Cormorant Garamond', Georgia, serif;
-    --ff-ui:      'Syne', sans-serif;
-    --ff-mono:    'JetBrains Mono', monospace;
-    --ease-out:   cubic-bezier(0.16, 1, 0.3, 1);
+    --bg: #080c12;
+    --surface: #0d1520;
+    --surface2: #111d2e;
+    --border: #1a2d45;
+    --accent: #00d4ff;
+    --accent2: #0099cc;
+    --accent-glow: rgba(0, 212, 255, 0.15);
+    --green: #00ff88;
+    --yellow: #ffcc00;
+    --red: #ff4466;
+    --orange: #ff8800;
+    --text: #c8ddf0;
+    --text-dim: #5a7a99;
+    --text-bright: #e8f4ff;
+    --mono: 'Share Tech Mono', monospace;
+    --sans: 'Exo 2', sans-serif;
   }
 
-  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-  html { scroll-behavior: smooth; font-size: 16px; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    font-family: var(--ff-ui);
-    background: var(--w1-bg);
-    color: var(--w1-text);
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
     overflow-x: hidden;
-    cursor: none;
   }
 
-  /* \u2500\u2500 Custom cursor \u2500\u2500 */
-  #cursor {
-    position: fixed;
-    width: 10px; height: 10px;
-    background: var(--w1-accent);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9999;
-    transition: transform 0.15s var(--ease-out), background 0.3s, width 0.2s, height 0.2s;
-    transform: translate(-50%, -50%);
-  }
-  #cursor-ring {
-    position: fixed;
-    width: 36px; height: 36px;
-    border: 1px solid var(--w1-accent);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9998;
-    opacity: 0.4;
-    transition: transform 0.35s var(--ease-out), border-color 0.3s, opacity 0.2s;
-    transform: translate(-50%, -50%);
-  }
-  body:has(#world-creators:target) #cursor,
-  .world-creators #cursor  { background: var(--w2-accent); }
-
-  /* \u2500\u2500 Grain \u2500\u2500 */
-  body::after {
+  /* GRID BACKGROUND */
+  body::before {
     content: '';
-    position: fixed; inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    opacity: 0.025;
-    pointer-events: none;
-    z-index: 9990;
-  }
-
-  /* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-     NAV
-  \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
-  #nav {
-    position: fixed; top: 0; left: 0; right: 0;
-    z-index: 500;
-    padding: 0 40px;
-    height: 64px;
-    display: flex; align-items: center; justify-content: space-between;
-    transition: background 0.5s, border-color 0.5s;
-    border-bottom: 1px solid transparent;
-  }
-  #nav.scrolled {
-    background: rgba(13,26,15,0.85);
-    backdrop-filter: blur(20px);
-    border-color: var(--w1-border);
-  }
-  #nav.world-creators-active { background: rgba(26,17,8,0.88) !important; border-color: var(--w2-border) !important; }
-  #nav.world-staff-active    { background: rgba(9,17,31,0.88) !important; border-color: var(--w3-border) !important; }
-
-  .nav-logo {
-    font-family: var(--ff-display);
-    font-size: 1.5rem;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    color: var(--w1-accent);
-    text-decoration: none;
-    transition: color 0.4s;
-  }
-  #nav.world-creators-active .nav-logo { color: var(--w2-accent); }
-  #nav.world-staff-active    .nav-logo { color: var(--w3-accent); }
-
-  .nav-worlds {
-    display: flex; gap: 6px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 40px;
-    padding: 5px;
-  }
-
-  .nav-world-btn {
-    font-family: var(--ff-mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.4);
-    background: transparent;
-    border: none;
-    padding: 7px 18px;
-    border-radius: 40px;
-    cursor: none;
-    transition: background 0.25s, color 0.25s;
-    text-decoration: none;
-    display: inline-block;
-  }
-  .nav-world-btn:hover { color: rgba(255,255,255,0.8); }
-  .nav-world-btn.active-visitors { background: var(--w1-accent); color: var(--w1-bg); }
-  .nav-world-btn.active-creators { background: var(--w2-accent); color: var(--w2-bg); }
-  .nav-world-btn.active-staff    { background: var(--w3-accent); color: var(--w3-bg); }
-
-  .nav-cta {
-    font-family: var(--ff-mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--w1-bg);
-    background: var(--w1-accent);
-    text-decoration: none;
-    padding: 9px 20px;
-    border-radius: 3px;
-    transition: background 0.3s, color 0.3s, transform 0.15s;
-  }
-  .nav-cta:hover { transform: translateY(-1px); }
-  #nav.world-creators-active .nav-cta { background: var(--w2-accent); color: var(--w2-bg); }
-  #nav.world-staff-active    .nav-cta { background: var(--w3-accent); color: var(--w3-bg); }
-
-  /* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-     SHARED UTILITIES
-  \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
-  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 40px; }
-
-  .label-row {
-    display: flex; align-items: center; gap: 14px;
-    font-family: var(--ff-mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-bottom: 24px;
-  }
-  .label-row::before {
-    content: '';
-    width: 28px; height: 1px;
-    background: currentColor;
-    opacity: 0.5;
-  }
-
-  .reveal {
-    opacity: 0;
-    transform: translateY(32px);
-    transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
-  }
-  .reveal.in { opacity: 1; transform: translateY(0); }
-
-  /* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-     WORLD 1 \u2014 VISITORS
-  \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
-  .world-visitors {
-    background: var(--w1-bg);
-    color: var(--w1-text);
-    min-height: 100vh;
-  }
-
-  /* \u2500\u2500 Visitor Hero \u2500\u2500 */
-  .v-hero {
-    min-height: 100vh;
-    display: flex; flex-direction: column; justify-content: flex-end;
-    padding-bottom: 80px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .v-hero-bg {
-    position: absolute; inset: 0;
-    background:
-      radial-gradient(ellipse 60% 70% at 70% 40%, rgba(126,200,112,0.07) 0%, transparent 60%),
-      radial-gradient(ellipse 40% 50% at 20% 80%, rgba(200,168,75,0.05) 0%, transparent 50%);
-  }
-
-  .v-hero-grid-lines {
-    position: absolute; inset: 0;
+    position: fixed;
+    inset: 0;
     background-image:
-      linear-gradient(rgba(126,200,112,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(126,200,112,0.04) 1px, transparent 1px);
-    background-size: 80px 80px;
-    mask-image: linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%);
-  }
-
-  .v-hero-num {
-    position: absolute;
-    right: 40px; top: 50%;
-    transform: translateY(-50%);
-    font-family: var(--ff-display);
-    font-size: clamp(18rem, 28vw, 32rem);
-    font-weight: 300;
-    color: rgba(126,200,112,0.04);
-    line-height: 1;
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
     pointer-events: none;
-    user-select: none;
+    z-index: 0;
   }
 
-  .v-hero-content { position: relative; z-index: 2; }
-
-  .v-hero-kicker {
-    color: var(--w1-accent);
-    margin-bottom: 28px;
+  /* LOGIN SCREEN */
+  #login-screen {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    background: var(--bg);
   }
 
-  .v-hero-headline {
-    font-family: var(--ff-display);
-    font-size: clamp(4rem, 8vw, 9rem);
-    font-weight: 300;
-    line-height: 0.92;
-    letter-spacing: -0.03em;
-    color: var(--w1-text);
+  .login-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--accent);
+    padding: 48px;
+    width: 420px;
+    position: relative;
+    box-shadow: 0 0 60px rgba(0,212,255,0.08), 0 20px 60px rgba(0,0,0,0.5);
+    animation: fadeUp 0.6s ease forwards;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .login-logo {
+    font-family: var(--mono);
+    font-size: 28px;
+    color: var(--accent);
+    letter-spacing: 6px;
+    margin-bottom: 4px;
+    text-shadow: 0 0 20px rgba(0,212,255,0.5);
+  }
+
+  .login-sub {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 3px;
+    text-transform: uppercase;
     margin-bottom: 40px;
   }
-  .v-hero-headline strong {
-    font-weight: 700;
-    display: block;
-    color: var(--w1-accent);
-  }
-  .v-hero-headline em {
-    font-style: italic;
-    font-weight: 300;
-    color: var(--w1-gold);
-  }
 
-  .v-hero-bottom {
-    display: flex; justify-content: space-between; align-items: flex-end;
-    border-top: 1px solid var(--w1-border);
-    padding-top: 40px;
-    margin-top: 40px;
-    gap: 40px;
-    flex-wrap: wrap;
-  }
-
-  .v-hero-sub {
-    font-size: 1rem;
-    line-height: 1.8;
-    color: var(--w1-muted);
-    max-width: 420px;
-  }
-
-  .v-hero-stats {
-    display: flex; gap: 48px;
-  }
-
-  .v-stat-val {
-    font-family: var(--ff-display);
-    font-size: 2.8rem;
-    font-weight: 700;
-    color: var(--w1-text);
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-  .v-stat-lbl {
-    font-family: var(--ff-mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--w1-muted);
-  }
-
-  .v-hero-ctas { display: flex; gap: 16px; flex-wrap: wrap; }
-
-  /* \u2500\u2500 Visitor sections \u2500\u2500 */
-  .v-section { padding: 120px 0; }
-  .v-section-alt { background: var(--w1-surface); }
-
-  .v-section-title {
-    font-family: var(--ff-display);
-    font-size: clamp(2.5rem, 4vw, 4.5rem);
-    font-weight: 300;
-    letter-spacing: -0.02em;
-    line-height: 1.05;
-    color: var(--w1-text);
-    margin-bottom: 48px;
-  }
-  .v-section-title strong { font-weight: 700; color: var(--w1-accent); }
-  .v-section-title em { font-style: italic; color: var(--w1-gold); }
-
-  /* Why grid */
-  .v-why-grid {
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 60px; align-items: center;
-  }
-
-  .v-why-text p {
-    font-size: 1rem;
-    line-height: 1.9;
-    color: var(--w1-muted);
-    margin-bottom: 18px;
-  }
-
-  .v-pullquote {
-    border-left: 2px solid var(--w1-accent);
-    padding: 24px 0 24px 32px;
-  }
-  .v-pullquote blockquote {
-    font-family: var(--ff-display);
-    font-size: 1.6rem;
-    font-style: italic;
-    font-weight: 300;
-    line-height: 1.5;
-    color: var(--w1-text);
-  }
-
-  /* Feature cards */
-  .v-cards {
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--w1-border);
-    border: 1px solid var(--w1-border);
-    border-radius: 4px;
-    overflow: hidden;
-    margin-top: 48px;
-  }
-
-  .v-card {
-    background: var(--w1-bg);
-    padding: 44px 36px;
-    transition: background 0.25s;
-    position: relative;
-  }
-  .v-card:hover { background: #152218; }
-
-  .v-card-num {
-    font-family: var(--ff-mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.12em;
-    color: var(--w1-accent);
-    opacity: 0.6;
+  .form-group {
     margin-bottom: 20px;
   }
-  .v-card-icon { font-size: 1.8rem; margin-bottom: 18px; display: block; }
-  .v-card-title {
-    font-family: var(--ff-display);
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: var(--w1-text);
-    margin-bottom: 12px;
-  }
-  .v-card-body { font-size: 0.9rem; line-height: 1.8; color: var(--w1-muted); }
 
-  /* Expectations */
-  .v-exp-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--w1-border);
-    border: 1px solid var(--w1-border);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-  .v-exp-card {
-    background: var(--w1-surface);
-    padding: 44px 32px;
-    transition: background 0.25s;
-  }
-  .v-exp-card:hover { background: #16221a; }
-  .v-exp-icon { font-size: 2rem; margin-bottom: 20px; display: block; }
-  .v-exp-card h3 {
-    font-family: var(--ff-display);
-    font-size: 1.3rem;
-    font-weight: 600;
-    color: var(--w1-text);
-    margin-bottom: 10px;
-  }
-  .v-exp-card p { font-size: 0.9rem; line-height: 1.8; color: var(--w1-muted); }
-
-  /* Onboarding steps */
-  .v-steps { margin-top: 48px; }
-  .v-step {
-    display: flex; gap: 28px;
-    padding: 32px 0;
-    border-bottom: 1px solid var(--w1-border);
-  }
-  .v-step:first-child { border-top: 1px solid var(--w1-border); }
-  .v-step-num {
-    font-family: var(--ff-display);
-    font-size: 3rem;
-    font-weight: 700;
-    color: rgba(126,200,112,0.12);
-    line-height: 1;
-    min-width: 60px;
-  }
-  .v-step h4 {
-    font-family: var(--ff-display);
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: var(--w1-text);
-    margin-bottom: 6px;
-  }
-  .v-step p { font-size: 0.9rem; line-height: 1.75; color: var(--w1-muted); }
-
-  /* Buttons \u2014 World 1 */
-  .btn-v1 {
-    font-family: var(--ff-mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--w1-bg);
-    background: var(--w1-accent);
-    text-decoration: none;
-    padding: 13px 30px;
-    border-radius: 3px;
-    display: inline-block;
-    transition: opacity 0.2s, transform 0.15s;
-    cursor: none;
-  }
-  .btn-v1:hover { opacity: 0.85; transform: translateY(-1px); }
-
-  .btn-v1-ghost {
-    font-family: var(--ff-mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--w1-accent);
-    text-decoration: none;
-    padding: 13px 0;
-    border-bottom: 1px solid rgba(126,200,112,0.3);
-    display: inline-block;
-    transition: border-color 0.2s, color 0.2s;
-    cursor: none;
-  }
-  .btn-v1-ghost:hover { border-color: var(--w1-accent); color: var(--w1-text); }
-
-  /* \u2500\u2500 World divider \u2500\u2500 */
-  .world-divider {
-    position: relative;
-    height: 200px;
-    overflow: hidden;
-    display: flex; align-items: center; justify-content: center;
-  }
-
-  .wd-visitors-creators {
-    background: linear-gradient(180deg, var(--w1-bg) 0%, var(--w2-bg) 100%);
-  }
-  .wd-creators-staff {
-    background: linear-gradient(180deg, var(--w2-bg) 0%, var(--w3-bg) 100%);
-  }
-
-  .wd-label {
-    font-family: var(--ff-display);
-    font-size: clamp(4rem, 10vw, 9rem);
-    font-weight: 700;
-    font-style: italic;
-    letter-spacing: -0.04em;
-    opacity: 0.06;
-    color: #fff;
-    user-select: none;
-    white-space: nowrap;
-  }
-
-  .wd-arrow {
-    position: absolute;
-    bottom: 24px;
-    font-family: var(--ff-mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    opacity: 0.3;
-    display: flex; align-items: center; gap: 8px;
-    animation: bob 2s ease-in-out infinite;
-  }
-  @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }
-
-  /* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-     WORLD 2 \u2014 CREATORS
-  \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
-  .world-creators {
-    background: var(--w2-bg);
-    color: var(--w2-text);
-    min-height: 100vh;
-  }
-
-  /* \u2500\u2500 Creator Hero \u2500\u2500 */
-  .c-hero {
-    min-height: 100vh;
-    display: flex; flex-direction: column; justify-content: flex-end;
-    padding-bottom: 80px;
-    position: relative; overflow: hidden;
-  }
-
-  .c-hero-bg {
-    position: absolute; inset: 0;
-    background:
-      radial-gradient(ellipse 70% 60% at 30% 50%, rgba(220,175,90,0.08) 0%, transparent 60%),
-      radial-gradient(ellipse 40% 40% at 80% 20%, rgba(232,107,58,0.06) 0%, transparent 50%);
-  }
-
-  .c-hero-num {
-    position: absolute;
-    left: 40px; top: 50%;
-    transform: translateY(-50%);
-    font-family: var(--ff-display);
-    font-size: clamp(18rem, 28vw, 32rem);
-    font-weight: 300;
-    color: rgba(220,175,90,0.04);
-    line-height: 1;
-    pointer-events: none;
-  }
-
-  .c-hero-content { position: relative; z-index: 2; }
-
-  .c-hero-kicker { color: var(--w2-accent); margin-bottom: 28px; }
-
-  .c-hero-headline {
-    font-family: var(--ff-display);
-    font-size: clamp(4rem, 8vw, 9rem);
-    font-weight: 300;
-    line-height: 0.92;
-    letter-spacing: -0.03em;
-    color: var(--w2-text);
-    margin-bottom: 40px;
-  }
-  .c-hero-headline strong { font-weight: 700; color: var(--w2-accent); display: block; }
-  .c-hero-headline em { font-style: italic; color: var(--w2-pop); }
-
-  .c-hero-bottom {
-    display: flex; justify-content: space-between; align-items: flex-end;
-    border-top: 1px solid var(--w2-border);
-    padding-top: 40px; margin-top: 40px;
-    gap: 40px; flex-wrap: wrap;
-  }
-  .c-hero-sub { font-size: 1rem; line-height: 1.8; color: var(--w2-muted); max-width: 440px; }
-
-  /* \u2500\u2500 Section titles - creators \u2500\u2500 */
-  .c-section { padding: 120px 0; }
-  .c-section-alt { background: var(--w2-surface); }
-
-  .c-section-title {
-    font-family: var(--ff-display);
-    font-size: clamp(2.5rem, 4vw, 4.5rem);
-    font-weight: 300;
-    letter-spacing: -0.02em;
-    line-height: 1.05;
-    color: var(--w2-text);
-    margin-bottom: 48px;
-  }
-  .c-section-title strong { font-weight: 700; color: var(--w2-accent); }
-  .c-section-title em { font-style: italic; color: var(--w2-pop); }
-
-  .label-row-c { color: var(--w2-accent); }
-  .label-row-s { color: var(--w3-accent); }
-
-  /* Creator Roster */
-  .roster-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr);
-    gap: 2px;
-    background: var(--w2-border);
-    border: 1px solid var(--w2-border);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-
-  .roster-card {
-    background: var(--w2-bg);
-    padding: 32px 24px;
-    transition: background 0.25s;
-    position: relative;
-    group: true;
-  }
-  .roster-card:hover { background: #271a05; }
-
-  .roster-avatar {
-    width: 64px; height: 64px;
-    border-radius: 50%;
-    margin-bottom: 16px;
-    background: var(--w2-border);
-    border: 1px solid var(--w2-border);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.6rem;
-    overflow: hidden;
-    transition: transform 0.2s var(--ease-out);
-  }
-  .roster-card:hover .roster-avatar { transform: scale(1.05); }
-
-  .roster-name {
-    font-family: var(--ff-display);
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--w2-text);
-    margin-bottom: 4px;
-  }
-  .roster-handle {
-    font-family: var(--ff-mono);
-    font-size: 0.65rem;
-    color: var(--w2-accent);
-    margin-bottom: 10px;
-    letter-spacing: 0.05em;
-  }
-  .roster-niche {
-    font-size: 0.8rem;
-    color: var(--w2-muted);
-    line-height: 1.6;
-    margin-bottom: 14px;
-  }
-  .roster-badge {
-    display: inline-block;
-    font-family: var(--ff-mono);
-    font-size: 0.58rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 3px 10px;
-    border-radius: 2px;
-    background: rgba(220,175,90,0.12);
-    color: var(--w2-accent);
-    border: 1px solid rgba(220,175,90,0.2);
-  }
-
-  /* News */
-  .news-list { margin-top: 48px; }
-  .news-item {
-    display: grid; grid-template-columns: 100px 1fr auto;
-    gap: 28px; align-items: start;
-    padding: 28px 0;
-    border-bottom: 1px solid var(--w2-border);
-    transition: padding-left 0.2s;
-  }
-  .news-item:first-child { border-top: 1px solid var(--w2-border); }
-  .news-item:hover { padding-left: 8px; }
-
-  .news-date {
-    font-family: var(--ff-mono);
-    font-size: 0.62rem;
-    letter-spacing: 0.1em;
-    color: var(--w2-muted);
-    padding-top: 3px;
-  }
-  .news-title {
-    font-family: var(--ff-display);
-    font-size: 1.15rem;
-    font-weight: 600;
-    color: var(--w2-text);
-    margin-bottom: 6px;
-  }
-  .news-excerpt { font-size: 0.88rem; color: var(--w2-muted); line-height: 1.65; }
-  .news-tag {
-    font-family: var(--ff-mono);
-    font-size: 0.58rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 4px 10px;
-    border-radius: 2px;
-    background: rgba(220,175,90,0.1);
-    color: var(--w2-accent);
-    white-space: nowrap;
-    border: 1px solid rgba(220,175,90,0.15);
-    margin-top: 3px;
-  }
-
-  /* Resources */
-  .resources-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: 2px;
-    background: var(--w2-border);
-    border: 1px solid var(--w2-border);
-    border-radius: 4px;
-    overflow: hidden;
-    margin-top: 48px;
-  }
-  .resource-card {
-    background: var(--w2-bg);
-    padding: 36px 32px;
-    transition: background 0.25s;
-  }
-  .resource-card:hover { background: #271a05; }
-  .resource-icon { font-size: 1.6rem; margin-bottom: 16px; display: block; }
-  .resource-title {
-    font-family: var(--ff-display);
-    font-size: 1.15rem;
-    font-weight: 600;
-    color: var(--w2-text);
+  .form-group label {
+    display: block;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
     margin-bottom: 8px;
-  }
-  .resource-desc { font-size: 0.88rem; line-height: 1.75; color: var(--w2-muted); margin-bottom: 16px; }
-  .resource-link {
-    font-family: var(--ff-mono);
-    font-size: 0.62rem;
-    letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--w2-accent);
-    text-decoration: none;
-    border-bottom: 1px solid rgba(220,175,90,0.25);
-    padding-bottom: 2px;
-    transition: border-color 0.2s;
-    cursor: none;
-  }
-  .resource-link:hover { border-color: var(--w2-accent); }
-
-  /* Buttons \u2014 World 2 */
-  .btn-v2 {
-    font-family: var(--ff-mono);
-    font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--w2-bg); background: var(--w2-accent);
-    text-decoration: none; padding: 13px 30px; border-radius: 3px;
-    display: inline-block; transition: opacity 0.2s, transform 0.15s;
-    cursor: none;
-  }
-  .btn-v2:hover { opacity: 0.85; transform: translateY(-1px); }
-
-  /* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-     WORLD 3 \u2014 STAFF
-  \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
-  .world-staff {
-    background: var(--w3-bg);
-    color: var(--w3-text);
-    min-height: 100vh;
   }
 
-  /* \u2500\u2500 Staff Hero \u2500\u2500 */
-  .s-hero {
-    min-height: 100vh;
-    display: flex; flex-direction: column; justify-content: flex-end;
-    padding-bottom: 80px;
-    position: relative; overflow: hidden;
+  .form-group input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text-bright);
+    font-family: var(--mono);
+    font-size: 14px;
+    padding: 12px 16px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
   }
 
-  .s-hero-bg {
-    position: absolute; inset: 0;
-    background:
-      radial-gradient(ellipse 60% 60% at 80% 30%, rgba(100,160,220,0.07) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 50% at 10% 70%, rgba(168,127,232,0.06) 0%, transparent 50%);
+  .form-group input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent-glow);
   }
 
-  .s-hero-num {
-    position: absolute;
-    right: 40px; bottom: 80px;
-    font-family: var(--ff-display);
-    font-size: clamp(18rem, 28vw, 32rem);
-    font-weight: 300;
-    color: rgba(100,160,220,0.04);
-    line-height: 1;
-    pointer-events: none;
+  .login-btn {
+    width: 100%;
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 3px;
+    padding: 14px;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-top: 8px;
+    transition: background 0.2s, box-shadow 0.2s;
   }
 
-  .s-hero-content { position: relative; z-index: 2; }
-  .s-hero-kicker { color: var(--w3-accent); margin-bottom: 28px; }
-
-  .s-hero-headline {
-    font-family: var(--ff-display);
-    font-size: clamp(4rem, 8vw, 9rem);
-    font-weight: 300;
-    line-height: 0.92;
-    letter-spacing: -0.03em;
-    color: var(--w3-text);
-    margin-bottom: 40px;
+  .login-btn:hover {
+    background: #33ddff;
+    box-shadow: 0 0 20px rgba(0,212,255,0.4);
   }
-  .s-hero-headline strong { font-weight: 700; color: var(--w3-accent); display: block; }
-  .s-hero-headline em { font-style: italic; color: var(--w3-pop); }
 
-  .s-hero-bottom {
-    display: flex; justify-content: space-between; align-items: flex-end;
-    border-top: 1px solid var(--w3-border);
-    padding-top: 40px; margin-top: 40px;
-    gap: 40px; flex-wrap: wrap;
+  .demo-hint {
+    margin-top: 20px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    text-align: center;
   }
-  .s-hero-sub { font-size: 1rem; line-height: 1.8; color: var(--w3-muted); max-width: 440px; }
 
-  /* \u2500\u2500 Staff sections \u2500\u2500 */
-  .s-section { padding: 120px 0; }
-  .s-section-alt { background: var(--w3-surface); }
+  .demo-hint span { color: var(--accent); }
 
-  .s-section-title {
-    font-family: var(--ff-display);
-    font-size: clamp(2.5rem, 4vw, 4.5rem);
-    font-weight: 300;
-    letter-spacing: -0.02em;
-    line-height: 1.05;
-    color: var(--w3-text);
-    margin-bottom: 48px;
+  /* PORTAL */
+  #portal { display: none; position: relative; z-index: 1; }
+
+  /* SIDEBAR */
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 240px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
   }
-  .s-section-title strong { font-weight: 700; color: var(--w3-accent); }
-  .s-section-title em { font-style: italic; color: var(--w3-pop); }
 
-  /* Team grid */
-  .team-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: 2px;
-    background: var(--w3-border);
-    border: 1px solid var(--w3-border);
-    border-radius: 4px;
-    overflow: hidden;
+  .sidebar-logo {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid var(--border);
   }
-  .team-card {
-    background: var(--w3-bg);
-    padding: 44px 36px;
-    transition: background 0.25s;
+
+  .logo-text {
+    font-family: var(--mono);
+    font-size: 22px;
+    color: var(--accent);
+    letter-spacing: 5px;
+    text-shadow: 0 0 15px rgba(0,212,255,0.4);
+  }
+
+  .logo-sub {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    margin-top: 2px;
+  }
+
+  .client-badge {
+    margin: 16px;
+    padding: 12px 14px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+  }
+
+  .client-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-bright);
+  }
+
+  .client-id {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+
+  .nav {
+    flex: 1;
+    padding: 8px 0;
+  }
+
+  .nav-section {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 16px 24px 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 24px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dim);
+    transition: all 0.2s;
     position: relative;
-    overflow: hidden;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
   }
-  .team-card::after {
+
+  .nav-item:hover { color: var(--text); background: rgba(0,212,255,0.05); }
+
+  .nav-item.active {
+    color: var(--accent);
+    background: var(--accent-glow);
+  }
+
+  .nav-item.active::before {
     content: '';
     position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 2px;
-    background: var(--w3-accent);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.3s var(--ease-out);
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--accent);
+    box-shadow: 0 0 8px rgba(0,212,255,0.6);
   }
-  .team-card:hover { background: #101c2e; }
-  .team-card:hover::after { transform: scaleX(1); }
 
-  .team-avatar {
-    width: 72px; height: 72px;
-    border-radius: 50%;
-    margin-bottom: 20px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.8rem;
-    background: var(--w3-border);
-    border: 1px solid var(--w3-border);
-    transition: transform 0.25s var(--ease-out);
+  .nav-icon { font-size: 16px; width: 18px; text-align: center; }
+
+  .nav-badge {
+    margin-left: auto;
+    background: var(--accent);
+    color: var(--bg);
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-weight: bold;
   }
-  .team-card:hover .team-avatar { transform: scale(1.06); }
 
-  .team-role {
-    font-family: var(--ff-mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.12em;
+  .nav-badge.yellow { background: var(--yellow); }
+  .nav-badge.red { background: var(--red); }
+
+  .sidebar-footer {
+    padding: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .logout-btn {
+    width: 100%;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    padding: 10px;
+    cursor: pointer;
     text-transform: uppercase;
-    color: var(--w3-accent);
+    transition: all 0.2s;
+  }
+
+  .logout-btn:hover {
+    border-color: var(--red);
+    color: var(--red);
+    background: rgba(255,68,102,0.05);
+  }
+
+  /* MAIN CONTENT */
+  .main {
+    margin-left: 240px;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .page-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-bright);
+    letter-spacing: 1px;
+  }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green);
+  }
+
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .time-display {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  /* CONTENT AREA */
+  .content {
+    padding: 32px;
+  }
+
+  /* PAGE SECTIONS */
+  .page { display: none; }
+  .page.active { display: block; animation: fadeIn 0.3s ease; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* DASHBOARD */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: 2px solid transparent;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+
+  .stat-card.accent { border-top-color: var(--accent); }
+  .stat-card.green { border-top-color: var(--green); }
+  .stat-card.yellow { border-top-color: var(--yellow); }
+  .stat-card.red { border-top-color: var(--red); }
+
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
     margin-bottom: 8px;
   }
-  .team-name {
-    font-family: var(--ff-display);
-    font-size: 1.4rem;
+
+  .stat-value {
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--text-bright);
+    line-height: 1;
+  }
+
+  .stat-sub {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 6px;
+  }
+
+  .stat-icon {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    font-size: 28px;
+    opacity: 0.2;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-bright);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-title::before {
+    content: '';
+    width: 3px;
+    height: 16px;
+    background: var(--accent);
+    box-shadow: 0 0 6px rgba(0,212,255,0.5);
+  }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  .three-col { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 20px; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 20px;
+  }
+
+  /* ACTIVITY FEED */
+  .activity-item {
+    display: flex;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(26,45,69,0.5);
+    align-items: flex-start;
+  }
+
+  .activity-item:last-child { border-bottom: none; }
+
+  .activity-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    margin-top: 4px;
+    flex-shrink: 0;
+  }
+
+  .activity-body { flex: 1; }
+
+  .activity-title {
+    font-size: 13px;
+    color: var(--text-bright);
     font-weight: 600;
-    color: var(--w3-text);
+    margin-bottom: 2px;
+  }
+
+  .activity-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  /* PROJECT CARDS */
+  .project-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 20px;
     margin-bottom: 12px;
+    transition: all 0.2s;
+    cursor: pointer;
   }
-  .team-bio { font-size: 0.88rem; line-height: 1.8; color: var(--w3-muted); }
 
-  /* Staff resources */
-  .staff-resources {
-    display: grid; grid-template-columns: repeat(4, 1fr);
-    gap: 2px;
-    background: var(--w3-border);
-    border: 1px solid var(--w3-border);
-    border-radius: 4px;
+  .project-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 20px rgba(0,212,255,0.06);
+    transform: translateX(2px);
+  }
+
+  .project-card.paused { border-left-color: var(--yellow); }
+  .project-card.review { border-left-color: var(--orange); }
+  .project-card.complete { border-left-color: var(--green); }
+
+  .project-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .project-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-bright);
+  }
+
+  .project-id {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+
+  .badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border: 1px solid;
+    text-transform: uppercase;
+  }
+
+  .badge.active { color: var(--accent); border-color: var(--accent); background: rgba(0,212,255,0.08); }
+  .badge.paused { color: var(--yellow); border-color: var(--yellow); background: rgba(255,204,0,0.08); }
+  .badge.review { color: var(--orange); border-color: var(--orange); background: rgba(255,136,0,0.08); }
+  .badge.complete { color: var(--green); border-color: var(--green); background: rgba(0,255,136,0.08); }
+  .badge.open { color: var(--red); border-color: var(--red); background: rgba(255,68,102,0.08); }
+  .badge.progress { color: var(--accent); border-color: var(--accent); background: rgba(0,212,255,0.08); }
+  .badge.resolved { color: var(--green); border-color: var(--green); background: rgba(0,255,136,0.08); }
+
+  .progress-bar-bg {
+    height: 4px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    margin: 10px 0 6px;
     overflow: hidden;
-    margin-top: 48px;
-  }
-  .staff-res-card {
-    background: var(--w3-bg);
-    padding: 32px 28px;
-    transition: background 0.25s;
-  }
-  .staff-res-card:hover { background: #101c2e; }
-  .sr-icon { font-size: 1.5rem; margin-bottom: 14px; display: block; }
-  .sr-title {
-    font-family: var(--ff-display);
-    font-size: 1rem; font-weight: 600;
-    color: var(--w3-text); margin-bottom: 6px;
-  }
-  .sr-desc { font-size: 0.82rem; line-height: 1.7; color: var(--w3-muted); margin-bottom: 14px; }
-  .sr-link {
-    font-family: var(--ff-mono);
-    font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--w3-accent); text-decoration: none;
-    border-bottom: 1px solid rgba(100,160,220,0.25);
-    padding-bottom: 2px; transition: border-color 0.2s;
-    cursor: none;
-  }
-  .sr-link:hover { border-color: var(--w3-accent); }
-
-  /* Staff news */
-  .s-news-grid {
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 2px;
-    background: var(--w3-border);
-    border: 1px solid var(--w3-border);
-    border-radius: 4px;
-    overflow: hidden;
-    margin-top: 48px;
-  }
-  .s-news-card {
-    background: var(--w3-bg);
-    padding: 40px 36px;
-    transition: background 0.25s;
-  }
-  .s-news-card:hover { background: #101c2e; }
-  .s-news-tag {
-    font-family: var(--ff-mono);
-    font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--w3-accent);
-    border: 1px solid rgba(100,160,220,0.2);
-    padding: 3px 10px; border-radius: 2px;
-    display: inline-block; margin-bottom: 16px;
-  }
-  .s-news-title {
-    font-family: var(--ff-display);
-    font-size: 1.35rem; font-weight: 600;
-    color: var(--w3-text); margin-bottom: 10px;
-  }
-  .s-news-excerpt { font-size: 0.88rem; line-height: 1.75; color: var(--w3-muted); margin-bottom: 20px; }
-  .s-news-meta {
-    font-family: var(--ff-mono);
-    font-size: 0.6rem; letter-spacing: 0.08em;
-    color: var(--w3-muted); opacity: 0.6;
   }
 
-  /* Buttons \u2014 World 3 */
-  .btn-v3 {
-    font-family: var(--ff-mono);
-    font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--w3-bg); background: var(--w3-accent);
-    text-decoration: none; padding: 13px 30px; border-radius: 3px;
-    display: inline-block; transition: opacity 0.2s, transform 0.15s;
-    cursor: none;
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    box-shadow: 0 0 8px rgba(0,212,255,0.4);
+    transition: width 1s ease;
   }
-  .btn-v3:hover { opacity: 0.85; transform: translateY(-1px); }
 
-  /* \u2500\u2500 Marquee \u2500\u2500 */
-  .marquee-bar {
-    overflow: hidden; padding: 11px 0;
-    border-top: 1px solid; border-bottom: 1px solid;
-  }
-  .marquee-bar-v { border-color: var(--w1-border); background: rgba(126,200,112,0.03); }
-  .marquee-bar-c { border-color: var(--w2-border); background: rgba(220,175,90,0.03); }
-  .marquee-bar-s { border-color: var(--w3-border); background: rgba(100,160,220,0.03); }
+  .progress-bar-fill.yellow { background: linear-gradient(90deg, #cc9900, var(--yellow)); box-shadow: 0 0 8px rgba(255,204,0,0.4); }
+  .progress-bar-fill.green { background: linear-gradient(90deg, #00bb66, var(--green)); box-shadow: 0 0 8px rgba(0,255,136,0.4); }
 
-  .marquee-track { display: flex; animation: marquee 30s linear infinite; width: max-content; }
-  .marquee-item {
-    font-family: var(--ff-mono);
-    font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase;
-    white-space: nowrap; padding: 0 32px; opacity: 0.4;
+  .project-meta {
+    display: flex;
+    gap: 20px;
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 8px;
   }
-  .marquee-sep { opacity: 0.2; padding: 0 8px; }
-  @keyframes marquee { to { transform: translateX(-50%); } }
 
-  /* \u2500\u2500 Footer \u2500\u2500 */
-  .site-footer {
-    background: #050a06;
-    padding: 48px 40px 28px;
-    border-top: 1px solid rgba(255,255,255,0.04);
+  .project-meta span { display: flex; align-items: center; gap: 4px; }
+
+  /* MILESTONES */
+  .milestone-list {
+    padding: 0;
   }
-  .footer-inner {
-    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 40px; padding-bottom: 40px;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+
+  .milestone {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(26,45,69,0.5);
+  }
+
+  .milestone:last-child { border-bottom: none; }
+
+  .milestone-check {
+    width: 18px; height: 18px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 10px;
+  }
+
+  .milestone-check.done {
+    background: var(--green);
+    border-color: var(--green);
+    color: var(--bg);
+    box-shadow: 0 0 6px rgba(0,255,136,0.4);
+  }
+
+  .milestone-check.current {
+    border-color: var(--accent);
+    background: var(--accent-glow);
+  }
+
+  .milestone-text {
+    font-size: 13px;
+    color: var(--text);
+    flex: 1;
+  }
+
+  .milestone-text.done { color: var(--text-dim); text-decoration: line-through; }
+  .milestone-text.current { color: var(--accent); }
+
+  .milestone-date {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+
+  /* TICKETS */
+  .ticket-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 100px 120px 80px;
+    gap: 12px;
+    align-items: center;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    transition: background 0.15s;
+    cursor: pointer;
+  }
+
+  .ticket-row:hover { background: rgba(0,212,255,0.03); }
+
+  .ticket-row.header {
+    background: var(--bg);
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: default;
+  }
+
+  .ticket-row.header:hover { background: var(--bg); }
+
+  .ticket-id { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
+  .ticket-title { color: var(--text-bright); font-weight: 600; }
+  .ticket-priority { font-family: var(--mono); font-size: 11px; }
+  .ticket-priority.high { color: var(--red); }
+  .ticket-priority.medium { color: var(--yellow); }
+  .ticket-priority.low { color: var(--green); }
+  .ticket-date { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
+
+  /* INFRA STATUS */
+  .infra-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
     margin-bottom: 24px;
   }
-  .footer-brand-name {
-    font-family: var(--ff-display);
-    font-size: 1.5rem; font-weight: 600;
-    color: rgba(255,255,255,0.7);
+
+  .infra-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .infra-status-dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .infra-status-dot.up { background: var(--green); box-shadow: 0 0 8px var(--green); animation: pulse 2s infinite; }
+  .infra-status-dot.warn { background: var(--yellow); box-shadow: 0 0 8px var(--yellow); }
+  .infra-status-dot.down { background: var(--red); box-shadow: 0 0 8px var(--red); }
+
+  .infra-info { flex: 1; }
+  .infra-name { font-size: 14px; font-weight: 600; color: var(--text-bright); }
+  .infra-desc { font-family: var(--mono); font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+
+  .infra-uptime {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    text-align: right;
+  }
+
+  .infra-uptime strong { display: block; color: var(--green); font-size: 14px; }
+
+  /* ANNOUNCEMENTS */
+  .announcement {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 20px;
     margin-bottom: 12px;
   }
-  .footer-brand p { font-size: 0.85rem; line-height: 1.75; color: rgba(255,255,255,0.25); max-width: 260px; }
-  .footer-col h5 {
-    font-family: var(--ff-mono);
-    font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase;
-    color: rgba(255,255,255,0.25); margin-bottom: 16px;
-  }
-  .footer-col a {
-    display: block; font-size: 0.85rem;
-    color: rgba(255,255,255,0.35); text-decoration: none;
-    margin-bottom: 10px; transition: color 0.2s; cursor: none;
-  }
-  .footer-col a:hover { color: rgba(255,255,255,0.7); }
-  .footer-copy {
-    font-family: var(--ff-mono);
-    font-size: 0.6rem; letter-spacing: 0.08em;
-    text-align: center; color: rgba(255,255,255,0.15);
+
+  .announcement.info { border-left-color: var(--accent); }
+  .announcement.warning { border-left-color: var(--yellow); }
+  .announcement.success { border-left-color: var(--green); }
+
+  .announcement-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
   }
 
-  /* \u2500\u2500 Responsive \u2500\u2500 */
-  @media (max-width: 1024px) {
-    .v-cards, .v-exp-grid { grid-template-columns: 1fr 1fr; }
-    .roster-grid, .team-grid { grid-template-columns: 1fr 1fr; }
-    .resources-grid, .staff-resources { grid-template-columns: 1fr 1fr; }
-    .s-news-grid { grid-template-columns: 1fr; }
-    .footer-inner { grid-template-columns: 1fr 1fr; }
+  .announcement-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-bright);
   }
 
-  @media (max-width: 768px) {
-    .v-hero-headline, .c-hero-headline, .s-hero-headline { font-size: clamp(3rem, 12vw, 5rem); }
-    .v-hero-bottom, .c-hero-bottom, .s-hero-bottom { flex-direction: column; align-items: flex-start; }
-    .v-hero-stats { gap: 28px; }
-    .v-why-grid { grid-template-columns: 1fr; }
-    .v-cards, .v-exp-grid, .roster-grid, .team-grid, .resources-grid, .staff-resources { grid-template-columns: 1fr; }
-    .news-item { grid-template-columns: 1fr; gap: 8px; }
-    nav .nav-worlds { display: none; }
-    .footer-inner { grid-template-columns: 1fr; }
-    .wrap { padding: 0 20px; }
+  .announcement-date {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
   }
-  </style>
+
+  .announcement-body {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* DOCS */
+  .doc-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+    cursor: pointer;
+  }
+
+  .doc-row:hover { background: rgba(0,212,255,0.04); }
+
+  .doc-icon {
+    font-size: 22px;
+    width: 36px;
+    text-align: center;
+  }
+
+  .doc-info { flex: 1; }
+  .doc-name { font-size: 13px; font-weight: 600; color: var(--text-bright); }
+  .doc-meta { font-family: var(--mono); font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+
+  .doc-size { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
+
+  .download-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    padding: 6px 14px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+
+  .download-btn:hover {
+    background: var(--accent-glow);
+    border-color: var(--accent);
+  }
+
+  /* RESPONSIVE / SCROLLABLE TABLE */
+  .table-wrap { overflow-x: auto; }
+
+  /* LINK */
+  .view-all {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    cursor: pointer;
+    letter-spacing: 1px;
+    background: none;
+    border: none;
+    text-transform: uppercase;
+    transition: opacity 0.2s;
+  }
+
+  .view-all:hover { opacity: 0.7; }
+</style>
 </head>
 <body>
 
-  <!-- Custom cursor -->
-  <div id="cursor"></div>
-  <div id="cursor-ring"></div>
-
-  <!-- \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 NAV \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 -->
-  <nav id="nav">
-    <a href="#world-visitors" class="nav-logo">peacetime</a>
-
-    <div class="nav-worlds">
-      <a href="#world-visitors" class="nav-world-btn" id="btn-visitors">Visitors</a>
-      <a href="#world-creators" class="nav-world-btn" id="btn-creators">Creators</a>
-      <a href="#world-staff"    class="nav-world-btn" id="btn-staff">Staff</a>
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">SATCORP</div>
+    <div class="login-sub">Client Portal — Secure Access</div>
+    <div class="form-group">
+      <label>Client ID / Email</label>
+      <input type="text" id="login-user" placeholder="client@company.com" value="acme@client.com">
     </div>
-
-    <a href="#onboarding" class="nav-cta">Apply to Join</a>
-  </nav>
-
-
-  <!-- \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588
-       WORLD 1 \u2014 VISITORS
-  \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588 -->
-  <div class="world-visitors" id="world-visitors">
-
-    <!-- Hero -->
-    <section class="v-hero">
-      <div class="v-hero-bg"></div>
-      <div class="v-hero-grid-lines"></div>
-      <div class="v-hero-num">I</div>
-      <div class="wrap v-hero-content">
-        <p class="label-row v-hero-kicker">Peacetime Agency \u00b7 TikTok Creator Community</p>
-        <h1 class="v-hero-headline">
-          Grow on<br>
-          <strong>your terms.</strong>
-          <em>Win together.</em>
-        </h1>
-        <div class="v-hero-bottom">
-          <p class="v-hero-sub">A creator-first agency built on radical transparency, community, and a total rejection of predatory practices. No lock-ins. No pressure. Just real support.</p>
-          <div class="v-hero-stats">
-            <div>
-              <div class="v-stat-val">100%</div>
-              <div class="v-stat-lbl">Transparent</div>
-            </div>
-            <div>
-              <div class="v-stat-val">0</div>
-              <div class="v-stat-lbl">Lock-in clauses</div>
-            </div>
-            <div>
-              <div class="v-stat-val">24/7</div>
-              <div class="v-stat-lbl">Community</div>
-            </div>
-          </div>
-        </div>
-        <div class="v-hero-ctas" style="margin-top:36px;">
-          <a href="#onboarding" class="btn-v1">Apply to Join \u2192</a>
-          <a href="#why" class="btn-v1-ghost">Read our story</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Marquee -->
-    <div class="marquee-bar marquee-bar-v">
-      <div class="marquee-track">
-        <span class="marquee-item">Transparent by design</span><span class="marquee-sep">\u2726</span>
-        <span class="marquee-item">No restrictive contracts</span><span class="marquee-sep">\u2726</span>
-        <span class="marquee-item">Creator-first, always</span><span class="marquee-sep">\u2726</span>
-        <span class="marquee-item">Shared success</span><span class="marquee-sep">\u2726</span>
-        <span class="marquee-item">Real support \u00b7 Real strategy</span><span class="marquee-sep">\u2726</span>
-        <span class="marquee-item">Grow on your own terms</span><span class="marquee-sep">\u2726</span>
-        <span class="marquee-item">Community-driven growth</span><span class="marquee-sep">\u2726</span>
-        <span class="marquee-item">Transparent by design</span><span class="marquee-sep">\u2726</span>
-        <span class="marquee-item">No restrictive contracts</span><span class="marquee-sep">\u2726</span>
-        <span class="marquee-item">Creator-first, always</span><span class="marquee-sep">\u2726</span>
-        <span class="marquee-item">Shared success</span><span class="marquee-sep">\u2726</span>
-        <span class="marquee-item">Real support \u00b7 Real strategy</span><span class="marquee-sep">\u2726</span>
-        <span class="marquee-item">Grow on your own terms</span><span class="marquee-sep">\u2726</span>
-        <span class="marquee-item">Community-driven growth</span><span class="marquee-sep">\u2726</span>
-      </div>
+    <div class="form-group">
+      <label>Access Code</label>
+      <input type="password" id="login-pass" placeholder="••••••••" value="••••••••">
     </div>
+    <button class="login-btn" onclick="doLogin()">→ ACCESS PORTAL</button>
+    <div class="demo-hint">Demo: any credentials will work — press <span>ACCESS PORTAL</span></div>
+  </div>
+</div>
 
-    <!-- Why -->
-    <section class="v-section" id="why">
-      <div class="wrap">
-        <p class="label-row" style="color:var(--w1-accent);">01 \u2014 Why Peacetime</p>
-        <div class="v-why-grid">
-          <div class="v-why-text reveal">
-            <h2 class="v-section-title">The agency world needed <em>fixing.</em></h2>
-            <p>Too many agencies operate with predatory practices \u2014 restrictive contracts, one-sided expectations, and growth that only benefits the agency. Creators were being trapped, not supported.</p>
-            <p>Peacetime was built as the alternative. A transparent, community-driven agency focused on ethical partnerships, real support, and mutual success. We believe you deserve better.</p>
-            <p>Our goal is simple: create a space where creators help each other grow and <strong>win together.</strong></p>
-          </div>
-          <div class="reveal" style="transition-delay:0.1s;">
-            <div class="v-pullquote">
-              <blockquote>"We saw too many creators being treated like numbers. Peacetime was built to treat them like partners."</blockquote>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+<!-- PORTAL -->
+<div id="portal">
 
-    <!-- About -->
-    <section class="v-section v-section-alt">
-      <div class="wrap">
-        <p class="label-row" style="color:var(--w1-accent);">02 \u2014 About</p>
-        <h2 class="v-section-title reveal">Built on trust,<br>not <em>restrictions.</em></h2>
-        <div class="v-cards reveal">
-          <div class="v-card">
-            <div class="v-card-num">001</div>
-            <span class="v-card-icon">\u2696\ufe0f</span>
-            <h3 class="v-card-title">Full Transparency</h3>
-            <p class="v-card-body">We operate through TikTok's standard agency agreement \u2014 no restrictive contracts beyond TikTok's own platform policies. What you see is what you get, always.</p>
-          </div>
-          <div class="v-card">
-            <div class="v-card-num">002</div>
-            <span class="v-card-icon">\ud83d\udcc8</span>
-            <h3 class="v-card-title">Shared Success</h3>
-            <p class="v-card-body">You gain access to educational resources, strategic support, and performance insights. We review analytics, identify opportunities, and help you grow intentionally.</p>
-          </div>
-          <div class="v-card">
-            <div class="v-card-num">003</div>
-            <span class="v-card-icon">\ud83e\udd1d</span>
-            <h3 class="v-card-title">Collaborative Model</h3>
-            <p class="v-card-body">Creators who invest in their growth receive real support, grow with us, and help bring others into the fold. It's a win all around \u2014 not just for the agency.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Expectations -->
-    <section class="v-section">
-      <div class="wrap">
-        <p class="label-row" style="color:var(--w1-accent);">03 \u2014 Expectations</p>
-        <h2 class="v-section-title reveal">You set the pace.<br><em>We match the energy.</em></h2>
-        <div class="v-exp-grid reveal">
-          <div class="v-exp-card">
-            <span class="v-exp-icon">\u2696\ufe0f</span>
-            <h3>No rigid requirements</h3>
-            <p>No quotas, pressure, or unrealistic benchmarks. Growth looks different for everyone \u2014 you define it, we support it.</p>
-          </div>
-          <div class="v-exp-card">
-            <span class="v-exp-icon">\ud83d\ude80</span>
-            <h3>Aggressive growth</h3>
-            <p>If you want to scale fast, we match that energy with hands-on support, targeted strategy, and momentum-building pushes.</p>
-          </div>
-          <div class="v-exp-card">
-            <span class="v-exp-icon">\ud83c\udf31</span>
-            <h3>Casual streamers welcome</h3>
-            <p>Prefer a smaller community and your own pace? That's perfectly fine. Resources and community remain accessible regardless.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Onboarding -->
-    <section class="v-section v-section-alt" id="onboarding">
-      <div class="wrap">
-        <p class="label-row" style="color:var(--w1-accent);">04 \u2014 Onboarding</p>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;" class="reveal">
-          <div>
-            <h2 class="v-section-title">Simple to join.<br><em>Always free to leave.</em></h2>
-            <div class="v-steps">
-              <div class="v-step">
-                <div class="v-step-num">01</div>
-                <div>
-                  <h4>Request an invite</h4>
-                  <p>Fill out a short application \u2014 simple and pressure-free. No hoops to jump through.</p>
-                </div>
-              </div>
-              <div class="v-step">
-                <div class="v-step-num">02</div>
-                <div>
-                  <h4>Accept via TikTok</h4>
-                  <p>Joining is handled through TikTok's official agency system. Standard platform agreement, reviewed within the app.</p>
-                </div>
-              </div>
-              <div class="v-step">
-                <div class="v-step-num">03</div>
-                <div>
-                  <h4>Join the community</h4>
-                  <p>Gain immediate access to Discord, resources, and your personal support structure.</p>
-                </div>
-              </div>
-              <div class="v-step">
-                <div class="v-step-num">04</div>
-                <div>
-                  <h4>Leave whenever you want</h4>
-                  <p>If you choose to leave, you're free to do so. The only limitation is TikTok's 60-day transition period \u2014 a platform policy, not ours.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div style="position:sticky;top:100px;">
-            <div style="background:var(--w1-surface);border:1px solid var(--w1-border);border-radius:4px;padding:48px 40px;">
-              <p class="label-row" style="color:var(--w1-accent);">Ready to join?</p>
-              <h3 style="font-family:var(--ff-display);font-size:2rem;font-weight:600;color:var(--w1-text);margin-bottom:16px;line-height:1.2;">Become part of<br><em style="color:var(--w1-accent);">the alternative.</em></h3>
-              <p style="font-size:0.9rem;line-height:1.8;color:var(--w1-muted);margin-bottom:32px;">Onboarding is transparent, simple, and completely pressure-free. No additional contracts required.</p>
-              <a href="#" class="btn-v1">Request an invite \u2192</a>
-              <p style="font-family:var(--ff-mono);font-size:0.6rem;color:var(--w1-muted);opacity:0.5;margin-top:16px;line-height:1.6;">Uses TikTok's standard agency agreement only.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Scroll prompt -->
-    <div style="text-align:center;padding:60px 0 40px;border-top:1px solid var(--w1-border);">
-      <p style="font-family:var(--ff-mono);font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--w1-muted);opacity:0.5;margin-bottom:12px;">Continue exploring</p>
-      <a href="#world-creators" class="btn-v1">Meet our Creators \u2193</a>
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-text">SATCORP</div>
+      <div class="logo-sub">IT & DEV SOLUTIONS</div>
     </div>
-
-  </div><!-- /world-visitors -->
-
-
-  <!-- \u2500\u2500 Divider 1 \u2500\u2500 -->
-  <div class="world-divider wd-visitors-creators">
-    <span class="wd-label">Creators</span>
-    <span class="wd-arrow" style="color:var(--w2-accent);">\u2193 Creator Community</span>
+    <div class="client-badge">
+      <div class="client-name">Acme Industries</div>
+      <div class="client-id">CLIENT #SAT-2024-0042</div>
+    </div>
+    <nav class="nav">
+      <div class="nav-section">Overview</div>
+      <button class="nav-item active" onclick="showPage('dashboard', this)">
+        <span class="nav-icon">⬡</span> Dashboard
+      </button>
+      <div class="nav-section">Projects & Work</div>
+      <button class="nav-item" onclick="showPage('projects', this)">
+        <span class="nav-icon">◈</span> Projects
+        <span class="nav-badge">3</span>
+      </button>
+      <button class="nav-item" onclick="showPage('tickets', this)">
+        <span class="nav-icon">◉</span> Support Tickets
+        <span class="nav-badge red">2</span>
+      </button>
+      <div class="nav-section">Infrastructure</div>
+      <button class="nav-item" onclick="showPage('infra', this)">
+        <span class="nav-icon">◎</span> System Status
+        <span class="nav-badge yellow">1</span>
+      </button>
+      <div class="nav-section">Communications</div>
+      <button class="nav-item" onclick="showPage('announcements', this)">
+        <span class="nav-icon">◆</span> Announcements
+        <span class="nav-badge">2</span>
+      </button>
+      <button class="nav-item" onclick="showPage('docs', this)">
+        <span class="nav-icon">▣</span> Documents
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="logout-btn" onclick="doLogout()">⏻ Sign Out</button>
+    </div>
   </div>
 
-
-  <!-- \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588
-       WORLD 2 \u2014 CREATORS
-  \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588 -->
-  <div class="world-creators" id="world-creators">
-
-    <!-- Creator Hero -->
-    <section class="c-hero">
-      <div class="c-hero-bg"></div>
-      <div class="c-hero-num">II</div>
-      <div class="wrap c-hero-content">
-        <p class="label-row label-row-c c-hero-kicker">Our Creators \u00b7 The Peacetime Roster</p>
-        <h1 class="c-hero-headline">
-          Meet the<br>
-          <strong>community.</strong>
-          <em>The real Peacetime.</em>
-        </h1>
-        <div class="c-hero-bottom">
-          <p class="c-hero-sub">These are the people who make Peacetime what it is \u2014 creators across niches, at every stage of their journey, growing together.</p>
-          <a href="#roster" class="btn-v2">See the roster \u2192</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Marquee -->
-    <div class="marquee-bar marquee-bar-c">
-      <div class="marquee-track" style="animation-duration:22s;">
-        <span class="marquee-item" style="color:var(--w2-text);">Live streamers</span><span class="marquee-sep" style="color:var(--w2-accent);">\u2726</span>
-        <span class="marquee-item" style="color:var(--w2-text);">Content creators</span><span class="marquee-sep" style="color:var(--w2-accent);">\u2726</span>
-        <span class="marquee-item" style="color:var(--w2-text);">Growing together</span><span class="marquee-sep" style="color:var(--w2-accent);">\u2726</span>
-        <span class="marquee-item" style="color:var(--w2-text);">Real community</span><span class="marquee-sep" style="color:var(--w2-accent);">\u2726</span>
-        <span class="marquee-item" style="color:var(--w2-text);">Shared wins</span><span class="marquee-sep" style="color:var(--w2-accent);">\u2726</span>
-        <span class="marquee-item" style="color:var(--w2-text);">Discord family</span><span class="marquee-sep" style="color:var(--w2-accent);">\u2726</span>
-        <span class="marquee-item" style="color:var(--w2-text);">Live streamers</span><span class="marquee-sep" style="color:var(--w2-accent);">\u2726</span>
-        <span class="marquee-item" style="color:var(--w2-text);">Content creators</span><span class="marquee-sep" style="color:var(--w2-accent);">\u2726</span>
-        <span class="marquee-item" style="color:var(--w2-text);">Growing together</span><span class="marquee-sep" style="color:var(--w2-accent);">\u2726</span>
-        <span class="marquee-item" style="color:var(--w2-text);">Real community</span><span class="marquee-sep" style="color:var(--w2-accent);">\u2726</span>
-        <span class="marquee-item" style="color:var(--w2-text);">Shared wins</span><span class="marquee-sep" style="color:var(--w2-accent);">\u2726</span>
-        <span class="marquee-item" style="color:var(--w2-text);">Discord family</span><span class="marquee-sep" style="color:var(--w2-accent);">\u2726</span>
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="page-title" id="page-title">Dashboard</div>
+      <div class="topbar-right">
+        <div class="status-indicator"><div class="dot"></div> All Systems Operational</div>
+        <div class="time-display" id="clock">—</div>
       </div>
     </div>
 
-    <!-- Roster -->
-    <section class="c-section" id="roster">
-      <div class="wrap">
-        <p class="label-row label-row-c">Creator Roster</p>
-        <h2 class="c-section-title reveal">The <strong>faces</strong> of<br><em>Peacetime.</em></h2>
-        <div class="roster-grid reveal">
-          <div class="roster-card">
-            <div class="roster-avatar">\ud83c\udf19</div>
-            <div class="roster-name">Luna Voss</div>
-            <div class="roster-handle">@lunavoss</div>
-            <div class="roster-niche">Lifestyle & evening lives. Known for warm, community-focused streams and high viewer retention.</div>
-            <span class="roster-badge">Rising Star</span>
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card accent">
+            <div class="stat-icon">◈</div>
+            <div class="stat-label">Active Projects</div>
+            <div class="stat-value">3</div>
+            <div class="stat-sub">1 in review phase</div>
           </div>
-          <div class="roster-card">
-            <div class="roster-avatar">\ud83c\udfae</div>
-            <div class="roster-name">Kai Storm</div>
-            <div class="roster-handle">@kaistorm.tt</div>
-            <div class="roster-niche">Gaming live streams with interactive challenges. Strong gifting culture and loyal fanbase.</div>
-            <span class="roster-badge">Top Performer</span>
+          <div class="stat-card yellow">
+            <div class="stat-icon">◉</div>
+            <div class="stat-label">Open Tickets</div>
+            <div class="stat-value">2</div>
+            <div class="stat-sub">Avg response: 2h</div>
           </div>
-          <div class="roster-card">
-            <div class="roster-avatar">\ud83c\udf3f</div>
-            <div class="roster-name">Sage Ellery</div>
-            <div class="roster-handle">@sageellery</div>
-            <div class="roster-niche">Wellness and mindfulness content. Slow growth, deep engagement. Community-first creator.</div>
-            <span class="roster-badge">Community Fave</span>
+          <div class="stat-card green">
+            <div class="stat-icon">▣</div>
+            <div class="stat-label">Completed This Month</div>
+            <div class="stat-value">7</div>
+            <div class="stat-sub">Tasks & milestones</div>
           </div>
-          <div class="roster-card">
-            <div class="roster-avatar">\ud83c\udfa8</div>
-            <div class="roster-name">Rio Park</div>
-            <div class="roster-handle">@riopark.creates</div>
-            <div class="roster-niche">Art process lives and tutorials. High watch-time, strong creative following.</div>
-            <span class="roster-badge">Creative</span>
-          </div>
-          <div class="roster-card">
-            <div class="roster-avatar">\ud83c\udf73</div>
-            <div class="roster-name">Fern & Co.</div>
-            <div class="roster-handle">@fernandco</div>
-            <div class="roster-niche">Food and cooking lives. Warm hosting style with weekly themed cook-along sessions.</div>
-            <span class="roster-badge">Rising Star</span>
-          </div>
-          <div class="roster-card">
-            <div class="roster-avatar">\ud83c\udfb5</div>
-            <div class="roster-name">Zephyr Lane</div>
-            <div class="roster-handle">@zephyrlane</div>
-            <div class="roster-niche">Live music performances and originals. Building from the ground up with Peacetime support.</div>
-            <span class="roster-badge">New Member</span>
-          </div>
-          <div class="roster-card">
-            <div class="roster-avatar">\ud83d\udcda</div>
-            <div class="roster-name">Mara Fen</div>
-            <div class="roster-handle">@marareads</div>
-            <div class="roster-niche">BookTok and reading lives. Highly engaged niche audience with consistent retention.</div>
-            <span class="roster-badge">Community Fave</span>
-          </div>
-          <div class="roster-card" style="border:1px dashed rgba(220,175,90,0.2);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;">
-            <div style="font-size:2rem;">\u2726</div>
-            <div style="font-family:var(--ff-mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--w2-muted);text-align:center;">Your spot awaits</div>
-            <a href="#onboarding" class="btn-v2" style="font-size:0.6rem;padding:8px 18px;">Join us</a>
+          <div class="stat-card red">
+            <div class="stat-icon">◎</div>
+            <div class="stat-label">Uptime (30d Avg)</div>
+            <div class="stat-value">99.7<span style="font-size:18px">%</span></div>
+            <div class="stat-sub">1 service degraded</div>
           </div>
         </div>
-      </div>
-    </section>
 
-    <!-- News & Announcements -->
-    <section class="c-section c-section-alt">
-      <div class="wrap">
-        <p class="label-row label-row-c">Agency News</p>
-        <h2 class="c-section-title reveal">What's <strong>happening</strong><br>at Peacetime.</h2>
-        <div class="news-list reveal">
-          <div class="news-item">
-            <div class="news-date">Feb 2026</div>
-            <div>
-              <div class="news-title">Creator Spotlight: Kai Storm hits Top 100 LIVE Gifting</div>
-              <div class="news-excerpt">Kai crossed a huge milestone this month, entering the top 100 gifting leaderboard after a targeted push strategy developed with the team.</div>
+        <div class="two-col">
+          <!-- Recent Activity -->
+          <div class="card">
+            <div class="section-header">
+              <div class="section-title">Recent Activity</div>
+              <button class="view-all" onclick="showPage('projects', document.querySelector('.nav-item:nth-of-type(3)'))">View All</button>
             </div>
-            <span class="news-tag">Milestone</span>
-          </div>
-          <div class="news-item">
-            <div class="news-date">Jan 2026</div>
-            <div>
-              <div class="news-title">New Discord channels: Strategy Sessions & Creator Feedback</div>
-              <div class="news-excerpt">Based on community feedback, we've launched two new channels in the Discord for structured critique and weekly strategy breakdowns.</div>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:var(--green)"></div>
+              <div class="activity-body">
+                <div class="activity-title">E-commerce Platform — Phase 2 Complete</div>
+                <div class="activity-meta">Payment gateway integration deployed · 2 hours ago</div>
+              </div>
             </div>
-            <span class="news-tag">Community</span>
-          </div>
-          <div class="news-item">
-            <div class="news-date">Jan 2026</div>
-            <div>
-              <div class="news-title">Q1 Growth Playbook now live in resources</div>
-              <div class="news-excerpt">The agency has published its Q1 2026 creator growth playbook, including a full breakdown of the best-performing live formats from Q4 2025.</div>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:var(--accent)"></div>
+              <div class="activity-body">
+                <div class="activity-title">Ticket #SAT-TK-0091 — Assigned to Engineer</div>
+                <div class="activity-meta">SSL certificate renewal inquiry · 5 hours ago</div>
+              </div>
             </div>
-            <span class="news-tag">Resource</span>
-          </div>
-          <div class="news-item">
-            <div class="news-date">Dec 2025</div>
-            <div>
-              <div class="news-title">Welcome 3 new creators to the Peacetime family</div>
-              <div class="news-excerpt">Luna Voss, Mara Fen, and Zephyr Lane have officially joined the agency. Head to Discord to give them a warm welcome.</div>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:var(--yellow)"></div>
+              <div class="activity-body">
+                <div class="activity-title">CRM Integration — Milestone Update</div>
+                <div class="activity-meta">API documentation delivered for review · Yesterday</div>
+              </div>
             </div>
-            <span class="news-tag">New Members</span>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:var(--accent)"></div>
+              <div class="activity-body">
+                <div class="activity-title">Monthly Infrastructure Report Published</div>
+                <div class="activity-meta">February 2026 report now available · 2 days ago</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:var(--green)"></div>
+              <div class="activity-body">
+                <div class="activity-title">Network Security Audit — Completed</div>
+                <div class="activity-meta">All findings documented and remediated · 4 days ago</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top Project -->
+          <div class="card">
+            <div class="section-header">
+              <div class="section-title">Priority Project</div>
+            </div>
+            <div style="margin-bottom:12px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                <div style="font-size:15px;font-weight:700;color:var(--text-bright)">E-Commerce Platform</div>
+                <span class="badge active">Active</span>
+              </div>
+              <div style="font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-bottom:14px">SAT-PRJ-2025-001 · Due Mar 15, 2026</div>
+              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:78%"></div></div>
+              <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--text-dim)"><span>Progress</span><span style="color:var(--accent)">78%</span></div>
+            </div>
+            <div class="milestone-list">
+              <div class="milestone">
+                <div class="milestone-check done">✓</div>
+                <div class="milestone-text done">Requirements & Architecture</div>
+                <div class="milestone-date">Jan 10</div>
+              </div>
+              <div class="milestone">
+                <div class="milestone-check done">✓</div>
+                <div class="milestone-text done">Frontend Development</div>
+                <div class="milestone-date">Feb 01</div>
+              </div>
+              <div class="milestone">
+                <div class="milestone-check done">✓</div>
+                <div class="milestone-text done">Payment Gateway Integration</div>
+                <div class="milestone-date">Feb 25</div>
+              </div>
+              <div class="milestone">
+                <div class="milestone-check current">→</div>
+                <div class="milestone-text current">QA Testing & Bug Fixes</div>
+                <div class="milestone-date">Mar 05</div>
+              </div>
+              <div class="milestone">
+                <div class="milestone-check"></div>
+                <div class="milestone-text">Production Deployment</div>
+                <div class="milestone-date">Mar 15</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </section>
 
-    <!-- Creator Resources -->
-    <section class="c-section">
-      <div class="wrap">
-        <p class="label-row label-row-c">Creator Resources</p>
-        <h2 class="c-section-title reveal">Everything you<br>need to <strong>grow.</strong></h2>
-        <div class="resources-grid reveal">
-          <div class="resource-card">
-            <span class="resource-icon">\ud83d\udcca</span>
-            <div class="resource-title">Analytics Dashboard Guide</div>
-            <div class="resource-desc">Learn how to read your TikTok analytics, identify content trends, and spot opportunities before they pass.</div>
-            <a href="#" class="resource-link">Open guide \u2192</a>
+      <!-- PROJECTS PAGE -->
+      <div class="page" id="page-projects">
+        <div class="section-header" style="margin-bottom:20px">
+          <div class="section-title">Active Projects</div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-header">
+            <div>
+              <div class="project-name">E-Commerce Platform Rebuild</div>
+              <div class="project-id">SAT-PRJ-2025-001 · Assigned: Dev Team Alpha</div>
+            </div>
+            <span class="badge active">Active</span>
           </div>
-          <div class="resource-card">
-            <span class="resource-icon">\ud83c\udfaf</span>
-            <div class="resource-title">LIVE Strategy Playbook</div>
-            <div class="resource-desc">The full breakdown of our most effective live structures, CTA timing, gifting triggers, and retention tactics.</div>
-            <a href="#" class="resource-link">Open playbook \u2192</a>
+          <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:78%"></div></div>
+          <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-bottom:8px"><span>78% Complete</span><span>Due: Mar 15, 2026</span></div>
+          <div class="project-meta">
+            <span>📋 Phase: QA Testing</span>
+            <span>🎯 5/7 Milestones Done</span>
+            <span>⏱ 16 days remaining</span>
           </div>
-          <div class="resource-card">
-            <span class="resource-icon">\ud83d\udcac</span>
-            <div class="resource-title">Discord \u2014 Strategy Sessions</div>
-            <div class="resource-desc">Join the weekly strategy session in #strategy-sessions every Monday. Bring questions, get real answers.</div>
-            <a href="#" class="resource-link">Join Discord \u2192</a>
+        </div>
+
+        <div class="project-card review">
+          <div class="project-header">
+            <div>
+              <div class="project-name">CRM Integration & Automation</div>
+              <div class="project-id">SAT-PRJ-2025-003 · Assigned: Integration Team</div>
+            </div>
+            <span class="badge review">In Review</span>
           </div>
-          <div class="resource-card">
-            <span class="resource-icon">\ud83d\ude80</span>
-            <div class="resource-title">Growth Push Protocol</div>
-            <div class="resource-desc">A step-by-step guide to requesting and executing a focused growth push with agency support and coordination.</div>
-            <a href="#" class="resource-link">Read protocol \u2192</a>
+          <div class="progress-bar-bg"><div class="progress-bar-fill yellow" style="width:55%"></div></div>
+          <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-bottom:8px"><span>55% Complete</span><span>Due: Apr 30, 2026</span></div>
+          <div class="project-meta">
+            <span>📋 Phase: Client Review</span>
+            <span>🎯 3/6 Milestones Done</span>
+            <span>⏱ API docs awaiting approval</span>
           </div>
-          <div class="resource-card">
-            <span class="resource-icon">\ud83d\udcd8</span>
-            <div class="resource-title">Creator Onboarding Checklist</div>
-            <div class="resource-desc">New to the agency? Start here. Walk through the full onboarding checklist to get set up and ready to grow.</div>
-            <a href="#" class="resource-link">Open checklist \u2192</a>
+        </div>
+
+        <div class="project-card" style="border-left-color:var(--accent)">
+          <div class="project-header">
+            <div>
+              <div class="project-name">Mobile App Development (iOS + Android)</div>
+              <div class="project-id">SAT-PRJ-2026-001 · Assigned: Mobile Team</div>
+            </div>
+            <span class="badge active">Active</span>
           </div>
-          <div class="resource-card">
-            <span class="resource-icon">\ud83c\udfc6</span>
-            <div class="resource-title">Creator Wins Board</div>
-            <div class="resource-desc">Every milestone, every breakthrough, every win. Celebrate community success and stay motivated.</div>
-            <a href="#" class="resource-link">See wins \u2192</a>
+          <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:22%"></div></div>
+          <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-bottom:8px"><span>22% Complete</span><span>Due: Jul 01, 2026</span></div>
+          <div class="project-meta">
+            <span>📋 Phase: Design & Wireframes</span>
+            <span>🎯 1/8 Milestones Done</span>
+            <span>⏱ 124 days remaining</span>
+          </div>
+        </div>
+
+        <div class="section-header" style="margin-top:32px;margin-bottom:20px">
+          <div class="section-title">Completed Projects</div>
+        </div>
+
+        <div class="project-card complete">
+          <div class="project-header">
+            <div>
+              <div class="project-name">Network Security Audit & Hardening</div>
+              <div class="project-id">SAT-PRJ-2025-008 · Completed Feb 23, 2026</div>
+            </div>
+            <span class="badge complete">Complete</span>
+          </div>
+          <div class="progress-bar-bg"><div class="progress-bar-fill green" style="width:100%"></div></div>
+          <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-bottom:8px"><span>100% Complete</span><span>All deliverables shipped</span></div>
+        </div>
+      </div>
+
+      <!-- TICKETS PAGE -->
+      <div class="page" id="page-tickets">
+        <div class="section-header" style="margin-bottom:20px">
+          <div class="section-title">Support Tickets</div>
+          <div style="font-family:var(--mono);font-size:11px;color:var(--text-dim)">2 OPEN · 1 IN PROGRESS · 5 RESOLVED</div>
+        </div>
+
+        <div class="card" style="padding:0;overflow:hidden;">
+          <div class="table-wrap">
+            <div class="ticket-row header">
+              <div>Ticket ID</div>
+              <div>Issue</div>
+              <div>Priority</div>
+              <div>Status</div>
+              <div>Date</div>
+            </div>
+            <div class="ticket-row">
+              <div class="ticket-id">#SAT-TK-0093</div>
+              <div class="ticket-title">Server response time degraded on prod API</div>
+              <div class="ticket-priority high">● HIGH</div>
+              <div><span class="badge open">Open</span></div>
+              <div class="ticket-date">Feb 27</div>
+            </div>
+            <div class="ticket-row">
+              <div class="ticket-id">#SAT-TK-0091</div>
+              <div class="ticket-title">SSL certificate renewal for *.acmeinc.com</div>
+              <div class="ticket-priority medium">● MED</div>
+              <div><span class="badge open">Open</span></div>
+              <div class="ticket-date">Feb 26</div>
+            </div>
+            <div class="ticket-row">
+              <div class="ticket-id">#SAT-TK-0088</div>
+              <div class="ticket-title">Database backup schedule configuration</div>
+              <div class="ticket-priority medium">● MED</div>
+              <div><span class="badge progress">In Progress</span></div>
+              <div class="ticket-date">Feb 22</div>
+            </div>
+            <div class="ticket-row" style="opacity:0.5">
+              <div class="ticket-id">#SAT-TK-0085</div>
+              <div class="ticket-title">Email routing misconfiguration on MX records</div>
+              <div class="ticket-priority low">● LOW</div>
+              <div><span class="badge resolved">Resolved</span></div>
+              <div class="ticket-date">Feb 18</div>
+            </div>
+            <div class="ticket-row" style="opacity:0.5">
+              <div class="ticket-id">#SAT-TK-0082</div>
+              <div class="ticket-title">VPN access setup for new remote employees</div>
+              <div class="ticket-priority low">● LOW</div>
+              <div><span class="badge resolved">Resolved</span></div>
+              <div class="ticket-date">Feb 10</div>
+            </div>
+            <div class="ticket-row" style="opacity:0.5">
+              <div class="ticket-id">#SAT-TK-0079</div>
+              <div class="ticket-title">Firewall rule update — whitelist new office IPs</div>
+              <div class="ticket-priority high">● HIGH</div>
+              <div><span class="badge resolved">Resolved</span></div>
+              <div class="ticket-date">Feb 03</div>
+            </div>
           </div>
         </div>
       </div>
-    </section>
 
-    <!-- Scroll prompt -->
-    <div style="text-align:center;padding:60px 0 40px;border-top:1px solid var(--w2-border);">
-      <p style="font-family:var(--ff-mono);font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--w2-muted);opacity:0.5;margin-bottom:12px;">Behind the scenes</p>
-      <a href="#world-staff" class="btn-v2">Meet the Staff \u2193</a>
-    </div>
-
-  </div><!-- /world-creators -->
-
-
-  <!-- \u2500\u2500 Divider 2 \u2500\u2500 -->
-  <div class="world-divider wd-creators-staff">
-    <span class="wd-label">Staff</span>
-    <span class="wd-arrow" style="color:var(--w3-accent);">\u2193 The Peacetime Team</span>
-  </div>
-
-
-  <!-- \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588
-       WORLD 3 \u2014 STAFF
-  \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588 -->
-  <div class="world-staff" id="world-staff">
-
-    <!-- Staff Hero -->
-    <section class="s-hero">
-      <div class="s-hero-bg"></div>
-      <div class="s-hero-num">III</div>
-      <div class="wrap s-hero-content">
-        <p class="label-row label-row-s s-hero-kicker">The Team \u00b7 Agency Staff</p>
-        <h1 class="s-hero-headline">
-          The people<br>
-          <strong>behind it all.</strong>
-          <em>Meet Peacetime.</em>
-        </h1>
-        <div class="s-hero-bottom">
-          <p class="s-hero-sub">The dedicated team making Peacetime what it is \u2014 strategists, community managers, and creators in their own right.</p>
-          <a href="#team" class="btn-v3">Meet the team \u2192</a>
+      <!-- INFRA PAGE -->
+      <div class="page" id="page-infra">
+        <div class="section-header" style="margin-bottom:20px">
+          <div class="section-title">System & Infrastructure Status</div>
+          <div style="font-family:var(--mono);font-size:11px;color:var(--text-dim)">Last checked: 2 min ago</div>
         </div>
-      </div>
-    </section>
 
-    <!-- Marquee -->
-    <div class="marquee-bar marquee-bar-s">
-      <div class="marquee-track" style="animation-duration:35s;">
-        <span class="marquee-item" style="color:var(--w3-text);">Strategy</span><span class="marquee-sep" style="color:var(--w3-accent);">\u2726</span>
-        <span class="marquee-item" style="color:var(--w3-text);">Community management</span><span class="marquee-sep" style="color:var(--w3-accent);">\u2726</span>
-        <span class="marquee-item" style="color:var(--w3-text);">Creator support</span><span class="marquee-sep" style="color:var(--w3-accent);">\u2726</span>
-        <span class="marquee-item" style="color:var(--w3-text);">Analytics & insights</span><span class="marquee-sep" style="color:var(--w3-accent);">\u2726</span>
-        <span class="marquee-item" style="color:var(--w3-text);">Partnership development</span><span class="marquee-sep" style="color:var(--w3-accent);">\u2726</span>
-        <span class="marquee-item" style="color:var(--w3-text);">Strategy</span><span class="marquee-sep" style="color:var(--w3-accent);">\u2726</span>
-        <span class="marquee-item" style="color:var(--w3-text);">Community management</span><span class="marquee-sep" style="color:var(--w3-accent);">\u2726</span>
-        <span class="marquee-item" style="color:var(--w3-text);">Creator support</span><span class="marquee-sep" style="color:var(--w3-accent);">\u2726</span>
-        <span class="marquee-item" style="color:var(--w3-text);">Analytics & insights</span><span class="marquee-sep" style="color:var(--w3-accent);">\u2726</span>
-        <span class="marquee-item" style="color:var(--w3-text);">Partnership development</span><span class="marquee-sep" style="color:var(--w3-accent);">\u2726</span>
-      </div>
-    </div>
+        <div class="infra-grid">
+          <div class="infra-card">
+            <div class="infra-status-dot up"></div>
+            <div class="infra-info">
+              <div class="infra-name">Production Web Servers</div>
+              <div class="infra-desc">AWS EC2 · us-east-1 · 3 nodes</div>
+            </div>
+            <div class="infra-uptime"><strong>99.98%</strong>30d avg</div>
+          </div>
+          <div class="infra-card">
+            <div class="infra-status-dot up"></div>
+            <div class="infra-info">
+              <div class="infra-name">Primary Database Cluster</div>
+              <div class="infra-desc">PostgreSQL RDS · Multi-AZ</div>
+            </div>
+            <div class="infra-uptime"><strong>100%</strong>30d avg</div>
+          </div>
+          <div class="infra-card">
+            <div class="infra-status-dot warn"></div>
+            <div class="infra-info">
+              <div class="infra-name">API Gateway</div>
+              <div class="infra-desc">⚠ Elevated response times detected</div>
+            </div>
+            <div class="infra-uptime" style="color:var(--yellow)"><strong style="color:var(--yellow)">98.1%</strong>30d avg</div>
+          </div>
+          <div class="infra-card">
+            <div class="infra-status-dot up"></div>
+            <div class="infra-info">
+              <div class="infra-name">CDN / Static Assets</div>
+              <div class="infra-desc">Cloudflare · Global Edge Network</div>
+            </div>
+            <div class="infra-uptime"><strong>100%</strong>30d avg</div>
+          </div>
+          <div class="infra-card">
+            <div class="infra-status-dot up"></div>
+            <div class="infra-info">
+              <div class="infra-name">Email Services</div>
+              <div class="infra-desc">SendGrid · Transactional + Marketing</div>
+            </div>
+            <div class="infra-uptime"><strong>99.9%</strong>30d avg</div>
+          </div>
+          <div class="infra-card">
+            <div class="infra-status-dot up"></div>
+            <div class="infra-info">
+              <div class="infra-name">Backup Systems</div>
+              <div class="infra-desc">S3 + Glacier · Daily snapshots</div>
+            </div>
+            <div class="infra-uptime"><strong>100%</strong>30d avg</div>
+          </div>
+        </div>
 
-    <!-- Team -->
-    <section class="s-section" id="team">
-      <div class="wrap">
-        <p class="label-row label-row-s">Agency Team</p>
-        <h2 class="s-section-title reveal">The <strong>people</strong><br><em>who make it happen.</em></h2>
-        <div class="team-grid reveal">
-          <div class="team-card">
-            <div class="team-avatar">\ud83c\udf3f</div>
-            <div class="team-role">Founder & Director</div>
-            <div class="team-name">Alex Rowe</div>
-            <div class="team-bio">Founder of Peacetime. Former creator turned agency builder. Passionate about ethical creator partnerships and long-term community growth.</div>
+        <div class="card">
+          <div class="section-header">
+            <div class="section-title">Recent Incidents</div>
           </div>
-          <div class="team-card">
-            <div class="team-avatar">\ud83d\udcca</div>
-            <div class="team-role">Head of Strategy</div>
-            <div class="team-name">Morgan Ellis</div>
-            <div class="team-bio">Oversees creator analytics, growth playbooks, and individual strategy sessions. Four years deep in TikTok LIVE growth mechanics.</div>
+          <div class="activity-item">
+            <div class="activity-dot" style="background:var(--yellow)"></div>
+            <div class="activity-body">
+              <div class="activity-title">API Gateway — Elevated Latency</div>
+              <div class="activity-meta">Ongoing · Investigating root cause — elevated P99 response times on /v2/orders endpoint · Started Feb 27, 14:30 UTC</div>
+            </div>
           </div>
-          <div class="team-card">
-            <div class="team-avatar">\ud83d\udcac</div>
-            <div class="team-role">Community Manager</div>
-            <div class="team-name">Jamie Sol</div>
-            <div class="team-bio">Runs the Discord, facilitates creator connections, and ensures every member feels genuinely supported. The heart of Peacetime day-to-day.</div>
+          <div class="activity-item">
+            <div class="activity-dot" style="background:var(--green)"></div>
+            <div class="activity-body">
+              <div class="activity-title">Resolved — Database Failover Event</div>
+              <div class="activity-meta">Feb 22, 03:14–03:41 UTC · Auto-failover triggered, no data loss, 27 min downtime</div>
+            </div>
           </div>
-          <div class="team-card">
-            <div class="team-avatar">\ud83d\udd0d</div>
-            <div class="team-role">Creator Coach</div>
-            <div class="team-name">Reese Arden</div>
-            <div class="team-bio">Works one-on-one with creators on content structure, live strategy, and momentum building. Specialises in early-stage creator growth.</div>
-          </div>
-          <div class="team-card">
-            <div class="team-avatar">\ud83e\udd1d</div>
-            <div class="team-role">Partnerships Lead</div>
-            <div class="team-name">Casey Vane</div>
-            <div class="team-bio">Manages external relationships, creator recruitment, and ensures Peacetime operates with full transparency across all partnerships.</div>
-          </div>
-          <div class="team-card" style="border:1px dashed rgba(100,160,220,0.15);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;text-align:center;">
-            <div style="font-size:2rem;">\u2726</div>
-            <div style="font-family:var(--ff-mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--w3-muted);">We're growing the team</div>
-            <a href="#" class="btn-v3" style="font-size:0.6rem;padding:8px 18px;">Get in touch</a>
+          <div class="activity-item">
+            <div class="activity-dot" style="background:var(--green)"></div>
+            <div class="activity-body">
+              <div class="activity-title">Resolved — CDN Cache Purge Issue</div>
+              <div class="activity-meta">Feb 10, 11:02–11:15 UTC · Stale asset serving affected 3% of users, resolved with manual purge</div>
+            </div>
           </div>
         </div>
       </div>
-    </section>
 
-    <!-- Staff Resources -->
-    <section class="s-section s-section-alt">
-      <div class="wrap">
-        <p class="label-row label-row-s">Internal Resources</p>
-        <h2 class="s-section-title reveal">Tools for the<br><strong>Peacetime</strong> team.</h2>
-        <div class="staff-resources reveal">
-          <div class="staff-res-card">
-            <span class="sr-icon">\ud83d\udccb</span>
-            <div class="sr-title">Creator CRM</div>
-            <div class="sr-desc">Track creator status, recent analytics reviews, last contact, and active growth plans.</div>
-            <a href="#" class="sr-link">Open CRM \u2192</a>
+      <!-- ANNOUNCEMENTS PAGE -->
+      <div class="page" id="page-announcements">
+        <div class="section-header" style="margin-bottom:20px">
+          <div class="section-title">Announcements & Updates</div>
+        </div>
+
+        <div class="announcement warning">
+          <div class="announcement-header">
+            <div class="announcement-title">⚠ Scheduled Maintenance Window — March 4, 2026</div>
+            <div class="announcement-date">Feb 27, 2026</div>
           </div>
-          <div class="staff-res-card">
-            <span class="sr-icon">\ud83d\udcc8</span>
-            <div class="sr-title">Analytics Hub</div>
-            <div class="sr-desc">Agency-wide performance dashboard. View roster metrics, growth trends, and flagged opportunities.</div>
-            <a href="#" class="sr-link">Open dashboard \u2192</a>
+          <div class="announcement-body">
+            SATCORP will be performing infrastructure upgrades on <strong>Tuesday, March 4th between 02:00–05:00 UTC</strong>. During this window, your API Gateway and web services may experience brief interruptions of up to 5 minutes. All other systems will remain operational. No action is required from your end. We will notify you immediately upon completion.
           </div>
-          <div class="staff-res-card">
-            <span class="sr-icon">\ud83d\udcdd</span>
-            <div class="sr-title">Creator Review Templates</div>
-            <div class="sr-desc">Standardised templates for analytics reviews, strategy sessions, and creator feedback reports.</div>
-            <a href="#" class="sr-link">Access templates \u2192</a>
+        </div>
+
+        <div class="announcement success">
+          <div class="announcement-header">
+            <div class="announcement-title">✓ E-Commerce Phase 2 Successfully Deployed</div>
+            <div class="announcement-date">Feb 27, 2026</div>
           </div>
-          <div class="staff-res-card">
-            <span class="sr-icon">\ud83d\udd12</span>
-            <div class="sr-title">Staff Discord</div>
-            <div class="sr-desc">Private staff channels for internal coordination, escalations, and team updates.</div>
-            <a href="#" class="sr-link">Open Discord \u2192</a>
+          <div class="announcement-body">
+            We're pleased to confirm that Phase 2 of your E-Commerce Platform rebuild is live. The Stripe payment gateway integration has been deployed to production and is processing transactions successfully. Your dev team has been provided with monitoring dashboards. QA testing for Phase 3 begins Monday.
+          </div>
+        </div>
+
+        <div class="announcement info">
+          <div class="announcement-header">
+            <div class="announcement-title">📋 February 2026 Monthly Report Available</div>
+            <div class="announcement-date">Feb 25, 2026</div>
+          </div>
+          <div class="announcement-body">
+            Your February infrastructure and development report is now available in the Documents section. It includes a full breakdown of uptime metrics, ticket resolution times, project milestones hit, and the Q1 roadmap preview for your upcoming Mobile App project.
+          </div>
+        </div>
+
+        <div class="announcement info">
+          <div class="announcement-header">
+            <div class="announcement-title">🔐 Security Audit Results — All Clear</div>
+            <div class="announcement-date">Feb 23, 2026</div>
+          </div>
+          <div class="announcement-body">
+            The comprehensive network security audit has been completed. All 14 identified findings have been remediated. Your systems are now fully compliant with the agreed security baseline. Detailed findings report is available in the Documents section.
           </div>
         </div>
       </div>
-    </section>
 
-    <!-- Staff News -->
-    <section class="s-section">
-      <div class="wrap">
-        <p class="label-row label-row-s">Internal Updates</p>
-        <h2 class="s-section-title reveal">What's on the<br><strong>agency</strong> radar.</h2>
-        <div class="s-news-grid reveal">
-          <div class="s-news-card">
-            <span class="s-news-tag">Operations</span>
-            <div class="s-news-title">Q1 Creator Review Schedule Now Published</div>
-            <div class="s-news-excerpt">All scheduled creator analytics reviews for Q1 2026 have been assigned and published in the CRM. Please confirm your sessions by Feb 28th.</div>
-            <div class="s-news-meta">Feb 14, 2026 \u00b7 Alex Rowe</div>
+      <!-- DOCUMENTS PAGE -->
+      <div class="page" id="page-docs">
+        <div class="section-header" style="margin-bottom:20px">
+          <div class="section-title">Documents & Files</div>
+        </div>
+
+        <div class="card" style="padding:0;overflow:hidden;">
+          <div class="doc-row">
+            <div class="doc-icon">📊</div>
+            <div class="doc-info">
+              <div class="doc-name">February 2026 Infrastructure Report</div>
+              <div class="doc-meta">Uploaded Feb 25, 2026 · by SATCORP Operations</div>
+            </div>
+            <div class="doc-size">PDF · 2.4 MB</div>
+            <button class="download-btn">↓ Download</button>
           </div>
-          <div class="s-news-card">
-            <span class="s-news-tag">Strategy</span>
-            <div class="s-news-title">New Onboarding Flow for Incoming Creators</div>
-            <div class="s-news-excerpt">The onboarding checklist has been updated with two new steps: a welcome call template and a 30-day check-in framework. Review before your next intake.</div>
-            <div class="s-news-meta">Feb 10, 2026 \u00b7 Morgan Ellis</div>
+          <div class="doc-row">
+            <div class="doc-icon">🔐</div>
+            <div class="doc-info">
+              <div class="doc-name">Security Audit Report — Feb 2026</div>
+              <div class="doc-meta">Uploaded Feb 23, 2026 · by SATCORP Security</div>
+            </div>
+            <div class="doc-size">PDF · 8.1 MB</div>
+            <button class="download-btn">↓ Download</button>
           </div>
-          <div class="s-news-card">
-            <span class="s-news-tag">Community</span>
-            <div class="s-news-title">Discord Restructure Complete \u2014 New Channels Active</div>
-            <div class="s-news-excerpt">The Discord restructure is complete. Creator feedback channels, strategy sessions, and the wins board are all live. Familiarise yourselves before Monday.</div>
-            <div class="s-news-meta">Jan 28, 2026 \u00b7 Jamie Sol</div>
+          <div class="doc-row">
+            <div class="doc-icon">📱</div>
+            <div class="doc-info">
+              <div class="doc-name">Mobile App — Wireframes v1.2</div>
+              <div class="doc-meta">Uploaded Feb 20, 2026 · by Mobile Team</div>
+            </div>
+            <div class="doc-size">Figma · 14 MB</div>
+            <button class="download-btn">↓ Download</button>
           </div>
-          <div class="s-news-card">
-            <span class="s-news-tag">Growth</span>
-            <div class="s-news-title">Roster Expansion: 3 New Creators in February</div>
-            <div class="s-news-excerpt">We're onboarding three new creators this month. Reese is leading the coaching intake. Please review their profiles in the CRM before their first check-ins.</div>
-            <div class="s-news-meta">Jan 20, 2026 \u00b7 Casey Vane</div>
+          <div class="doc-row">
+            <div class="doc-icon">🔗</div>
+            <div class="doc-info">
+              <div class="doc-name">CRM Integration — API Documentation</div>
+              <div class="doc-meta">Uploaded Feb 15, 2026 · by Integration Team</div>
+            </div>
+            <div class="doc-size">PDF · 3.7 MB</div>
+            <button class="download-btn">↓ Download</button>
+          </div>
+          <div class="doc-row">
+            <div class="doc-icon">🛒</div>
+            <div class="doc-info">
+              <div class="doc-name">E-Commerce Platform — Technical Spec</div>
+              <div class="doc-meta">Uploaded Jan 10, 2026 · by Dev Team Alpha</div>
+            </div>
+            <div class="doc-size">PDF · 1.9 MB</div>
+            <button class="download-btn">↓ Download</button>
+          </div>
+          <div class="doc-row">
+            <div class="doc-icon">📋</div>
+            <div class="doc-info">
+              <div class="doc-name">January 2026 Infrastructure Report</div>
+              <div class="doc-meta">Uploaded Jan 28, 2026 · by SATCORP Operations</div>
+            </div>
+            <div class="doc-size">PDF · 2.1 MB</div>
+            <button class="download-btn">↓ Download</button>
+          </div>
+          <div class="doc-row">
+            <div class="doc-icon">📝</div>
+            <div class="doc-info">
+              <div class="doc-name">Master Service Agreement 2026</div>
+              <div class="doc-meta">Uploaded Jan 01, 2026 · by SATCORP Admin</div>
+            </div>
+            <div class="doc-size">PDF · 0.8 MB</div>
+            <button class="download-btn">↓ Download</button>
           </div>
         </div>
       </div>
-    </section>
 
-    <!-- Footer -->
-    <footer class="site-footer">
-      <div style="max-width:1240px;margin:0 auto;">
-        <div class="footer-inner">
-          <div class="footer-brand">
-            <div class="footer-brand-name">peacetime</div>
-            <p>A transparent, community-driven TikTok creator agency. Ethical partnerships, real support, mutual success.</p>
-          </div>
-          <div class="footer-col">
-            <h5>For Visitors</h5>
-            <a href="#why">Why Peacetime</a>
-            <a href="#onboarding">Onboarding</a>
-            <a href="#world-visitors">\u2191 Back to top</a>
-          </div>
-          <div class="footer-col">
-            <h5>Creators</h5>
-            <a href="#roster">Creator Roster</a>
-            <a href="#roster">Agency News</a>
-            <a href="#roster">Resources</a>
-          </div>
-          <div class="footer-col">
-            <h5>Staff</h5>
-            <a href="#team">Meet the Team</a>
-            <a href="#team">Internal Resources</a>
-            <a href="#team">Staff Updates</a>
-          </div>
-        </div>
-        <p class="footer-copy">\u00a9 2026 Peacetime Agency \u00b7 Creator-first, always.</p>
-      </div>
-    </footer>
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /portal -->
 
-  </div><!-- /world-staff -->
-
-
-  <!-- \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-     JS
-  \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 -->
-  <script>
-  // \u2500\u2500 Custom cursor \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
-  const cursor = document.getElementById('cursor');
-  const ring   = document.getElementById('cursor-ring');
-  let mx = 0, my = 0, rx = 0, ry = 0;
-
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY;
-    cursor.style.left = mx + 'px';
-    cursor.style.top  = my + 'px';
-  });
-
-  function animRing() {
-    rx += (mx - rx) * 0.1;
-    ry += (my - ry) * 0.1;
-    ring.style.left = rx + 'px';
-    ring.style.top  = ry + 'px';
-    requestAnimationFrame(animRing);
+<script>
+  // CLOCK
+  function updateClock() {
+    const now = new Date();
+    document.getElementById('clock').textContent =
+      now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) +
+      ' · ' + now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   }
-  animRing();
+  setInterval(updateClock, 1000);
+  updateClock();
 
-  document.querySelectorAll('a, button').forEach(el => {
-    el.addEventListener('mouseenter', () => {
-      cursor.style.transform = 'translate(-50%,-50%) scale(2)';
-      ring.style.opacity = '0.2';
-    });
-    el.addEventListener('mouseleave', () => {
-      cursor.style.transform = 'translate(-50%,-50%) scale(1)';
-      ring.style.opacity = '0.4';
-    });
+  // LOGIN
+  function doLogin() {
+    document.getElementById('login-screen').style.opacity = '0';
+    document.getElementById('login-screen').style.transition = 'opacity 0.4s ease';
+    setTimeout(() => {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('portal').style.display = 'block';
+    }, 400);
+  }
+
+  function doLogout() {
+    document.getElementById('portal').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('login-screen').style.opacity = '1';
+  }
+
+  // NAV
+  const pageTitles = {
+    dashboard: 'Dashboard',
+    projects: 'Projects',
+    tickets: 'Support Tickets',
+    infra: 'System Status',
+    announcements: 'Announcements',
+    docs: 'Documents'
+  };
+
+  function showPage(id, el) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    if (el) el.classList.add('active');
+    document.getElementById('page-title').textContent = pageTitles[id] || id;
+  }
+
+  // Enter key login
+  document.addEventListener('keypress', e => {
+    if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') {
+      doLogin();
+    }
   });
-
-  // \u2500\u2500 Scroll-based nav world switching \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
-  const nav        = document.getElementById('nav');
-  const wVisitors  = document.getElementById('world-visitors');
-  const wCreators  = document.getElementById('world-creators');
-  const wStaff     = document.getElementById('world-staff');
-  const btnV       = document.getElementById('btn-visitors');
-  const btnC       = document.getElementById('btn-
+</script>
+</body>
+</html>
