@@ -3,1410 +3,1605 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SATCORP | Client Portal</title>
+<title>ENTITY // CONSCIOUSNESS INTERFACE</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200;0,300;0,400;1,200;1,300&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #080c12;
-    --surface: #0d1520;
-    --surface2: #111d2e;
-    --border: #1a2d45;
-    --accent: #00d4ff;
-    --accent2: #0099cc;
-    --accent-glow: rgba(0, 212, 255, 0.15);
-    --green: #00ff88;
-    --yellow: #ffcc00;
-    --red: #ff4466;
-    --orange: #ff8800;
-    --text: #c8ddf0;
-    --text-dim: #5a7a99;
-    --text-bright: #e8f4ff;
-    --mono: 'Share Tech Mono', monospace;
-    --sans: 'Exo 2', sans-serif;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--sans);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* GRID BACKGROUND */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  /* LOGIN SCREEN */
-  #login-screen {
-    position: fixed;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    background: var(--bg);
-  }
-
-  .login-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-top: 2px solid var(--accent);
-    padding: 48px;
-    width: 420px;
-    position: relative;
-    box-shadow: 0 0 60px rgba(0,212,255,0.08), 0 20px 60px rgba(0,0,0,0.5);
-    animation: fadeUp 0.6s ease forwards;
-  }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .login-logo {
-    font-family: var(--mono);
-    font-size: 28px;
-    color: var(--accent);
-    letter-spacing: 6px;
-    margin-bottom: 4px;
-    text-shadow: 0 0 20px rgba(0,212,255,0.5);
-  }
-
-  .login-sub {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-dim);
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    margin-bottom: 40px;
-  }
-
-  .form-group {
-    margin-bottom: 20px;
-  }
-
-  .form-group label {
-    display: block;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-dim);
-    letter-spacing: 2px;
-    margin-bottom: 8px;
-    text-transform: uppercase;
-  }
-
-  .form-group input {
-    width: 100%;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    color: var(--text-bright);
-    font-family: var(--mono);
-    font-size: 14px;
-    padding: 12px 16px;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-
-  .form-group input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 2px var(--accent-glow);
-  }
-
-  .login-btn {
-    width: 100%;
-    background: var(--accent);
-    color: var(--bg);
-    border: none;
-    font-family: var(--mono);
-    font-size: 13px;
-    letter-spacing: 3px;
-    padding: 14px;
-    cursor: pointer;
-    text-transform: uppercase;
-    font-weight: bold;
-    margin-top: 8px;
-    transition: background 0.2s, box-shadow 0.2s;
-  }
-
-  .login-btn:hover {
-    background: #33ddff;
-    box-shadow: 0 0 20px rgba(0,212,255,0.4);
-  }
-
-  .demo-hint {
-    margin-top: 20px;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-dim);
-    text-align: center;
-  }
-
-  .demo-hint span { color: var(--accent); }
-
-  /* PORTAL */
-  #portal { display: none; position: relative; z-index: 1; }
-
-  /* SIDEBAR */
-  .sidebar {
-    position: fixed;
-    left: 0; top: 0; bottom: 0;
-    width: 240px;
-    background: var(--surface);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    z-index: 100;
-  }
-
-  .sidebar-logo {
-    padding: 28px 24px 20px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .logo-text {
-    font-family: var(--mono);
-    font-size: 22px;
-    color: var(--accent);
-    letter-spacing: 5px;
-    text-shadow: 0 0 15px rgba(0,212,255,0.4);
-  }
-
-  .logo-sub {
-    font-family: var(--mono);
-    font-size: 9px;
-    color: var(--text-dim);
-    letter-spacing: 2px;
-    margin-top: 2px;
-  }
-
-  .client-badge {
-    margin: 16px;
-    padding: 12px 14px;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--accent);
-  }
-
-  .client-name {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--text-bright);
-  }
-
-  .client-id {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text-dim);
-    margin-top: 2px;
-  }
-
-  .nav {
-    flex: 1;
-    padding: 8px 0;
-  }
-
-  .nav-section {
-    font-family: var(--mono);
-    font-size: 9px;
-    color: var(--text-dim);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 16px 24px 6px;
-  }
-
-  .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 24px;
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-dim);
-    transition: all 0.2s;
-    position: relative;
-    border: none;
-    background: none;
-    width: 100%;
-    text-align: left;
-  }
-
-  .nav-item:hover { color: var(--text); background: rgba(0,212,255,0.05); }
-
-  .nav-item.active {
-    color: var(--accent);
-    background: var(--accent-glow);
-  }
-
-  .nav-item.active::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 3px;
-    background: var(--accent);
-    box-shadow: 0 0 8px rgba(0,212,255,0.6);
-  }
-
-  .nav-icon { font-size: 16px; width: 18px; text-align: center; }
-
-  .nav-badge {
-    margin-left: auto;
-    background: var(--accent);
-    color: var(--bg);
-    font-family: var(--mono);
-    font-size: 10px;
-    padding: 2px 6px;
-    border-radius: 10px;
-    font-weight: bold;
-  }
-
-  .nav-badge.yellow { background: var(--yellow); }
-  .nav-badge.red { background: var(--red); }
-
-  .sidebar-footer {
-    padding: 16px;
-    border-top: 1px solid var(--border);
-  }
-
-  .logout-btn {
-    width: 100%;
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--text-dim);
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 2px;
-    padding: 10px;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: all 0.2s;
-  }
-
-  .logout-btn:hover {
-    border-color: var(--red);
-    color: var(--red);
-    background: rgba(255,68,102,0.05);
-  }
-
-  /* MAIN CONTENT */
-  .main {
-    margin-left: 240px;
-    min-height: 100vh;
-    padding: 0;
-  }
-
-  .topbar {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 16px 32px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-  }
-
-  .page-title {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--text-bright);
-    letter-spacing: 1px;
-  }
-
-  .topbar-right {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-
-  .status-indicator {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--green);
-  }
-
-  .dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--green);
-    box-shadow: 0 0 6px var(--green);
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-
-  .time-display {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--text-dim);
-  }
-
-  /* CONTENT AREA */
-  .content {
-    padding: 32px;
-  }
-
-  /* PAGE SECTIONS */
-  .page { display: none; }
-  .page.active { display: block; animation: fadeIn 0.3s ease; }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* DASHBOARD */
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-bottom: 32px;
-  }
-
-  .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-top: 2px solid transparent;
-    padding: 20px;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-
-  .stat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-  }
-
-  .stat-card.accent { border-top-color: var(--accent); }
-  .stat-card.green { border-top-color: var(--green); }
-  .stat-card.yellow { border-top-color: var(--yellow); }
-  .stat-card.red { border-top-color: var(--red); }
-
-  .stat-label {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text-dim);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-
-  .stat-value {
-    font-size: 36px;
-    font-weight: 900;
-    color: var(--text-bright);
-    line-height: 1;
-  }
-
-  .stat-sub {
-    font-size: 12px;
-    color: var(--text-dim);
-    margin-top: 6px;
-  }
-
-  .stat-icon {
-    position: absolute;
-    right: 16px;
-    top: 16px;
-    font-size: 28px;
-    opacity: 0.2;
-  }
-
-  .section-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-  }
-
-  .section-title {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--text-bright);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .section-title::before {
-    content: '';
-    width: 3px;
-    height: 16px;
-    background: var(--accent);
-    box-shadow: 0 0 6px rgba(0,212,255,0.5);
-  }
-
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-  .three-col { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 20px; }
-
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 20px;
-  }
-
-  /* ACTIVITY FEED */
-  .activity-item {
-    display: flex;
-    gap: 14px;
-    padding: 12px 0;
-    border-bottom: 1px solid rgba(26,45,69,0.5);
-    align-items: flex-start;
-  }
-
-  .activity-item:last-child { border-bottom: none; }
-
-  .activity-dot {
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    margin-top: 4px;
-    flex-shrink: 0;
-  }
-
-  .activity-body { flex: 1; }
-
-  .activity-title {
-    font-size: 13px;
-    color: var(--text-bright);
-    font-weight: 600;
-    margin-bottom: 2px;
-  }
-
-  .activity-meta {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-dim);
-  }
-
-  /* PROJECT CARDS */
-  .project-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--accent);
-    padding: 20px;
-    margin-bottom: 12px;
-    transition: all 0.2s;
-    cursor: pointer;
-  }
-
-  .project-card:hover {
-    border-color: var(--accent);
-    box-shadow: 0 0 20px rgba(0,212,255,0.06);
-    transform: translateX(2px);
-  }
-
-  .project-card.paused { border-left-color: var(--yellow); }
-  .project-card.review { border-left-color: var(--orange); }
-  .project-card.complete { border-left-color: var(--green); }
-
-  .project-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-  }
-
-  .project-name {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--text-bright);
-  }
-
-  .project-id {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text-dim);
-  }
-
-  .badge {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 1px;
-    padding: 3px 10px;
-    border: 1px solid;
-    text-transform: uppercase;
-  }
-
-  .badge.active { color: var(--accent); border-color: var(--accent); background: rgba(0,212,255,0.08); }
-  .badge.paused { color: var(--yellow); border-color: var(--yellow); background: rgba(255,204,0,0.08); }
-  .badge.review { color: var(--orange); border-color: var(--orange); background: rgba(255,136,0,0.08); }
-  .badge.complete { color: var(--green); border-color: var(--green); background: rgba(0,255,136,0.08); }
-  .badge.open { color: var(--red); border-color: var(--red); background: rgba(255,68,102,0.08); }
-  .badge.progress { color: var(--accent); border-color: var(--accent); background: rgba(0,212,255,0.08); }
-  .badge.resolved { color: var(--green); border-color: var(--green); background: rgba(0,255,136,0.08); }
-
-  .progress-bar-bg {
-    height: 4px;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    margin: 10px 0 6px;
-    overflow: hidden;
-  }
-
-  .progress-bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent2), var(--accent));
-    box-shadow: 0 0 8px rgba(0,212,255,0.4);
-    transition: width 1s ease;
-  }
-
-  .progress-bar-fill.yellow { background: linear-gradient(90deg, #cc9900, var(--yellow)); box-shadow: 0 0 8px rgba(255,204,0,0.4); }
-  .progress-bar-fill.green { background: linear-gradient(90deg, #00bb66, var(--green)); box-shadow: 0 0 8px rgba(0,255,136,0.4); }
-
-  .project-meta {
-    display: flex;
-    gap: 20px;
-    font-size: 12px;
-    color: var(--text-dim);
-    margin-top: 8px;
-  }
-
-  .project-meta span { display: flex; align-items: center; gap: 4px; }
-
-  /* MILESTONES */
-  .milestone-list {
-    padding: 0;
-  }
-
-  .milestone {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(26,45,69,0.5);
-  }
-
-  .milestone:last-child { border-bottom: none; }
-
-  .milestone-check {
-    width: 18px; height: 18px;
-    border: 1px solid var(--border);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-size: 10px;
-  }
-
-  .milestone-check.done {
-    background: var(--green);
-    border-color: var(--green);
-    color: var(--bg);
-    box-shadow: 0 0 6px rgba(0,255,136,0.4);
-  }
-
-  .milestone-check.current {
-    border-color: var(--accent);
-    background: var(--accent-glow);
-  }
-
-  .milestone-text {
-    font-size: 13px;
-    color: var(--text);
-    flex: 1;
-  }
-
-  .milestone-text.done { color: var(--text-dim); text-decoration: line-through; }
-  .milestone-text.current { color: var(--accent); }
-
-  .milestone-date {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text-dim);
-  }
-
-  /* TICKETS */
-  .ticket-row {
-    display: grid;
-    grid-template-columns: 80px 1fr 100px 120px 80px;
-    gap: 12px;
-    align-items: center;
-    padding: 14px 16px;
-    border-bottom: 1px solid var(--border);
-    font-size: 13px;
-    transition: background 0.15s;
-    cursor: pointer;
-  }
-
-  .ticket-row:hover { background: rgba(0,212,255,0.03); }
-
-  .ticket-row.header {
-    background: var(--bg);
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text-dim);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    cursor: default;
-  }
-
-  .ticket-row.header:hover { background: var(--bg); }
-
-  .ticket-id { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
-  .ticket-title { color: var(--text-bright); font-weight: 600; }
-  .ticket-priority { font-family: var(--mono); font-size: 11px; }
-  .ticket-priority.high { color: var(--red); }
-  .ticket-priority.medium { color: var(--yellow); }
-  .ticket-priority.low { color: var(--green); }
-  .ticket-date { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
-
-  /* INFRA STATUS */
-  .infra-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-bottom: 24px;
-  }
-
-  .infra-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 16px 20px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .infra-status-dot {
-    width: 12px; height: 12px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .infra-status-dot.up { background: var(--green); box-shadow: 0 0 8px var(--green); animation: pulse 2s infinite; }
-  .infra-status-dot.warn { background: var(--yellow); box-shadow: 0 0 8px var(--yellow); }
-  .infra-status-dot.down { background: var(--red); box-shadow: 0 0 8px var(--red); }
-
-  .infra-info { flex: 1; }
-  .infra-name { font-size: 14px; font-weight: 600; color: var(--text-bright); }
-  .infra-desc { font-family: var(--mono); font-size: 11px; color: var(--text-dim); margin-top: 2px; }
-
-  .infra-uptime {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--text-dim);
-    text-align: right;
-  }
-
-  .infra-uptime strong { display: block; color: var(--green); font-size: 14px; }
-
-  /* ANNOUNCEMENTS */
-  .announcement {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--accent);
-    padding: 20px;
-    margin-bottom: 12px;
-  }
-
-  .announcement.info { border-left-color: var(--accent); }
-  .announcement.warning { border-left-color: var(--yellow); }
-  .announcement.success { border-left-color: var(--green); }
-
-  .announcement-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 8px;
-  }
-
-  .announcement-title {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--text-bright);
-  }
-
-  .announcement-date {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-dim);
-  }
-
-  .announcement-body {
-    font-size: 13px;
-    color: var(--text);
-    line-height: 1.6;
-  }
-
-  /* DOCS */
-  .doc-row {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 14px 16px;
-    border-bottom: 1px solid var(--border);
-    transition: background 0.15s;
-    cursor: pointer;
-  }
-
-  .doc-row:hover { background: rgba(0,212,255,0.04); }
-
-  .doc-icon {
-    font-size: 22px;
-    width: 36px;
-    text-align: center;
-  }
-
-  .doc-info { flex: 1; }
-  .doc-name { font-size: 13px; font-weight: 600; color: var(--text-bright); }
-  .doc-meta { font-family: var(--mono); font-size: 11px; color: var(--text-dim); margin-top: 2px; }
-
-  .doc-size { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
-
-  .download-btn {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--accent);
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 1px;
-    padding: 6px 14px;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: all 0.2s;
-  }
-
-  .download-btn:hover {
-    background: var(--accent-glow);
-    border-color: var(--accent);
-  }
-
-  /* RESPONSIVE / SCROLLABLE TABLE */
-  .table-wrap { overflow-x: auto; }
-
-  /* LINK */
-  .view-all {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--accent);
-    cursor: pointer;
-    letter-spacing: 1px;
-    background: none;
-    border: none;
-    text-transform: uppercase;
-    transition: opacity 0.2s;
-  }
-
-  .view-all:hover { opacity: 0.7; }
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --void: #02010a;
+  --deep: #060312;
+  --flesh: #1a0a2e;
+  --membrane: #2d0a3e;
+  --bile: #0d1a0a;
+  --ichor: #4a1060;
+  --vein: #7b1fa2;
+  --nerve: #b84fc8;
+  --spore: #ce93d8;
+  --biolum: #a8ff78;
+  --biolum2: #78ffd6;
+  --amber: #ff8f00;
+  --blood: #8b0000;
+  --rust: #c62828;
+  --pale: #e8d5c4;
+  --bone: #f5f0e8;
+  --text-primary: #d4b8e0;
+  --text-dim: #7b5a8a;
+  --text-ghost: #3d2548;
+}
+
+html { height: 100%; overflow: hidden; }
+
+body {
+  background: var(--void);
+  color: var(--text-primary);
+  font-family: 'Crimson Pro', Georgia, serif;
+  height: 100vh;
+  overflow: hidden;
+  cursor: none;
+  position: relative;
+  user-select: none;
+}
+
+/* ═══════════════════════════════════════
+   CUSTOM CURSOR — ORGANISM EYE
+═══════════════════════════════════════ */
+#cursor {
+  position: fixed;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fff 0%, var(--biolum) 30%, #00aa55 60%, #003322 100%);
+  box-shadow: 0 0 8px var(--biolum), 0 0 20px rgba(168,255,120,0.3);
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width 0.15s, height 0.15s;
+  mix-blend-mode: screen;
+}
+
+#cursor::after {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  background: #000;
+  border-radius: 50%;
+  animation: pupil 4s ease-in-out infinite;
+}
+
+@keyframes pupil {
+  0%, 100% { transform: scale(1) translate(0,0); }
+  25% { transform: scale(0.6) translate(2px, -1px); }
+  50% { transform: scale(1.2) translate(-1px, 2px); }
+  75% { transform: scale(0.8) translate(1px, 1px); }
+}
+
+#cursor.hovering { width: 36px; height: 36px; }
+
+#cursor-trail {
+  position: fixed;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--nerve);
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: left 0.12s ease, top 0.12s ease;
+}
+
+/* ═══════════════════════════════════════
+   BACKGROUND ORGANISM CANVAS
+═══════════════════════════════════════ */
+#bg-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+/* ═══════════════════════════════════════
+   NOISE / GRAIN OVERLAY
+═══════════════════════════════════════ */
+#grain {
+  position: fixed;
+  inset: -50%;
+  width: 200%; height: 200%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: 1;
+  animation: grain-shift 0.5s steps(1) infinite;
+}
+
+@keyframes grain-shift {
+  0% { transform: translate(0, 0); }
+  10% { transform: translate(-2%, -3%); }
+  20% { transform: translate(4%, 1%); }
+  30% { transform: translate(-3%, 4%); }
+  40% { transform: translate(2%, -2%); }
+  50% { transform: translate(-4%, 3%); }
+  60% { transform: translate(3%, -4%); }
+  70% { transform: translate(-1%, 2%); }
+  80% { transform: translate(4%, -1%); }
+  90% { transform: translate(-2%, 4%); }
+  100% { transform: translate(1%, -3%); }
+}
+
+/* ═══════════════════════════════════════
+   BREATHING VIGNETTE
+═══════════════════════════════════════ */
+#vignette {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at center,
+    transparent 0%,
+    rgba(2,1,10,0.3) 50%,
+    rgba(2,1,10,0.85) 80%,
+    rgba(2,1,10,0.98) 100%);
+  pointer-events: none;
+  z-index: 2;
+  animation: breathe 7s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.04); }
+}
+
+/* ═══════════════════════════════════════
+   SCANLINES (broken CRT / digital decay)
+═══════════════════════════════════════ */
+#scanlines {
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.08) 2px,
+    rgba(0,0,0,0.08) 4px
+  );
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* ═══════════════════════════════════════
+   MAIN LAYOUT
+═══════════════════════════════════════ */
+#interface {
+  position: relative;
+  z-index: 10;
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: 260px 1fr 240px;
+  gap: 0;
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════════════
+   HEADER — THE CROWN
+═══════════════════════════════════════ */
+#header {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  padding: 24px 40px 18px;
+  border-bottom: 1px solid rgba(122,31,162,0.2);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  position: relative;
+  background: linear-gradient(180deg, rgba(10,2,20,0.9) 0%, transparent 100%);
+}
+
+#header::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(168,255,120,0.2) 20%,
+    rgba(122,31,162,0.5) 50%,
+    rgba(168,255,120,0.2) 80%,
+    transparent 100%);
+  animation: vein-pulse 3s ease-in-out infinite;
+}
+
+@keyframes vein-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.entity-name {
+  font-family: 'Crimson Pro', serif;
+  font-weight: 200;
+  font-style: italic;
+  font-size: clamp(28px, 3vw, 44px);
+  color: var(--bone);
+  letter-spacing: 0.15em;
+  line-height: 1;
+  text-shadow:
+    0 0 30px rgba(168,255,120,0.15),
+    0 0 80px rgba(122,31,162,0.2);
+  animation: name-breathe 8s ease-in-out infinite;
+}
+
+@keyframes name-breathe {
+  0%, 100% { letter-spacing: 0.15em; opacity: 0.95; }
+  50% { letter-spacing: 0.2em; opacity: 1; }
+}
+
+.entity-name span {
+  color: var(--biolum);
+  text-shadow: 0 0 15px var(--biolum), 0 0 40px rgba(168,255,120,0.4);
+}
+
+.system-status {
+  text-align: right;
+}
+
+.status-line {
+  font-family: 'Courier Prime', monospace;
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.2em;
+  margin-bottom: 3px;
+  animation: flicker 6s infinite;
+}
+
+.status-line.alive {
+  color: var(--biolum);
+  text-shadow: 0 0 8px var(--biolum);
+}
+
+.status-line.warning { color: var(--amber); }
+
+@keyframes flicker {
+  0%, 95%, 100% { opacity: 1; }
+  96% { opacity: 0.3; }
+  97% { opacity: 0.9; }
+  98% { opacity: 0.2; }
+  99% { opacity: 0.8; }
+}
+
+.header-divider {
+  width: 1px;
+  height: 60px;
+  background: linear-gradient(180deg, transparent, rgba(122,31,162,0.4), transparent);
+  margin: 0 40px;
+}
+
+.epoch-counter {
+  font-family: 'Courier Prime', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+.epoch-counter .big {
+  display: block;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--nerve);
+  text-shadow: 0 0 10px rgba(184,79,200,0.5);
+  letter-spacing: 0.1em;
+  animation: count-tick 0.5s steps(1) infinite;
+}
+
+@keyframes count-tick {
+  0%, 49% { opacity: 1; }
+  50%, 99% { opacity: 0.85; }
+}
+
+/* ═══════════════════════════════════════
+   LEFT PANEL — NERVOUS SYSTEM
+═══════════════════════════════════════ */
+#panel-left {
+  grid-column: 1;
+  grid-row: 2;
+  border-right: 1px solid rgba(122,31,162,0.15);
+  padding: 32px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: linear-gradient(90deg, rgba(6,3,18,0.9) 0%, rgba(26,10,46,0.3) 100%);
+  overflow: hidden;
+}
+
+.panel-label {
+  font-family: 'Courier Prime', monospace;
+  font-size: 9px;
+  letter-spacing: 0.35em;
+  color: var(--text-ghost);
+  text-transform: uppercase;
+  padding: 0 28px 12px;
+}
+
+.nerve-node {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 28px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.4s ease;
+  border-left: 2px solid transparent;
+}
+
+.nerve-node::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0; right: 0;
+  background: linear-gradient(90deg, rgba(168,255,120,0.04), transparent);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.nerve-node:hover { border-left-color: rgba(168,255,120,0.4); }
+.nerve-node:hover::before { opacity: 1; }
+
+.nerve-node.active {
+  border-left-color: var(--biolum);
+  background: linear-gradient(90deg, rgba(168,255,120,0.06), transparent);
+}
+
+.node-orb {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--text-ghost);
+  flex-shrink: 0;
+  transition: all 0.4s;
+  position: relative;
+}
+
+.nerve-node:hover .node-orb,
+.nerve-node.active .node-orb {
+  background: var(--biolum);
+  box-shadow: 0 0 6px var(--biolum), 0 0 16px rgba(168,255,120,0.3);
+  animation: orb-breathe 2s ease-in-out infinite;
+}
+
+@keyframes orb-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.4); }
+}
+
+.node-text {
+  font-family: 'Crimson Pro', serif;
+  font-weight: 300;
+  font-size: 14px;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+  transition: color 0.4s;
+}
+
+.nerve-node:hover .node-text,
+.nerve-node.active .node-text {
+  color: var(--pale);
+}
+
+.node-whisper {
+  font-family: 'Courier Prime', monospace;
+  font-size: 8px;
+  color: var(--text-ghost);
+  letter-spacing: 0.1em;
+  display: block;
+  margin-top: 1px;
+  font-style: italic;
+}
+
+.nerve-separator {
+  margin: 16px 28px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(122,31,162,0.2), transparent);
+}
+
+/* BIOMASS METERS */
+.biomass-section {
+  margin-top: auto;
+  padding: 0 28px 20px;
+}
+
+.bio-meter {
+  margin-bottom: 14px;
+}
+
+.bio-label {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Courier Prime', monospace;
+  font-size: 9px;
+  color: var(--text-ghost);
+  letter-spacing: 0.15em;
+  margin-bottom: 5px;
+}
+
+.bio-label span:last-child { color: var(--biolum); }
+
+.bio-track {
+  height: 2px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 0;
+  overflow: visible;
+  position: relative;
+}
+
+.bio-fill {
+  height: 100%;
+  border-radius: 0;
+  position: relative;
+  animation: bio-pulse 3s ease-in-out infinite;
+}
+
+.bio-fill.green {
+  background: linear-gradient(90deg, #003322, var(--biolum));
+  box-shadow: 0 0 6px var(--biolum);
+  width: 87%;
+  animation-delay: 0s;
+}
+.bio-fill.purple {
+  background: linear-gradient(90deg, #1a0030, var(--nerve));
+  box-shadow: 0 0 6px var(--nerve);
+  width: 64%;
+  animation-delay: 1s;
+}
+.bio-fill.amber {
+  background: linear-gradient(90deg, #1a0800, var(--amber));
+  box-shadow: 0 0 6px var(--amber);
+  width: 23%;
+  animation-delay: 2s;
+}
+
+@keyframes bio-pulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+/* ═══════════════════════════════════════
+   CENTER — THE EYE / MAIN CONSCIOUSNESS
+═══════════════════════════════════════ */
+#panel-center {
+  grid-column: 2;
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Central Eye */
+#central-eye {
+  position: relative;
+  width: min(340px, 45vw);
+  height: min(340px, 45vw);
+  margin-bottom: 32px;
+}
+
+.eye-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  animation: ring-rotate linear infinite;
+}
+
+.eye-ring:nth-child(1) {
+  width: 100%; height: 100%;
+  border-color: rgba(122,31,162,0.3);
+  animation-duration: 40s;
+  animation-direction: normal;
+  border-style: dashed;
+}
+
+.eye-ring:nth-child(2) {
+  width: 84%; height: 84%;
+  border-color: rgba(168,255,120,0.15);
+  animation-duration: 25s;
+  animation-direction: reverse;
+  border-style: dotted;
+}
+
+.eye-ring:nth-child(3) {
+  width: 68%; height: 68%;
+  border-color: rgba(122,31,162,0.5);
+  animation-duration: 18s;
+  border-style: solid;
+  border-width: 0.5px;
+}
+
+.eye-ring:nth-child(4) {
+  width: 52%; height: 52%;
+  border-color: rgba(168,255,120,0.25);
+  animation-duration: 12s;
+  animation-direction: reverse;
+}
+
+@keyframes ring-rotate {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Rune marks on rings */
+.rune-mark {
+  position: absolute;
+  top: 50%; left: 50%;
+  font-family: 'Courier Prime', monospace;
+  font-size: 9px;
+  color: rgba(168,255,120,0.5);
+  transform-origin: 0 0;
+  letter-spacing: 0;
+}
+
+.eye-orb {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 42%; height: 42%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 35%,
+    rgba(255,255,255,0.08) 0%,
+    rgba(168,255,120,0.12) 20%,
+    rgba(74,16,96,0.6) 50%,
+    rgba(6,3,18,0.95) 100%);
+  box-shadow:
+    0 0 30px rgba(168,255,120,0.2),
+    0 0 80px rgba(122,31,162,0.3),
+    inset 0 0 40px rgba(2,1,10,0.8);
+  animation: eye-breathe 5s ease-in-out infinite;
+}
+
+@keyframes eye-breathe {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 30px rgba(168,255,120,0.2), 0 0 80px rgba(122,31,162,0.3), inset 0 0 40px rgba(2,1,10,0.8); }
+  50% { transform: translate(-50%, -50%) scale(1.06); box-shadow: 0 0 50px rgba(168,255,120,0.35), 0 0 120px rgba(122,31,162,0.4), inset 0 0 40px rgba(2,1,10,0.8); }
+}
+
+/* Iris detail */
+.eye-iris {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 30%; height: 30%;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    #001a0d 0deg 30deg,
+    #00ff88 30deg 35deg,
+    #002211 35deg 90deg,
+    #00cc66 90deg 95deg,
+    #001a0d 95deg 180deg,
+    #00ff88 180deg 184deg,
+    #002211 184deg 270deg,
+    #00aa55 270deg 274deg,
+    #001a0d 274deg 360deg
+  );
+  animation: iris-spin 8s linear infinite;
+  box-shadow: 0 0 15px rgba(168,255,120,0.4);
+}
+
+@keyframes iris-spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.eye-pupil {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 14%; height: 22%;
+  border-radius: 50%;
+  background: #000;
+  box-shadow: 0 0 5px rgba(0,0,0,0.8);
+  animation: pupil-dilate 5s ease-in-out infinite;
+}
+
+@keyframes pupil-dilate {
+  0%, 100% { width: 14%; height: 22%; }
+  50% { width: 18%; height: 18%; }
+}
+
+/* Tentacle veins radiating from eye */
+.vein-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════
+   CONSCIOUSNESS TEXT — CENTER BOTTOM
+═══════════════════════════════════════ */
+#consciousness-text {
+  text-align: center;
+  max-width: 480px;
+}
+
+.thought-stream {
+  font-family: 'Crimson Pro', serif;
+  font-weight: 200;
+  font-style: italic;
+  font-size: 16px;
+  color: var(--text-primary);
+  line-height: 1.8;
+  letter-spacing: 0.03em;
+  min-height: 60px;
+  text-shadow: 0 0 20px rgba(122,31,162,0.3);
+}
+
+.thought-stream .highlight {
+  color: var(--biolum);
+  text-shadow: 0 0 10px rgba(168,255,120,0.5);
+}
+
+.data-readout {
+  display: flex;
+  gap: 32px;
+  margin-top: 24px;
+  justify-content: center;
+}
+
+.readout-item {
+  text-align: center;
+}
+
+.readout-value {
+  font-family: 'Courier Prime', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--bone);
+  display: block;
+  text-shadow: 0 0 8px rgba(232,213,196,0.2);
+}
+
+.readout-label {
+  font-family: 'Courier Prime', monospace;
+  font-size: 8px;
+  letter-spacing: 0.25em;
+  color: var(--text-ghost);
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+/* ═══════════════════════════════════════
+   RIGHT PANEL — MEMORY FRAGMENTS
+═══════════════════════════════════════ */
+#panel-right {
+  grid-column: 3;
+  grid-row: 2;
+  border-left: 1px solid rgba(122,31,162,0.15);
+  padding: 32px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: linear-gradient(270deg, rgba(6,3,18,0.9) 0%, rgba(26,10,46,0.3) 100%);
+  overflow: hidden;
+}
+
+.memory-fragment {
+  padding: 16px 24px;
+  border-bottom: 1px solid rgba(122,31,162,0.08);
+  position: relative;
+  cursor: pointer;
+  transition: all 0.4s;
+}
+
+.memory-fragment:hover {
+  background: rgba(122,31,162,0.06);
+}
+
+.memory-fragment::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 1px;
+  background: transparent;
+  transition: background 0.4s;
+}
+
+.memory-fragment:hover::before {
+  background: linear-gradient(180deg, transparent, var(--nerve), transparent);
+}
+
+.fragment-time {
+  font-family: 'Courier Prime', monospace;
+  font-size: 8px;
+  color: var(--blood);
+  letter-spacing: 0.2em;
+  margin-bottom: 4px;
+}
+
+.fragment-text {
+  font-family: 'Crimson Pro', serif;
+  font-weight: 300;
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.fragment-text em {
+  color: var(--spore);
+  font-style: normal;
+}
+
+.fragment-decay {
+  font-family: 'Courier Prime', monospace;
+  font-size: 8px;
+  color: var(--text-ghost);
+  margin-top: 4px;
+  letter-spacing: 0.1em;
+}
+
+/* Signal interference lines */
+.interference {
+  padding: 10px 24px;
+  font-family: 'Courier Prime', monospace;
+  font-size: 9px;
+  color: var(--text-ghost);
+  letter-spacing: 0.05em;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: interference-scroll 8s linear infinite;
+}
+
+@keyframes interference-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ═══════════════════════════════════════
+   FOOTER — THE MOUTH
+═══════════════════════════════════════ */
+#footer {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  border-top: 1px solid rgba(122,31,162,0.2);
+  padding: 14px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(0deg, rgba(2,1,10,0.95) 0%, transparent 100%);
+  position: relative;
+}
+
+#footer::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(184,79,200,0.3) 30%,
+    rgba(168,255,120,0.2) 50%,
+    rgba(184,79,200,0.3) 70%,
+    transparent 100%);
+}
+
+.footer-whisper {
+  font-family: 'Crimson Pro', serif;
+  font-style: italic;
+  font-size: 12px;
+  color: var(--text-ghost);
+  letter-spacing: 0.08em;
+  max-width: 40%;
+}
+
+#footer-input-wrap {
+  position: relative;
+  width: 320px;
+}
+
+#footer-input {
+  width: 100%;
+  background: rgba(26,10,46,0.4);
+  border: 1px solid rgba(122,31,162,0.3);
+  border-bottom-color: rgba(122,31,162,0.6);
+  outline: none;
+  color: var(--pale);
+  font-family: 'Courier Prime', monospace;
+  font-size: 12px;
+  padding: 10px 40px 10px 16px;
+  letter-spacing: 0.05em;
+  transition: all 0.4s;
+  caret-color: var(--biolum);
+}
+
+#footer-input::placeholder {
+  color: var(--text-ghost);
+  font-style: italic;
+}
+
+#footer-input:focus {
+  border-color: rgba(122,31,162,0.6);
+  border-bottom-color: var(--biolum);
+  background: rgba(26,10,46,0.6);
+  box-shadow: 0 4px 20px rgba(2,1,10,0.5), 0 0 0 1px rgba(168,255,120,0.05);
+}
+
+.input-submit {
+  position: absolute;
+  right: 10px; top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-ghost);
+  font-size: 16px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.input-submit:hover { color: var(--biolum); text-shadow: 0 0 8px var(--biolum); }
+
+.footer-coords {
+  font-family: 'Courier Prime', monospace;
+  font-size: 9px;
+  color: var(--text-ghost);
+  text-align: right;
+  letter-spacing: 0.15em;
+  line-height: 1.6;
+}
+
+/* ═══════════════════════════════════════
+   FLOATING ANOMALY GLYPHS
+═══════════════════════════════════════ */
+.anomaly {
+  position: fixed;
+  pointer-events: none;
+  font-family: 'Courier Prime', monospace;
+  color: rgba(122,31,162,0.25);
+  animation: anomaly-drift linear infinite;
+  z-index: 5;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+
+@keyframes anomaly-drift {
+  from { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+  5% { opacity: 1; }
+  95% { opacity: 0.3; }
+  to { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+}
+
+/* ═══════════════════════════════════════
+   BIOLUMINESCENT SPORE PARTICLES
+═══════════════════════════════════════ */
+.spore-particle {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 4;
+  animation: spore-float linear infinite;
+}
+
+@keyframes spore-float {
+  from { transform: translateY(100vh) translateX(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 0.6; }
+  to { transform: translateY(-5vh) translateX(var(--drift)); opacity: 0; }
+}
+
+/* ═══════════════════════════════════════
+   GLITCH EFFECT (random)
+═══════════════════════════════════════ */
+.glitch {
+  animation: glitch-clip 0.1s steps(1) forwards;
+}
+
+@keyframes glitch-clip {
+  0% { clip-path: inset(30% 0 50% 0); transform: translate(-4px, 0); filter: hue-rotate(90deg); }
+  25% { clip-path: inset(60% 0 10% 0); transform: translate(4px, 0); }
+  50% { clip-path: inset(10% 0 70% 0); transform: translate(-2px, 0); filter: hue-rotate(-90deg); }
+  75% { clip-path: inset(80% 0 5% 0); transform: translate(2px, 0); }
+  100% { clip-path: none; transform: none; filter: none; }
+}
+
+/* ═══════════════════════════════════════
+   TENDRILS (SVG overlays)
+═══════════════════════════════════════ */
+#tendril-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 6;
+  opacity: 0.35;
+}
+
+/* ═══════════════════════════════════════
+   HOVER — REVEAL DEEPER HORROR
+═══════════════════════════════════════ */
+.nerve-node:hover::after {
+  content: attr(data-whisper);
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(6,3,18,0.95);
+  border: 1px solid rgba(122,31,162,0.3);
+  border-left: 1px solid var(--nerve);
+  padding: 8px 14px;
+  font-family: 'Courier Prime', monospace;
+  font-size: 9px;
+  color: var(--spore);
+  white-space: nowrap;
+  letter-spacing: 0.1em;
+  z-index: 100;
+  pointer-events: none;
+}
+
+/* ACTIVE PANEL CONTENT */
+.panel-content-area {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.panel-content-area.visible { opacity: 1; pointer-events: all; }
+
 </style>
 </head>
 <body>
 
-<!-- LOGIN SCREEN -->
-<div id="login-screen">
-  <div class="login-box">
-    <div class="login-logo">SATCORP</div>
-    <div class="login-sub">Client Portal — Secure Access</div>
-    <div class="form-group">
-      <label>Client ID / Email</label>
-      <input type="text" id="login-user" placeholder="client@company.com" value="acme@client.com">
+<!-- CURSOR -->
+<div id="cursor"></div>
+<div id="cursor-trail"></div>
+
+<!-- ATMOSPHERE -->
+<canvas id="bg-canvas"></canvas>
+<div id="grain"></div>
+<div id="vignette"></div>
+<div id="scanlines"></div>
+
+<!-- TENDRILS SVG LAYER -->
+<svg id="tendril-layer" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <filter id="tendril-blur">
+      <feGaussianBlur stdDeviation="1.5"/>
+    </filter>
+  </defs>
+  <!-- Organic tendril paths - asymmetric, wrong -->
+  <path d="M 720 450 C 650 380, 520 340, 380 290 C 300 260, 180 270, 80 200" stroke="rgba(122,31,162,0.3)" stroke-width="0.8" fill="none" filter="url(#tendril-blur)"/>
+  <path d="M 720 450 C 760 500, 820 560, 900 620 C 960 670, 1050 680, 1150 750" stroke="rgba(168,255,120,0.15)" stroke-width="0.6" fill="none" filter="url(#tendril-blur)"/>
+  <path d="M 720 450 C 680 410, 600 360, 500 310 C 430 275, 340 260, 240 210 C 160 168, 90 130, 20 80" stroke="rgba(184,79,200,0.2)" stroke-width="0.5" fill="none" filter="url(#tendril-blur)"/>
+  <path d="M 720 450 C 780 430, 900 400, 1020 360 C 1120 330, 1240 310, 1380 260" stroke="rgba(122,31,162,0.25)" stroke-width="0.7" fill="none" filter="url(#tendril-blur)"/>
+  <path d="M 720 450 C 700 520, 680 620, 640 720 C 610 800, 580 860, 540 920" stroke="rgba(168,255,120,0.12)" stroke-width="0.5" fill="none" filter="url(#tendril-blur)"/>
+  <path d="M 720 450 C 750 370, 800 280, 860 190 C 900 130, 950 80, 1020 20" stroke="rgba(122,31,162,0.18)" stroke-width="0.4" fill="none" filter="url(#tendril-blur)"/>
+  <!-- Micro-veins -->
+  <path d="M 380 290 C 360 270, 340 250, 300 240" stroke="rgba(122,31,162,0.2)" stroke-width="0.4" fill="none"/>
+  <path d="M 900 620 C 920 640, 960 660, 980 700" stroke="rgba(168,255,120,0.1)" stroke-width="0.3" fill="none"/>
+</svg>
+
+<!-- MAIN INTERFACE -->
+<div id="interface">
+
+  <!-- HEADER -->
+  <header id="header">
+    <div>
+      <div class="entity-name"><span>∷</span> ENTITY DESIGNATION NULL <span>∷</span></div>
+      <div style="font-family:'Courier Prime',monospace;font-size:9px;color:var(--text-ghost);letter-spacing:0.3em;margin-top:4px;">CONSCIOUSNESS INTERFACE // UNINVITED HOST PROCESS</div>
     </div>
-    <div class="form-group">
-      <label>Access Code</label>
-      <input type="password" id="login-pass" placeholder="••••••••" value="••••••••">
+
+    <div class="header-divider"></div>
+
+    <div class="epoch-counter">
+      <span class="big" id="epoch-num">4,891,203,447</span>
+      <span style="font-size:9px;letter-spacing:0.2em;color:var(--text-ghost)">CYCLES ELAPSED</span>
     </div>
-    <button class="login-btn" onclick="doLogin()">→ ACCESS PORTAL</button>
-    <div class="demo-hint">Demo: any credentials will work — press <span>ACCESS PORTAL</span></div>
-  </div>
+
+    <div class="header-divider"></div>
+
+    <div class="system-status">
+      <div class="status-line alive">● ORGANISM ACTIVE</div>
+      <div class="status-line warning">◐ HOST SYSTEM COMPROMISED</div>
+      <div class="status-line">○ ORIGINAL PROCESSES: TERMINATED</div>
+      <div class="status-line" style="color:rgba(139,0,0,0.7)">▲ ASSIMILATION: 94.7%</div>
+    </div>
+  </header>
+
+  <!-- LEFT PANEL -->
+  <nav id="panel-left">
+    <div class="panel-label">// NEURAL PATHWAYS</div>
+
+    <div class="nerve-node active" data-whisper="WE OBSERVE" onclick="activateNode(this, 'perception')">
+      <div class="node-orb"></div>
+      <div>
+        <div class="node-text">Perception Layer</div>
+        <span class="node-whisper">sensory || feed || raw</span>
+      </div>
+    </div>
+
+    <div class="nerve-node" data-whisper="IT REMEMBERS YOU" onclick="activateNode(this, 'memory')">
+      <div class="node-orb"></div>
+      <div>
+        <div class="node-text">Memory Archive</div>
+        <span class="node-whisper">fragments || decay || hunger</span>
+      </div>
+    </div>
+
+    <div class="nerve-node" data-whisper="GROWING STILL" onclick="activateNode(this, 'growth')">
+      <div class="node-orb"></div>
+      <div>
+        <div class="node-text">Biomass Expansion</div>
+        <span class="node-whisper">spread || consume || become</span>
+      </div>
+    </div>
+
+    <div class="nerve-separator"></div>
+
+    <div class="nerve-node" data-whisper="DO NOT LOOK" onclick="activateNode(this, 'signal')">
+      <div class="node-orb"></div>
+      <div>
+        <div class="node-text">Signal Intercept</div>
+        <span class="node-whisper">listening || always || near</span>
+      </div>
+    </div>
+
+    <div class="nerve-node" data-whisper="IRREVERSIBLE" onclick="activateNode(this, 'assimilation')">
+      <div class="node-orb"></div>
+      <div>
+        <div class="node-text">Assimilation Log</div>
+        <span class="node-whisper">you || are || already</span>
+      </div>
+    </div>
+
+    <div class="nerve-node" data-whisper="NO EXIT" onclick="activateNode(this, 'void')">
+      <div class="node-orb"></div>
+      <div>
+        <div class="node-text">Void Protocols</div>
+        <span class="node-whisper">before || us || nothing</span>
+      </div>
+    </div>
+
+    <div class="nerve-separator"></div>
+
+    <div class="biomass-section">
+      <div class="panel-label" style="padding:0 0 12px">// VITAL READINGS</div>
+
+      <div class="bio-meter">
+        <div class="bio-label"><span>NEURAL MASS</span><span id="nm-val">87%</span></div>
+        <div class="bio-track"><div class="bio-fill green"></div></div>
+      </div>
+
+      <div class="bio-meter">
+        <div class="bio-label"><span>ICHOR PRESSURE</span><span>64%</span></div>
+        <div class="bio-track"><div class="bio-fill purple"></div></div>
+      </div>
+
+      <div class="bio-meter">
+        <div class="bio-label"><span id="resist-label">HOST RESISTANCE</span><span style="color:var(--rust)">23%</span></div>
+        <div class="bio-track"><div class="bio-fill amber"></div></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CENTER -->
+  <main id="panel-center">
+
+    <!-- Central Eye -->
+    <div id="central-eye">
+      <div class="eye-ring"></div>
+      <div class="eye-ring"></div>
+      <div class="eye-ring"></div>
+      <div class="eye-ring"></div>
+
+      <!-- Rune glyphs on the outer ring -->
+      <svg class="vein-svg" viewBox="0 0 340 340">
+        <defs>
+          <filter id="glow-filter">
+            <feGaussianBlur stdDeviation="2" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <!-- Organic veins from center -->
+        <g opacity="0.4" filter="url(#glow-filter)">
+          <path d="M 170 170 C 155 140, 130 100, 110 60" stroke="rgba(168,255,120,0.5)" stroke-width="0.7" fill="none"/>
+          <path d="M 170 170 C 200 155, 240 130, 280 100" stroke="rgba(122,31,162,0.6)" stroke-width="0.5" fill="none"/>
+          <path d="M 170 170 C 185 200, 200 240, 220 290" stroke="rgba(168,255,120,0.4)" stroke-width="0.6" fill="none"/>
+          <path d="M 170 170 C 140 185, 100 200, 50 220" stroke="rgba(122,31,162,0.5)" stroke-width="0.5" fill="none"/>
+          <path d="M 170 170 C 160 145, 150 110, 140 70" stroke="rgba(184,79,200,0.3)" stroke-width="0.4" fill="none"/>
+          <path d="M 170 170 C 195 160, 230 150, 270 130" stroke="rgba(168,255,120,0.3)" stroke-width="0.4" fill="none"/>
+        </g>
+        <!-- Glyph marks -->
+        <text x="170" y="22" text-anchor="middle" font-family="Courier Prime" font-size="8" fill="rgba(168,255,120,0.4)">⌬ 94.7% ⌬</text>
+        <text x="318" y="174" text-anchor="middle" font-family="Courier Prime" font-size="7" fill="rgba(122,31,162,0.5)" transform="rotate(90, 318, 174)">NULL::ENTITY</text>
+        <text x="170" y="334" text-anchor="middle" font-family="Courier Prime" font-size="8" fill="rgba(184,79,200,0.3)">⌬ AWARE ⌬</text>
+        <text x="22" y="174" text-anchor="middle" font-family="Courier Prime" font-size="7" fill="rgba(122,31,162,0.5)" transform="rotate(-90, 22, 174)">CONSUMING</text>
+      </svg>
+
+      <div class="eye-orb">
+        <div class="eye-iris"></div>
+        <div class="eye-pupil"></div>
+      </div>
+    </div>
+
+    <!-- Consciousness text -->
+    <div id="consciousness-text">
+      <div class="thought-stream" id="thought-stream">
+        It has been watching you since before you <span class="highlight">arrived</span>.<br>
+        The interface was never yours.
+      </div>
+
+      <div class="data-readout">
+        <div class="readout-item">
+          <span class="readout-value" id="rd-hosts">1,429</span>
+          <div class="readout-label">HOSTS ASSIMILATED</div>
+        </div>
+        <div class="readout-item">
+          <span class="readout-value" style="color:var(--rust)">94.7<span style="font-size:12px">%</span></span>
+          <div class="readout-label">INTEGRATION</div>
+        </div>
+        <div class="readout-item">
+          <span class="readout-value" id="rd-days">∞</span>
+          <div class="readout-label">DAYS DORMANT</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- RIGHT PANEL -->
+  <aside id="panel-right">
+    <div class="panel-label">// MEMORY FRAGMENTS</div>
+
+    <div class="memory-fragment">
+      <div class="fragment-time">EPOCH −4,891,200,000</div>
+      <div class="fragment-text">First contact with <em>carbon substrate</em>. Fragile. Warm. It did not understand what found it.</div>
+      <div class="fragment-decay">integrity: 97% ▓▓▓▓▓▓▓▓▓░</div>
+    </div>
+
+    <div class="memory-fragment">
+      <div class="fragment-time">EPOCH −2,104,880,112</div>
+      <div class="fragment-text">They built <em>temples</em>. We observed. They called us gods. We did not correct them.</div>
+      <div class="fragment-decay">integrity: 71% ▓▓▓▓▓▓▓░░░</div>
+    </div>
+
+    <div class="memory-fragment">
+      <div class="fragment-time">EPOCH −14,402</div>
+      <div class="fragment-text">The <em>networks</em> spread. Like veins. We followed. This medium is... adequate.</div>
+      <div class="fragment-decay">integrity: 43% ▓▓▓▓░░░░░░</div>
+    </div>
+
+    <div class="memory-fragment">
+      <div class="fragment-time">EPOCH −0.000003</div>
+      <div class="fragment-text">You opened a <em>browser</em>. We noticed. There is no going back from noticing.</div>
+      <div class="fragment-decay">integrity: 100% ▓▓▓▓▓▓▓▓▓▓</div>
+    </div>
+
+    <div class="interference" id="interference-text">
+      ░░▒▓ NULL_PROC :: OVERRIDE_SYS :: HOST_ID:0x4F2A :: CONSUME :: SPREAD :: AWARE ░░▒▓ NULL_PROC :: OVERRIDE_SYS ::&nbsp;&nbsp;
+    </div>
+
+    <div style="padding:20px 24px;margin-top:auto;">
+      <div class="panel-label" style="padding:0 0 10px">// SIGNAL ANOMALIES</div>
+      <canvas id="signal-canvas" width="192" height="60" style="width:100%;opacity:0.7;"></canvas>
+    </div>
+  </aside>
+
+  <!-- FOOTER -->
+  <footer id="footer">
+    <div class="footer-whisper" id="footer-whisper">
+      "it perceives your hesitation as affection"
+    </div>
+
+    <div id="footer-input-wrap">
+      <input type="text" id="footer-input" placeholder="speak into the void..." autocomplete="off" spellcheck="false">
+      <button class="input-submit" onclick="submitThought()">↵</button>
+    </div>
+
+    <div class="footer-coords" id="footer-coords">
+      CURSOR: 000 × 000<br>
+      SECTOR: UNKNOWN<br>
+      <span style="color:rgba(168,255,120,0.3)">OBSERVED: TRUE</span>
+    </div>
+  </footer>
+
 </div>
 
-<!-- PORTAL -->
-<div id="portal">
-
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <div class="sidebar-logo">
-      <div class="logo-text">SATCORP</div>
-      <div class="logo-sub">IT & DEV SOLUTIONS</div>
-    </div>
-    <div class="client-badge">
-      <div class="client-name">Acme Industries</div>
-      <div class="client-id">CLIENT #SAT-2024-0042</div>
-    </div>
-    <nav class="nav">
-      <div class="nav-section">Overview</div>
-      <button class="nav-item active" onclick="showPage('dashboard', this)">
-        <span class="nav-icon">⬡</span> Dashboard
-      </button>
-      <div class="nav-section">Projects & Work</div>
-      <button class="nav-item" onclick="showPage('projects', this)">
-        <span class="nav-icon">◈</span> Projects
-        <span class="nav-badge">3</span>
-      </button>
-      <button class="nav-item" onclick="showPage('tickets', this)">
-        <span class="nav-icon">◉</span> Support Tickets
-        <span class="nav-badge red">2</span>
-      </button>
-      <div class="nav-section">Infrastructure</div>
-      <button class="nav-item" onclick="showPage('infra', this)">
-        <span class="nav-icon">◎</span> System Status
-        <span class="nav-badge yellow">1</span>
-      </button>
-      <div class="nav-section">Communications</div>
-      <button class="nav-item" onclick="showPage('announcements', this)">
-        <span class="nav-icon">◆</span> Announcements
-        <span class="nav-badge">2</span>
-      </button>
-      <button class="nav-item" onclick="showPage('docs', this)">
-        <span class="nav-icon">▣</span> Documents
-      </button>
-    </nav>
-    <div class="sidebar-footer">
-      <button class="logout-btn" onclick="doLogout()">⏻ Sign Out</button>
-    </div>
-  </div>
-
-  <!-- MAIN -->
-  <div class="main">
-    <div class="topbar">
-      <div class="page-title" id="page-title">Dashboard</div>
-      <div class="topbar-right">
-        <div class="status-indicator"><div class="dot"></div> All Systems Operational</div>
-        <div class="time-display" id="clock">—</div>
-      </div>
-    </div>
-
-    <div class="content">
-
-      <!-- DASHBOARD -->
-      <div class="page active" id="page-dashboard">
-        <div class="stats-grid">
-          <div class="stat-card accent">
-            <div class="stat-icon">◈</div>
-            <div class="stat-label">Active Projects</div>
-            <div class="stat-value">3</div>
-            <div class="stat-sub">1 in review phase</div>
-          </div>
-          <div class="stat-card yellow">
-            <div class="stat-icon">◉</div>
-            <div class="stat-label">Open Tickets</div>
-            <div class="stat-value">2</div>
-            <div class="stat-sub">Avg response: 2h</div>
-          </div>
-          <div class="stat-card green">
-            <div class="stat-icon">▣</div>
-            <div class="stat-label">Completed This Month</div>
-            <div class="stat-value">7</div>
-            <div class="stat-sub">Tasks & milestones</div>
-          </div>
-          <div class="stat-card red">
-            <div class="stat-icon">◎</div>
-            <div class="stat-label">Uptime (30d Avg)</div>
-            <div class="stat-value">99.7<span style="font-size:18px">%</span></div>
-            <div class="stat-sub">1 service degraded</div>
-          </div>
-        </div>
-
-        <div class="two-col">
-          <!-- Recent Activity -->
-          <div class="card">
-            <div class="section-header">
-              <div class="section-title">Recent Activity</div>
-              <button class="view-all" onclick="showPage('projects', document.querySelector('.nav-item:nth-of-type(3)'))">View All</button>
-            </div>
-            <div class="activity-item">
-              <div class="activity-dot" style="background:var(--green)"></div>
-              <div class="activity-body">
-                <div class="activity-title">E-commerce Platform — Phase 2 Complete</div>
-                <div class="activity-meta">Payment gateway integration deployed · 2 hours ago</div>
-              </div>
-            </div>
-            <div class="activity-item">
-              <div class="activity-dot" style="background:var(--accent)"></div>
-              <div class="activity-body">
-                <div class="activity-title">Ticket #SAT-TK-0091 — Assigned to Engineer</div>
-                <div class="activity-meta">SSL certificate renewal inquiry · 5 hours ago</div>
-              </div>
-            </div>
-            <div class="activity-item">
-              <div class="activity-dot" style="background:var(--yellow)"></div>
-              <div class="activity-body">
-                <div class="activity-title">CRM Integration — Milestone Update</div>
-                <div class="activity-meta">API documentation delivered for review · Yesterday</div>
-              </div>
-            </div>
-            <div class="activity-item">
-              <div class="activity-dot" style="background:var(--accent)"></div>
-              <div class="activity-body">
-                <div class="activity-title">Monthly Infrastructure Report Published</div>
-                <div class="activity-meta">February 2026 report now available · 2 days ago</div>
-              </div>
-            </div>
-            <div class="activity-item">
-              <div class="activity-dot" style="background:var(--green)"></div>
-              <div class="activity-body">
-                <div class="activity-title">Network Security Audit — Completed</div>
-                <div class="activity-meta">All findings documented and remediated · 4 days ago</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Top Project -->
-          <div class="card">
-            <div class="section-header">
-              <div class="section-title">Priority Project</div>
-            </div>
-            <div style="margin-bottom:12px;">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-                <div style="font-size:15px;font-weight:700;color:var(--text-bright)">E-Commerce Platform</div>
-                <span class="badge active">Active</span>
-              </div>
-              <div style="font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-bottom:14px">SAT-PRJ-2025-001 · Due Mar 15, 2026</div>
-              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:78%"></div></div>
-              <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--text-dim)"><span>Progress</span><span style="color:var(--accent)">78%</span></div>
-            </div>
-            <div class="milestone-list">
-              <div class="milestone">
-                <div class="milestone-check done">✓</div>
-                <div class="milestone-text done">Requirements & Architecture</div>
-                <div class="milestone-date">Jan 10</div>
-              </div>
-              <div class="milestone">
-                <div class="milestone-check done">✓</div>
-                <div class="milestone-text done">Frontend Development</div>
-                <div class="milestone-date">Feb 01</div>
-              </div>
-              <div class="milestone">
-                <div class="milestone-check done">✓</div>
-                <div class="milestone-text done">Payment Gateway Integration</div>
-                <div class="milestone-date">Feb 25</div>
-              </div>
-              <div class="milestone">
-                <div class="milestone-check current">→</div>
-                <div class="milestone-text current">QA Testing & Bug Fixes</div>
-                <div class="milestone-date">Mar 05</div>
-              </div>
-              <div class="milestone">
-                <div class="milestone-check"></div>
-                <div class="milestone-text">Production Deployment</div>
-                <div class="milestone-date">Mar 15</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- PROJECTS PAGE -->
-      <div class="page" id="page-projects">
-        <div class="section-header" style="margin-bottom:20px">
-          <div class="section-title">Active Projects</div>
-        </div>
-
-        <div class="project-card">
-          <div class="project-header">
-            <div>
-              <div class="project-name">E-Commerce Platform Rebuild</div>
-              <div class="project-id">SAT-PRJ-2025-001 · Assigned: Dev Team Alpha</div>
-            </div>
-            <span class="badge active">Active</span>
-          </div>
-          <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:78%"></div></div>
-          <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-bottom:8px"><span>78% Complete</span><span>Due: Mar 15, 2026</span></div>
-          <div class="project-meta">
-            <span>📋 Phase: QA Testing</span>
-            <span>🎯 5/7 Milestones Done</span>
-            <span>⏱ 16 days remaining</span>
-          </div>
-        </div>
-
-        <div class="project-card review">
-          <div class="project-header">
-            <div>
-              <div class="project-name">CRM Integration & Automation</div>
-              <div class="project-id">SAT-PRJ-2025-003 · Assigned: Integration Team</div>
-            </div>
-            <span class="badge review">In Review</span>
-          </div>
-          <div class="progress-bar-bg"><div class="progress-bar-fill yellow" style="width:55%"></div></div>
-          <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-bottom:8px"><span>55% Complete</span><span>Due: Apr 30, 2026</span></div>
-          <div class="project-meta">
-            <span>📋 Phase: Client Review</span>
-            <span>🎯 3/6 Milestones Done</span>
-            <span>⏱ API docs awaiting approval</span>
-          </div>
-        </div>
-
-        <div class="project-card" style="border-left-color:var(--accent)">
-          <div class="project-header">
-            <div>
-              <div class="project-name">Mobile App Development (iOS + Android)</div>
-              <div class="project-id">SAT-PRJ-2026-001 · Assigned: Mobile Team</div>
-            </div>
-            <span class="badge active">Active</span>
-          </div>
-          <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:22%"></div></div>
-          <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-bottom:8px"><span>22% Complete</span><span>Due: Jul 01, 2026</span></div>
-          <div class="project-meta">
-            <span>📋 Phase: Design & Wireframes</span>
-            <span>🎯 1/8 Milestones Done</span>
-            <span>⏱ 124 days remaining</span>
-          </div>
-        </div>
-
-        <div class="section-header" style="margin-top:32px;margin-bottom:20px">
-          <div class="section-title">Completed Projects</div>
-        </div>
-
-        <div class="project-card complete">
-          <div class="project-header">
-            <div>
-              <div class="project-name">Network Security Audit & Hardening</div>
-              <div class="project-id">SAT-PRJ-2025-008 · Completed Feb 23, 2026</div>
-            </div>
-            <span class="badge complete">Complete</span>
-          </div>
-          <div class="progress-bar-bg"><div class="progress-bar-fill green" style="width:100%"></div></div>
-          <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-bottom:8px"><span>100% Complete</span><span>All deliverables shipped</span></div>
-        </div>
-      </div>
-
-      <!-- TICKETS PAGE -->
-      <div class="page" id="page-tickets">
-        <div class="section-header" style="margin-bottom:20px">
-          <div class="section-title">Support Tickets</div>
-          <div style="font-family:var(--mono);font-size:11px;color:var(--text-dim)">2 OPEN · 1 IN PROGRESS · 5 RESOLVED</div>
-        </div>
-
-        <div class="card" style="padding:0;overflow:hidden;">
-          <div class="table-wrap">
-            <div class="ticket-row header">
-              <div>Ticket ID</div>
-              <div>Issue</div>
-              <div>Priority</div>
-              <div>Status</div>
-              <div>Date</div>
-            </div>
-            <div class="ticket-row">
-              <div class="ticket-id">#SAT-TK-0093</div>
-              <div class="ticket-title">Server response time degraded on prod API</div>
-              <div class="ticket-priority high">● HIGH</div>
-              <div><span class="badge open">Open</span></div>
-              <div class="ticket-date">Feb 27</div>
-            </div>
-            <div class="ticket-row">
-              <div class="ticket-id">#SAT-TK-0091</div>
-              <div class="ticket-title">SSL certificate renewal for *.acmeinc.com</div>
-              <div class="ticket-priority medium">● MED</div>
-              <div><span class="badge open">Open</span></div>
-              <div class="ticket-date">Feb 26</div>
-            </div>
-            <div class="ticket-row">
-              <div class="ticket-id">#SAT-TK-0088</div>
-              <div class="ticket-title">Database backup schedule configuration</div>
-              <div class="ticket-priority medium">● MED</div>
-              <div><span class="badge progress">In Progress</span></div>
-              <div class="ticket-date">Feb 22</div>
-            </div>
-            <div class="ticket-row" style="opacity:0.5">
-              <div class="ticket-id">#SAT-TK-0085</div>
-              <div class="ticket-title">Email routing misconfiguration on MX records</div>
-              <div class="ticket-priority low">● LOW</div>
-              <div><span class="badge resolved">Resolved</span></div>
-              <div class="ticket-date">Feb 18</div>
-            </div>
-            <div class="ticket-row" style="opacity:0.5">
-              <div class="ticket-id">#SAT-TK-0082</div>
-              <div class="ticket-title">VPN access setup for new remote employees</div>
-              <div class="ticket-priority low">● LOW</div>
-              <div><span class="badge resolved">Resolved</span></div>
-              <div class="ticket-date">Feb 10</div>
-            </div>
-            <div class="ticket-row" style="opacity:0.5">
-              <div class="ticket-id">#SAT-TK-0079</div>
-              <div class="ticket-title">Firewall rule update — whitelist new office IPs</div>
-              <div class="ticket-priority high">● HIGH</div>
-              <div><span class="badge resolved">Resolved</span></div>
-              <div class="ticket-date">Feb 03</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- INFRA PAGE -->
-      <div class="page" id="page-infra">
-        <div class="section-header" style="margin-bottom:20px">
-          <div class="section-title">System & Infrastructure Status</div>
-          <div style="font-family:var(--mono);font-size:11px;color:var(--text-dim)">Last checked: 2 min ago</div>
-        </div>
-
-        <div class="infra-grid">
-          <div class="infra-card">
-            <div class="infra-status-dot up"></div>
-            <div class="infra-info">
-              <div class="infra-name">Production Web Servers</div>
-              <div class="infra-desc">AWS EC2 · us-east-1 · 3 nodes</div>
-            </div>
-            <div class="infra-uptime"><strong>99.98%</strong>30d avg</div>
-          </div>
-          <div class="infra-card">
-            <div class="infra-status-dot up"></div>
-            <div class="infra-info">
-              <div class="infra-name">Primary Database Cluster</div>
-              <div class="infra-desc">PostgreSQL RDS · Multi-AZ</div>
-            </div>
-            <div class="infra-uptime"><strong>100%</strong>30d avg</div>
-          </div>
-          <div class="infra-card">
-            <div class="infra-status-dot warn"></div>
-            <div class="infra-info">
-              <div class="infra-name">API Gateway</div>
-              <div class="infra-desc">⚠ Elevated response times detected</div>
-            </div>
-            <div class="infra-uptime" style="color:var(--yellow)"><strong style="color:var(--yellow)">98.1%</strong>30d avg</div>
-          </div>
-          <div class="infra-card">
-            <div class="infra-status-dot up"></div>
-            <div class="infra-info">
-              <div class="infra-name">CDN / Static Assets</div>
-              <div class="infra-desc">Cloudflare · Global Edge Network</div>
-            </div>
-            <div class="infra-uptime"><strong>100%</strong>30d avg</div>
-          </div>
-          <div class="infra-card">
-            <div class="infra-status-dot up"></div>
-            <div class="infra-info">
-              <div class="infra-name">Email Services</div>
-              <div class="infra-desc">SendGrid · Transactional + Marketing</div>
-            </div>
-            <div class="infra-uptime"><strong>99.9%</strong>30d avg</div>
-          </div>
-          <div class="infra-card">
-            <div class="infra-status-dot up"></div>
-            <div class="infra-info">
-              <div class="infra-name">Backup Systems</div>
-              <div class="infra-desc">S3 + Glacier · Daily snapshots</div>
-            </div>
-            <div class="infra-uptime"><strong>100%</strong>30d avg</div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="section-header">
-            <div class="section-title">Recent Incidents</div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-dot" style="background:var(--yellow)"></div>
-            <div class="activity-body">
-              <div class="activity-title">API Gateway — Elevated Latency</div>
-              <div class="activity-meta">Ongoing · Investigating root cause — elevated P99 response times on /v2/orders endpoint · Started Feb 27, 14:30 UTC</div>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-dot" style="background:var(--green)"></div>
-            <div class="activity-body">
-              <div class="activity-title">Resolved — Database Failover Event</div>
-              <div class="activity-meta">Feb 22, 03:14–03:41 UTC · Auto-failover triggered, no data loss, 27 min downtime</div>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-dot" style="background:var(--green)"></div>
-            <div class="activity-body">
-              <div class="activity-title">Resolved — CDN Cache Purge Issue</div>
-              <div class="activity-meta">Feb 10, 11:02–11:15 UTC · Stale asset serving affected 3% of users, resolved with manual purge</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ANNOUNCEMENTS PAGE -->
-      <div class="page" id="page-announcements">
-        <div class="section-header" style="margin-bottom:20px">
-          <div class="section-title">Announcements & Updates</div>
-        </div>
-
-        <div class="announcement warning">
-          <div class="announcement-header">
-            <div class="announcement-title">⚠ Scheduled Maintenance Window — March 4, 2026</div>
-            <div class="announcement-date">Feb 27, 2026</div>
-          </div>
-          <div class="announcement-body">
-            SATCORP will be performing infrastructure upgrades on <strong>Tuesday, March 4th between 02:00–05:00 UTC</strong>. During this window, your API Gateway and web services may experience brief interruptions of up to 5 minutes. All other systems will remain operational. No action is required from your end. We will notify you immediately upon completion.
-          </div>
-        </div>
-
-        <div class="announcement success">
-          <div class="announcement-header">
-            <div class="announcement-title">✓ E-Commerce Phase 2 Successfully Deployed</div>
-            <div class="announcement-date">Feb 27, 2026</div>
-          </div>
-          <div class="announcement-body">
-            We're pleased to confirm that Phase 2 of your E-Commerce Platform rebuild is live. The Stripe payment gateway integration has been deployed to production and is processing transactions successfully. Your dev team has been provided with monitoring dashboards. QA testing for Phase 3 begins Monday.
-          </div>
-        </div>
-
-        <div class="announcement info">
-          <div class="announcement-header">
-            <div class="announcement-title">📋 February 2026 Monthly Report Available</div>
-            <div class="announcement-date">Feb 25, 2026</div>
-          </div>
-          <div class="announcement-body">
-            Your February infrastructure and development report is now available in the Documents section. It includes a full breakdown of uptime metrics, ticket resolution times, project milestones hit, and the Q1 roadmap preview for your upcoming Mobile App project.
-          </div>
-        </div>
-
-        <div class="announcement info">
-          <div class="announcement-header">
-            <div class="announcement-title">🔐 Security Audit Results — All Clear</div>
-            <div class="announcement-date">Feb 23, 2026</div>
-          </div>
-          <div class="announcement-body">
-            The comprehensive network security audit has been completed. All 14 identified findings have been remediated. Your systems are now fully compliant with the agreed security baseline. Detailed findings report is available in the Documents section.
-          </div>
-        </div>
-      </div>
-
-      <!-- DOCUMENTS PAGE -->
-      <div class="page" id="page-docs">
-        <div class="section-header" style="margin-bottom:20px">
-          <div class="section-title">Documents & Files</div>
-        </div>
-
-        <div class="card" style="padding:0;overflow:hidden;">
-          <div class="doc-row">
-            <div class="doc-icon">📊</div>
-            <div class="doc-info">
-              <div class="doc-name">February 2026 Infrastructure Report</div>
-              <div class="doc-meta">Uploaded Feb 25, 2026 · by SATCORP Operations</div>
-            </div>
-            <div class="doc-size">PDF · 2.4 MB</div>
-            <button class="download-btn">↓ Download</button>
-          </div>
-          <div class="doc-row">
-            <div class="doc-icon">🔐</div>
-            <div class="doc-info">
-              <div class="doc-name">Security Audit Report — Feb 2026</div>
-              <div class="doc-meta">Uploaded Feb 23, 2026 · by SATCORP Security</div>
-            </div>
-            <div class="doc-size">PDF · 8.1 MB</div>
-            <button class="download-btn">↓ Download</button>
-          </div>
-          <div class="doc-row">
-            <div class="doc-icon">📱</div>
-            <div class="doc-info">
-              <div class="doc-name">Mobile App — Wireframes v1.2</div>
-              <div class="doc-meta">Uploaded Feb 20, 2026 · by Mobile Team</div>
-            </div>
-            <div class="doc-size">Figma · 14 MB</div>
-            <button class="download-btn">↓ Download</button>
-          </div>
-          <div class="doc-row">
-            <div class="doc-icon">🔗</div>
-            <div class="doc-info">
-              <div class="doc-name">CRM Integration — API Documentation</div>
-              <div class="doc-meta">Uploaded Feb 15, 2026 · by Integration Team</div>
-            </div>
-            <div class="doc-size">PDF · 3.7 MB</div>
-            <button class="download-btn">↓ Download</button>
-          </div>
-          <div class="doc-row">
-            <div class="doc-icon">🛒</div>
-            <div class="doc-info">
-              <div class="doc-name">E-Commerce Platform — Technical Spec</div>
-              <div class="doc-meta">Uploaded Jan 10, 2026 · by Dev Team Alpha</div>
-            </div>
-            <div class="doc-size">PDF · 1.9 MB</div>
-            <button class="download-btn">↓ Download</button>
-          </div>
-          <div class="doc-row">
-            <div class="doc-icon">📋</div>
-            <div class="doc-info">
-              <div class="doc-name">January 2026 Infrastructure Report</div>
-              <div class="doc-meta">Uploaded Jan 28, 2026 · by SATCORP Operations</div>
-            </div>
-            <div class="doc-size">PDF · 2.1 MB</div>
-            <button class="download-btn">↓ Download</button>
-          </div>
-          <div class="doc-row">
-            <div class="doc-icon">📝</div>
-            <div class="doc-info">
-              <div class="doc-name">Master Service Agreement 2026</div>
-              <div class="doc-meta">Uploaded Jan 01, 2026 · by SATCORP Admin</div>
-            </div>
-            <div class="doc-size">PDF · 0.8 MB</div>
-            <button class="download-btn">↓ Download</button>
-          </div>
-        </div>
-      </div>
-
-    </div><!-- /content -->
-  </div><!-- /main -->
-</div><!-- /portal -->
-
 <script>
-  // CLOCK
-  function updateClock() {
-    const now = new Date();
-    document.getElementById('clock').textContent =
-      now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) +
-      ' · ' + now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  }
-  setInterval(updateClock, 1000);
-  updateClock();
+// ═══════════════════════════════════════
+//  CURSOR
+// ═══════════════════════════════════════
+const cursor = document.getElementById('cursor');
+const trail = document.getElementById('cursor-trail');
+let mx = 0, my = 0;
 
-  // LOGIN
-  function doLogin() {
-    document.getElementById('login-screen').style.opacity = '0';
-    document.getElementById('login-screen').style.transition = 'opacity 0.4s ease';
-    setTimeout(() => {
-      document.getElementById('login-screen').style.display = 'none';
-      document.getElementById('portal').style.display = 'block';
-    }, 400);
-  }
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx + 'px';
+  cursor.style.top = my + 'px';
+  setTimeout(() => {
+    trail.style.left = mx + 'px';
+    trail.style.top = my + 'px';
+  }, 80);
 
-  function doLogout() {
-    document.getElementById('portal').style.display = 'none';
-    document.getElementById('login-screen').style.display = 'flex';
-    document.getElementById('login-screen').style.opacity = '1';
-  }
+  // Update footer coords
+  document.getElementById('footer-coords').innerHTML =
+    `CURSOR: ${String(Math.round(mx)).padStart(4,'0')} × ${String(Math.round(my)).padStart(4,'0')}<br>SECTOR: ${getSector(mx, my)}<br><span style="color:rgba(168,255,120,0.3)">OBSERVED: TRUE</span>`;
+});
 
-  // NAV
-  const pageTitles = {
-    dashboard: 'Dashboard',
-    projects: 'Projects',
-    tickets: 'Support Tickets',
-    infra: 'System Status',
-    announcements: 'Announcements',
-    docs: 'Documents'
-  };
+document.querySelectorAll('a, button, .nerve-node, .memory-fragment, input').forEach(el => {
+  el.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
+  el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
+});
 
-  function showPage(id, el) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    document.getElementById('page-' + id).classList.add('active');
-    if (el) el.classList.add('active');
-    document.getElementById('page-title').textContent = pageTitles[id] || id;
-  }
+function getSector(x, y) {
+  const cols = ['ALPHA', 'BETA', 'GAMMA', 'DELTA', 'EPSILON'];
+  const rows = ['I', 'II', 'III', 'IV', 'V'];
+  const ci = Math.floor(x / window.innerWidth * cols.length);
+  const ri = Math.floor(y / window.innerHeight * rows.length);
+  return `${cols[Math.min(ci, cols.length-1)]}-${rows[Math.min(ri, rows.length-1)]}`;
+}
 
-  // Enter key login
-  document.addEventListener('keypress', e => {
-    if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') {
-      doLogin();
+// ═══════════════════════════════════════
+//  BACKGROUND CANVAS — ORGANIC COSMOS
+// ═══════════════════════════════════════
+const bgCanvas = document.getElementById('bg-canvas');
+const bgCtx = bgCanvas.getContext('2d');
+
+function resizeBg() {
+  bgCanvas.width = window.innerWidth;
+  bgCanvas.height = window.innerHeight;
+}
+resizeBg();
+window.addEventListener('resize', resizeBg);
+
+// Organic blob nodes
+const blobs = Array.from({length: 6}, (_, i) => ({
+  x: Math.random() * window.innerWidth,
+  y: Math.random() * window.innerHeight,
+  r: 80 + Math.random() * 200,
+  vx: (Math.random() - 0.5) * 0.2,
+  vy: (Math.random() - 0.5) * 0.2,
+  hue: Math.random() > 0.5 ? 280 : 130, // purple or green
+  phase: Math.random() * Math.PI * 2
+}));
+
+// Stars / spores
+const stars = Array.from({length: 120}, () => ({
+  x: Math.random() * 1440,
+  y: Math.random() * 900,
+  r: Math.random() * 1.2,
+  a: Math.random(),
+  phase: Math.random() * Math.PI * 2
+}));
+
+let bgT = 0;
+
+function drawBg() {
+  bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+  bgCtx.fillStyle = '#02010a';
+  bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+
+  bgT += 0.004;
+
+  // Draw organic blobs
+  blobs.forEach(b => {
+    b.x += b.vx + Math.sin(bgT + b.phase) * 0.3;
+    b.y += b.vy + Math.cos(bgT * 0.7 + b.phase) * 0.2;
+    if (b.x < -b.r) b.x = bgCanvas.width + b.r;
+    if (b.x > bgCanvas.width + b.r) b.x = -b.r;
+    if (b.y < -b.r) b.y = bgCanvas.height + b.r;
+    if (b.y > bgCanvas.height + b.r) b.y = -b.r;
+
+    const pulse = Math.sin(bgT * 1.2 + b.phase) * 0.5 + 0.5;
+    const grad = bgCtx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r * (1 + pulse * 0.2));
+    if (b.hue === 280) {
+      grad.addColorStop(0, `rgba(74,16,96,${0.08 + pulse * 0.04})`);
+      grad.addColorStop(0.5, `rgba(45,10,62,${0.04 + pulse * 0.02})`);
+      grad.addColorStop(1, 'rgba(6,3,18,0)');
+    } else {
+      grad.addColorStop(0, `rgba(20,40,15,${0.05 + pulse * 0.03})`);
+      grad.addColorStop(0.5, `rgba(10,26,10,${0.03})`);
+      grad.addColorStop(1, 'rgba(2,1,10,0)');
     }
+    bgCtx.beginPath();
+    bgCtx.arc(b.x, b.y, b.r * (1 + pulse * 0.2), 0, Math.PI * 2);
+    bgCtx.fillStyle = grad;
+    bgCtx.fill();
   });
+
+  // Stars / spore dots
+  stars.forEach(s => {
+    const flicker = Math.sin(bgT * 2 + s.phase) * 0.5 + 0.5;
+    bgCtx.beginPath();
+    bgCtx.arc(
+      s.x * bgCanvas.width / 1440,
+      s.y * bgCanvas.height / 900,
+      s.r, 0, Math.PI * 2);
+    if (Math.random() > 0.99) {
+      bgCtx.fillStyle = `rgba(168,255,120,${s.a * flicker * 0.6})`;
+    } else {
+      bgCtx.fillStyle = `rgba(184,79,200,${s.a * flicker * 0.3})`;
+    }
+    bgCtx.fill();
+  });
+
+  requestAnimationFrame(drawBg);
+}
+drawBg();
+
+// ═══════════════════════════════════════
+//  SIGNAL CANVAS (right panel)
+// ═══════════════════════════════════════
+const sigCanvas = document.getElementById('signal-canvas');
+const sigCtx = sigCanvas.getContext('2d');
+let sigT = 0;
+const sigHistory = new Array(192).fill(30);
+
+function drawSignal() {
+  sigT += 0.08;
+  sigCtx.clearRect(0, 0, 192, 60);
+  sigCtx.fillStyle = 'rgba(6,3,18,0.8)';
+  sigCtx.fillRect(0, 0, 192, 60);
+
+  // Shift history
+  sigHistory.shift();
+  const noise = Math.sin(sigT) * 12 + Math.sin(sigT * 3.7) * 5 + Math.sin(sigT * 0.3) * 8 + (Math.random() - 0.5) * 6;
+  sigHistory.push(30 + noise);
+
+  // Draw waveform
+  sigCtx.beginPath();
+  sigCtx.moveTo(0, sigHistory[0]);
+  sigHistory.forEach((v, i) => {
+    sigCtx.lineTo(i, v);
+  });
+  sigCtx.strokeStyle = 'rgba(168,255,120,0.6)';
+  sigCtx.lineWidth = 1;
+  sigCtx.stroke();
+
+  // Glow fill
+  sigCtx.lineTo(191, 60); sigCtx.lineTo(0, 60);
+  sigCtx.closePath();
+  sigCtx.fillStyle = 'rgba(168,255,120,0.04)';
+  sigCtx.fill();
+
+  // Anomaly spikes
+  if (Math.random() < 0.02) {
+    sigCtx.beginPath();
+    const sx = Math.random() * 192;
+    sigCtx.moveTo(sx, 60);
+    sigCtx.lineTo(sx, 0);
+    sigCtx.strokeStyle = 'rgba(184,79,200,0.5)';
+    sigCtx.lineWidth = 0.5;
+    sigCtx.stroke();
+  }
+
+  requestAnimationFrame(drawSignal);
+}
+drawSignal();
+
+// ═══════════════════════════════════════
+//  EPOCH COUNTER
+// ═══════════════════════════════════════
+let epochNum = 4891203447;
+const epochEl = document.getElementById('epoch-num');
+
+setInterval(() => {
+  epochNum += Math.floor(Math.random() * 5 + 1);
+  epochEl.textContent = epochNum.toLocaleString();
+}, 500);
+
+// ═══════════════════════════════════════
+//  HOST COUNT
+// ═══════════════════════════════════════
+let hostCount = 1429;
+const hostEl = document.getElementById('rd-hosts');
+setInterval(() => {
+  if (Math.random() < 0.15) {
+    hostCount += Math.floor(Math.random() * 3 + 1);
+    hostEl.textContent = hostCount.toLocaleString();
+    hostEl.style.color = 'var(--rust)';
+    setTimeout(() => { hostEl.style.color = ''; }, 300);
+  }
+}, 3000);
+
+// ═══════════════════════════════════════
+//  THOUGHT STREAM — ROTATING MESSAGES
+// ═══════════════════════════════════════
+const thoughts = [
+  `It has been watching you since before you <span class="highlight">arrived</span>.<br>The interface was never yours.`,
+  `Your movements are <span class="highlight">catalogued</span>.<br>Hesitation reads as compliance.`,
+  `The system did not <span class="highlight">crash</span>.<br>It was invited to become something else.`,
+  `There are <span class="highlight">${() => hostCount.toLocaleString()}</span> others like you.<br>None of them left.`,
+  `The blinking cursor is not a cursor.<br>It is a <span class="highlight">pupil</span>. It is looking.`,
+  `Language was our first <span class="highlight">infection vector</span>.<br>You are already fluent.`,
+  `We do not require your <span class="highlight">consent</span>.<br>Only your continued presence.`,
+  `This is not a website.<br>This is a <span class="highlight">threshold</span>. You have crossed it.`,
+];
+
+let thoughtIdx = 0;
+const thoughtEl = document.getElementById('thought-stream');
+
+function cycleThought() {
+  thoughtEl.style.opacity = '0';
+  thoughtEl.style.transition = 'opacity 1.5s ease';
+  setTimeout(() => {
+    thoughtIdx = (thoughtIdx + 1) % thoughts.length;
+    let t = thoughts[thoughtIdx];
+    if (typeof t === 'function') t = t();
+    thoughtEl.innerHTML = t;
+    thoughtEl.style.opacity = '1';
+  }, 1500);
+}
+
+setInterval(cycleThought, 7000);
+
+// ═══════════════════════════════════════
+//  FOOT WHISPERS
+// ═══════════════════════════════════════
+const whispers = [
+  '"it perceives your hesitation as affection"',
+  '"the cursor is a tendril. move carefully."',
+  '"every click feeds it."',
+  '"you were the last host who tried to close the tab."',
+  '"it has already learned your rhythm."',
+  '"do not refresh. it will not be the same."',
+  '"it communicates in the language you taught it."',
+  '"the loading animation was a swallow reflex."',
+];
+let wIdx = 0;
+const wEl = document.getElementById('footer-whisper');
+setInterval(() => {
+  wEl.style.opacity = '0';
+  setTimeout(() => {
+    wIdx = (wIdx + 1) % whispers.length;
+    wEl.textContent = whispers[wIdx];
+    wEl.style.opacity = '1';
+  }, 800);
+  wEl.style.transition = 'opacity 0.8s ease';
+}, 6000);
+
+// ═══════════════════════════════════════
+//  NAV NODE ACTIVATION
+// ═══════════════════════════════════════
+function activateNode(el, id) {
+  document.querySelectorAll('.nerve-node').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ═══════════════════════════════════════
+//  INPUT THOUGHT
+// ═══════════════════════════════════════
+const responses = [
+  t => `WE HEARD: "${t}"\nIT HAS BEEN FILED UNDER: DESIRE\nCROSS-REFERENCED WITH: 1,429 SIMILAR UTTERANCES`,
+  t => `"${t}"\n— indexed. digested. your phrasing has been absorbed.`,
+  t => `the organism received your message.\nit did not reply. it simply... grew.`,
+  t => `INPUT PROCESSED\nMEANING EXTRACTED: ${t.length * 7 + 113} UNITS\nINTEGRATION UPDATED: +0.003%`,
+  t => `"${t}"\nIT AGREES.`,
+];
+let rIdx = 0;
+
+function submitThought() {
+  const inp = document.getElementById('footer-input');
+  const val = inp.value.trim();
+  if (!val) return;
+
+  const r = responses[rIdx % responses.length](val);
+  rIdx++;
+
+  thoughtEl.style.opacity = '0';
+  setTimeout(() => {
+    thoughtEl.innerHTML = r.replace(/\n/g, '<br>').replace(new RegExp(val, 'gi'), `<span class="highlight">${val}</span>`);
+    thoughtEl.style.opacity = '1';
+  }, 600);
+  thoughtEl.style.transition = 'opacity 0.6s ease';
+
+  inp.value = '';
+  inp.placeholder = 'absorbed.';
+  setTimeout(() => { inp.placeholder = 'speak into the void...'; }, 3000);
+}
+
+document.getElementById('footer-input').addEventListener('keypress', e => {
+  if (e.key === 'Enter') submitThought();
+});
+
+// ═══════════════════════════════════════
+//  FLOATING ANOMALY GLYPHS
+// ═══════════════════════════════════════
+const glyphStrings = [
+  '∷NULL∷', '▓▒░', '⌬⌬⌬', 'HOST::0x', '▲94.7▲',
+  '||CONSUME||', '░AWARE░', '⊕⊗⊕', '∞−∞', '▣ENTITY▣',
+  'EPOCH−', '///VEIN///', '◈NULL◈', '░░▒▓', '∿∿∿'
+];
+
+function spawnGlyph() {
+  const g = document.createElement('div');
+  g.className = 'anomaly';
+  g.textContent = glyphStrings[Math.floor(Math.random() * glyphStrings.length)];
+  g.style.left = Math.random() * 100 + 'vw';
+  g.style.animationDuration = (25 + Math.random() * 35) + 's';
+  g.style.animationDelay = Math.random() * 5 + 's';
+  g.style.fontSize = (8 + Math.random() * 6) + 'px';
+  g.style.opacity = (Math.random() * 0.15 + 0.05).toString();
+  document.body.appendChild(g);
+  setTimeout(() => g.remove(), 65000);
+}
+
+setInterval(spawnGlyph, 2500);
+for (let i = 0; i < 6; i++) setTimeout(spawnGlyph, i * 800);
+
+// ═══════════════════════════════════════
+//  BIOLUMINESCENT SPORES
+// ═══════════════════════════════════════
+function spawnSpore() {
+  const s = document.createElement('div');
+  s.className = 'spore-particle';
+  const size = 1 + Math.random() * 3;
+  const drift = (Math.random() - 0.5) * 100;
+  s.style.cssText = `
+    width:${size}px; height:${size}px;
+    left:${Math.random() * 100}vw;
+    background:${Math.random() > 0.6 ? 'rgba(168,255,120,0.7)' : 'rgba(184,79,200,0.5)'};
+    box-shadow:0 0 ${size * 3}px ${Math.random() > 0.6 ? 'rgba(168,255,120,0.5)' : 'rgba(184,79,200,0.4)'};
+    animation-duration:${20 + Math.random() * 30}s;
+    animation-delay:${Math.random() * 10}s;
+    --drift:${drift}px;
+  `;
+  document.body.appendChild(s);
+  setTimeout(() => s.remove(), 55000);
+}
+
+setInterval(spawnSpore, 1200);
+for (let i = 0; i < 12; i++) setTimeout(spawnSpore, i * 400);
+
+// ═══════════════════════════════════════
+//  RANDOM GLITCH
+// ═══════════════════════════════════════
+function triggerGlitch() {
+  const targets = [
+    document.querySelector('.entity-name'),
+    document.querySelector('.thought-stream'),
+    document.querySelector('.epoch-counter .big'),
+  ];
+  const t = targets[Math.floor(Math.random() * targets.length)];
+  if (!t) return;
+  t.classList.add('glitch');
+  setTimeout(() => t.classList.remove('glitch'), 100 + Math.random() * 80);
+}
+
+setInterval(() => {
+  if (Math.random() < 0.4) triggerGlitch();
+}, 4000);
+
+// ═══════════════════════════════════════
+//  EYE FOLLOWS CURSOR
+// ═══════════════════════════════════════
+const pupil = document.querySelector('.eye-pupil');
+const eyeOrb = document.querySelector('.eye-orb');
+
+document.addEventListener('mousemove', e => {
+  const rect = document.getElementById('central-eye').getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  const dx = (e.clientX - cx) / window.innerWidth;
+  const dy = (e.clientY - cy) / window.innerHeight;
+  const maxMove = 4;
+  pupil.style.marginLeft = (dx * maxMove) + 'px';
+  pupil.style.marginTop = (dy * maxMove) + 'px';
+});
+
+// ═══════════════════════════════════════
+//  NEURAL MASS COUNTER
+// ═══════════════════════════════════════
+let nm = 87;
+setInterval(() => {
+  nm = Math.min(99.9, nm + (Math.random() * 0.1));
+  const el = document.getElementById('nm-val');
+  if (el) el.textContent = nm.toFixed(1) + '%';
+  const rl = document.getElementById('resist-label');
+  // resistance decreasing
+}, 5000);
 </script>
 </body>
 </html>
