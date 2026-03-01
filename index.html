@@ -1,616 +1,1178 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ALIEN INTERFACE · QUANTUM BIOMECH</title>
-  <!-- Geometric sans & mono fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Peacetime Agency — Our Community</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    /* ─── TOKENS ─────────────────────────────── */
+    :root {
+      --ink:      #080e1a;
+      --deep:     #0d1628;
+      --panel:    #111e33;
+      --border:   rgba(255,255,255,0.07);
+      --teal:     #2dd4bf;
+      --teal-lo:  rgba(45,212,191,0.12);
+      --teal-mid: rgba(45,212,191,0.25);
+      --gold:     #f5c842;
+      --gold-lo:  rgba(245,200,66,0.1);
+      --lavender: #b4a4f5;
+      --coral:    #ff7c6e;
+      --text:     #e8eef8;
+      --muted:    #7a90b0;
+      --display:  'Playfair Display', Georgia, serif;
+      --sans:     'Outfit', system-ui, sans-serif;
+      --radius:   14px;
+      --radius-sm:8px;
+      --ease:     cubic-bezier(.4,0,.2,1);
     }
-
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; font-size:16px; }
     body {
-      background: #05060A;
-      font-family: 'Archivo', sans-serif;
-      overflow: hidden;
-      height: 100vh;
-      width: 100vw;
-      color: rgba(180, 255, 200, 0.9);
-      text-shadow: 0 0 15px rgba(0, 255, 200, 0.3);
-      letter-spacing: 0.08em;
+      font-family: var(--sans);
+      background: var(--ink);
+      color: var(--text);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
 
-    /* main container */
-    .interface {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      isolation: isolate;
+    /* ─── NOISE OVERLAY ──────────────────────── */
+    body::before {
+      content:'';
+      position:fixed; inset:0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events:none; z-index:999; opacity:.5;
     }
 
-    /* ---------- canvas (particles + grid) ---------- */
-    #bg-canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      pointer-events: none; /* let mouse events pass to panels/aura */
-      display: block;
+    /* ─── AURORA BG ──────────────────────────── */
+    .aurora {
+      position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden;
+    }
+    .aurora-blob {
+      position:absolute; border-radius:50%; filter:blur(90px); opacity:.18;
+      animation: drift 18s ease-in-out infinite alternate;
+    }
+    .aurora-blob:nth-child(1){ width:700px;height:500px;background:radial-gradient(circle,#2dd4bf,transparent 70%);top:-150px;left:-200px;animation-duration:20s; }
+    .aurora-blob:nth-child(2){ width:500px;height:500px;background:radial-gradient(circle,#b4a4f5,transparent 70%);top:30%;right:-100px;animation-duration:15s;animation-delay:-5s; }
+    .aurora-blob:nth-child(3){ width:600px;height:400px;background:radial-gradient(circle,#f5c842,transparent 70%);bottom:-100px;left:30%;animation-duration:22s;animation-delay:-10s;opacity:.08; }
+    @keyframes drift {
+      from { transform:translate(0,0) scale(1); }
+      to   { transform:translate(40px,30px) scale(1.08); }
     }
 
-    /* ---------- holographic grid overlay (additional css layer) ---------- */
-    .grid-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-      pointer-events: none;
-      background-image: 
-        linear-gradient(rgba(0, 255, 180, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 255, 180, 0.02) 1px, transparent 1px);
-      background-size: 60px 60px;
-      opacity: 0.4;
-      mix-blend-mode: overlay;
-    }
+    /* ─── LAYOUT ─────────────────────────────── */
+    .wrap { width:92%; max-width:1280px; margin:0 auto; position:relative; z-index:1; }
 
-    /* ---------- interactive panels ---------- */
-    .panel {
-      position: absolute;
-      z-index: 2;
-      backdrop-filter: blur(12px) saturate(180%);
-      -webkit-backdrop-filter: blur(12px) saturate(180%);
-      background: rgba(5, 8, 15, 0.55);
-      border: 1px solid rgba(0, 255, 200, 0.25);
-      box-shadow: 0 0 30px rgba(0, 180, 255, 0.2), inset 0 0 20px rgba(0, 255, 140, 0.1);
-      padding: 1.8rem 2rem;
-      transition: all 0.45s cubic-bezier(0.23, 1, 0.32, 1);
-      letter-spacing: 0.1em;
+    /* ─── NAV ────────────────────────────────── */
+    nav {
+      position:fixed; top:0; left:0; right:0; z-index:200;
+      padding:1.1rem 0;
+      transition: background .3s var(--ease), padding .3s var(--ease);
     }
-
-    /* asymmetry + organic geometry */
-    .panel-left {
-      top: 12%;
-      left: 4%;
-      width: 300px;
-      border-radius: 70% 30% 60% 40% / 40% 60% 40% 60%;
-      transform: rotate(1deg);
-      border-right: 2px solid rgba(100, 255, 220, 0.5);
-      border-bottom: 2px solid rgba(160, 100, 255, 0.4);
-      animation: float 8s infinite alternate ease-in-out;
+    nav.scrolled {
+      background: rgba(8,14,26,.88);
+      backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+      padding:.7rem 0;
     }
-
-    .panel-right {
-      bottom: 10%;
-      right: 5%;
-      width: 330px;
-      border-radius: 40% 60% 30% 70% / 50% 40% 60% 50%;
-      transform: rotate(-1.5deg);
-      border-left: 2px solid rgba(0, 200, 255, 0.6);
-      border-top: 2px solid rgba(200, 0, 255, 0.4);
-      animation: float 10s infinite alternate-reverse ease-in-out;
+    .nav-row { display:flex; align-items:center; justify-content:space-between; }
+    .logo { display:flex; align-items:center; gap:.65rem; text-decoration:none; }
+    .logo-mark {
+      width:34px; height:34px; border-radius:50%;
+      background: conic-gradient(from 135deg, var(--teal), var(--lavender), var(--teal));
+      display:flex; align-items:center; justify-content:center;
+      font-size:1rem; box-shadow:0 0 18px rgba(45,212,191,.3);
     }
-
-    .panel-center {
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) rotate(0deg);
-      width: 380px;
-      height: 380px;
-      border-radius: 48% 52% 30% 70% / 57% 33% 67% 43%;
-      background: rgba(8, 12, 22, 0.6);
-      border: 2px solid rgba(80, 240, 255, 0.4);
-      box-shadow: 0 0 60px rgba(30, 210, 230, 0.25), inset 0 0 40px rgba(20, 255, 150, 0.15);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 2rem;
-      animation: float 12s infinite alternate ease-in-out;
+    .logo-name { font-family:var(--display); font-size:1.2rem; color:var(--text); }
+    .nav-links { display:flex; gap:2rem; list-style:none; }
+    .nav-links a { color:var(--muted); font-size:.88rem; text-decoration:none; transition:color .2s; }
+    .nav-links a:hover, .nav-links a:focus { color:var(--text); }
+    .nav-links a:focus-visible { outline:2px solid var(--teal); border-radius:2px; outline-offset:2px; }
+    .nav-actions { display:flex; gap:.75rem; }
+    .btn {
+      display:inline-flex; align-items:center; gap:.4rem;
+      padding:.6rem 1.4rem; border-radius:3rem;
+      font-family:var(--sans); font-size:.875rem; font-weight:500;
+      text-decoration:none; cursor:pointer; border:none; transition:.25s var(--ease);
     }
-
-    .panel:hover {
-      border-color: rgba(180, 255, 230, 0.8);
-      box-shadow: 0 0 50px #00ffc3, inset 0 0 30px #6f4aff;
-      background: rgba(5, 10, 20, 0.7);
-      transform: scale(1.02) translateY(-5px);
-      transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    .btn:focus-visible { outline:2px solid var(--teal); outline-offset:3px; }
+    .btn-teal { background:var(--teal); color:var(--ink); }
+    .btn-teal:hover { background:#5eead4; transform:translateY(-2px); box-shadow:0 0 24px rgba(45,212,191,.3); }
+    .btn-ghost { background:transparent; color:var(--text); border:1px solid var(--border); }
+    .btn-ghost:hover { border-color:rgba(255,255,255,.2); transform:translateY(-2px); }
+    .hamburger { display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:.4rem; }
+    .hamburger span { width:22px; height:2px; background:var(--text); border-radius:2px; transition:.25s; }
+    .hamburger:focus-visible { outline:2px solid var(--teal); }
+    .mobile-drawer {
+      display:none; position:fixed; inset:0; z-index:199;
+      background:rgba(8,14,26,.97); flex-direction:column;
+      align-items:center; justify-content:center; gap:2rem;
     }
+    .mobile-drawer.open { display:flex; }
+    .mobile-drawer a { font-family:var(--display); font-size:2rem; color:var(--text); text-decoration:none; }
+    .mobile-drawer a:hover { color:var(--teal); }
+    .drawer-close { position:absolute; top:1.5rem; right:1.5rem; background:none; border:none; color:var(--text); font-size:1.5rem; cursor:pointer; }
+    .drawer-close:focus-visible { outline:2px solid var(--teal); }
 
-    /* floating animation */
-    @keyframes float {
-      0% { transform: translateY(0) rotate(0deg); }
-      100% { transform: translateY(-15px) rotate(0.5deg); }
+    /* ─── HERO ───────────────────────────────── */
+    #hero {
+      min-height:100vh; display:flex; align-items:center;
+      padding-top:6rem; position:relative; overflow:hidden;
     }
-    .panel-left { animation-delay: -2s; }
-    .panel-right { animation-delay: -4s; }
-
-    /* typography */
-    h2 {
-      font-weight: 300;
-      font-size: 1.4rem;
-      letter-spacing: 0.35em;
-      text-transform: uppercase;
-      color: #b0fffc;
-      margin-bottom: 1.5rem;
-      border-bottom: 1px solid rgba(0, 255, 200, 0.3);
-      padding-bottom: 0.5rem;
+    .hero-inner {
+      display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center;
     }
-
-    .mono {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.85rem;
-      font-weight: 400;
-      line-height: 1.8;
-      color: #a0f0ff;
-      text-transform: uppercase;
-      letter-spacing: 0.2em;
+    .hero-text { display:flex; flex-direction:column; gap:1.5rem; }
+    .eyebrow {
+      font-size:.72rem; font-weight:600; letter-spacing:.2em;
+      text-transform:uppercase; color:var(--teal);
     }
-
-    .data-stream {
-      margin-top: 1.2rem;
-      border-left: 2px solid #00ffbf;
-      padding-left: 1rem;
+    h1 {
+      font-family:var(--display); font-size:clamp(2.8rem,6vw,5.2rem);
+      line-height:1.1; color:var(--text);
     }
-
-    .data-stream p {
-      font-size: 0.8rem;
-      margin-bottom: 0.5rem;
-      opacity: 0.8;
-      display: flex;
-      justify-content: space-between;
+    h1 em { font-style:italic; color:var(--gold); }
+    .hero-text p { color:var(--muted); font-size:1.05rem; max-width:480px; }
+    .hero-btns { display:flex; gap:1rem; flex-wrap:wrap; margin-top:.5rem; }
+    .hero-pills { display:flex; gap:.75rem; flex-wrap:wrap; }
+    .pill {
+      padding:.35rem .9rem; border-radius:2rem;
+      background:rgba(255,255,255,.05); border:1px solid var(--border);
+      font-size:.78rem; color:var(--muted);
+      display:flex; align-items:center; gap:.4rem;
     }
+    .pill-dot { width:6px; height:6px; border-radius:50%; background:var(--teal); }
 
-    .glow-num {
-      color: #ffd966;
-      font-weight: 600;
-      text-shadow: 0 0 10px #ffb347;
+    /* Milestone cards in hero right */
+    .hero-right { display:flex; flex-direction:column; gap:1.25rem; }
+    .milestone-card {
+      padding:1.5rem 1.75rem;
+      background:rgba(13,22,40,.7);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      backdrop-filter:blur(16px);
+      display:flex; align-items:center; gap:1.25rem;
+      transition:transform .25s var(--ease), border-color .25s;
+      animation: fadeUp .7s var(--ease) both;
     }
-
-    /* neural pulse line (moving) */
-    .neural-pulse {
-      position: absolute;
-      bottom: 20%;
-      left: 0;
-      width: 100%;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, #00ffb3, #6f4aff, transparent);
-      filter: blur(3px);
-      opacity: 0.6;
-      animation: pulseMove 6s infinite linear;
-      z-index: 3;
-      pointer-events: none;
+    .milestone-card:nth-child(1){ animation-delay:.1s; }
+    .milestone-card:nth-child(2){ animation-delay:.2s; }
+    .milestone-card:nth-child(3){ animation-delay:.3s; }
+    .milestone-card:hover { transform:translateX(6px); border-color:rgba(45,212,191,.2); }
+    .milestone-icon {
+      width:52px; height:52px; border-radius:var(--radius-sm);
+      display:flex; align-items:center; justify-content:center; font-size:1.5rem;
+      flex-shrink:0;
     }
-
-    @keyframes pulseMove {
-      0% { transform: translateX(-100%) scaleX(0.3); opacity: 0.2; }
-      50% { transform: translateX(20%) scaleX(1.2); opacity: 0.9; }
-      100% { transform: translateX(120%) scaleX(0.3); opacity: 0.2; }
+    .milestone-icon.teal  { background:var(--teal-lo);  border:1px solid var(--teal-mid); }
+    .milestone-icon.gold  { background:var(--gold-lo);  border:1px solid rgba(245,200,66,.25); }
+    .milestone-icon.coral { background:rgba(255,124,110,.1); border:1px solid rgba(255,124,110,.25); }
+    .milestone-num {
+      font-family:var(--display); font-size:2rem; font-weight:700; line-height:1;
     }
+    .milestone-num.teal  { color:var(--teal); }
+    .milestone-num.gold  { color:var(--gold); }
+    .milestone-num.coral { color:var(--coral); }
+    .milestone-label { font-size:.8rem; color:var(--muted); margin-top:.2rem; }
 
-    /* second neural pulse (vertical) */
-    .neural-pulse-vert {
-      position: absolute;
-      top: 0;
-      right: 15%;
-      width: 2px;
-      height: 100%;
-      background: linear-gradient(180deg, transparent, #aa5aff, #00ffff, transparent);
-      filter: blur(4px);
-      opacity: 0.5;
-      animation: pulseVert 9s infinite ease-in-out;
-      z-index: 3;
-      pointer-events: none;
+    /* ─── SECTION DEFAULTS ───────────────────── */
+    section { padding:6rem 0; position:relative; z-index:1; }
+    .section-head { text-align:center; margin-bottom:3.5rem; }
+    .section-head h2 { font-family:var(--display); font-size:clamp(1.8rem,4vw,2.8rem); color:var(--text); margin-top:.5rem; }
+    .section-head p { color:var(--muted); max-width:520px; margin:.75rem auto 0; }
+    .divider-line { width:48px; height:2px; background:linear-gradient(90deg,var(--teal),var(--lavender)); border-radius:2px; margin:1rem auto 0; }
+
+    /* ─── FEATURED STREAM ────────────────────── */
+    #featured { background:linear-gradient(to bottom, transparent, rgba(13,22,40,.4), transparent); }
+    .featured-grid {
+      display:grid; grid-template-columns:1.4fr 1fr; gap:2rem; align-items:stretch;
     }
-
-    @keyframes pulseVert {
-      0% { transform: translateY(-100%) scaleY(0.2); opacity: 0.2; }
-      50% { transform: translateY(20%) scaleY(1.4); opacity: 0.8; }
-      100% { transform: translateY(110%) scaleY(0.2); opacity: 0.2; }
+    .stream-card {
+      background:var(--panel); border:1px solid var(--border); border-radius:var(--radius);
+      overflow:hidden; position:relative;
     }
-
-    /* cursor aura (interactive glow) */
-    .cursor-aura {
-      position: absolute;
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle at 30% 30%, rgba(70, 255, 200, 0.25), rgba(40, 0, 255, 0.1) 60%, transparent 80%);
-      border-radius: 50%;
-      filter: blur(50px) saturate(300%);
-      pointer-events: none;
-      z-index: 10;
-      mix-blend-mode: screen;
-      transform: translate(-50%, -50%);
-      will-change: left, top;
-      transition: left 0.02s linear, top 0.02s linear; /* silky smooth */
-      opacity: 0.7;
+    .stream-thumb {
+      height:260px; position:relative;
+      background:linear-gradient(135deg, #0d2035 0%, #1a0d3a 50%, #0d2835 100%);
+      display:flex; align-items:center; justify-content:center;
     }
-
-    /* bio-luminescent accents (small orbs) */
-    .orb {
-      position: absolute;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #adffd7;
-      box-shadow: 0 0 20px 5px #24ffff;
-      z-index: 4;
-      pointer-events: none;
-      opacity: 0.6;
+    .stream-play {
+      width:64px; height:64px; border-radius:50%;
+      background:rgba(45,212,191,.15); border:2px solid var(--teal);
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.4rem; cursor:pointer;
+      transition:background .2s, transform .2s;
     }
-
-    /* sound toggle button (optional) */
-    .audio-btn {
-      position: absolute;
-      bottom: 20px;
-      left: 20px;
-      z-index: 20;
-      background: rgba(0, 20, 20, 0.5);
-      backdrop-filter: blur(6px);
-      border: 1px solid #00ffc39f;
-      color: #c0fffa;
-      font-family: 'Space Mono', monospace;
-      font-size: 0.7rem;
-      padding: 0.6rem 1.2rem;
-      border-radius: 40px;
-      letter-spacing: 2px;
-      cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 0 0 15px #00ffe0;
+    .stream-play:hover { background:rgba(45,212,191,.3); transform:scale(1.08); }
+    .stream-live-badge {
+      position:absolute; top:1rem; left:1rem;
+      background:#ef4444; color:#fff; font-size:.7rem; font-weight:600;
+      padding:.3rem .7rem; border-radius:3rem; letter-spacing:.08em;
+      display:flex; align-items:center; gap:.4rem;
     }
-
-    .audio-btn:hover {
-      background: #00ffc320;
-      border-color: #ffffff;
-      color: white;
-      box-shadow: 0 0 30px #6efff0;
+    .live-dot { width:6px; height:6px; border-radius:50%; background:#fff; animation:pulse 1.2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+    .stream-info { padding:1.5rem; }
+    .stream-creator { display:flex; align-items:center; gap:.75rem; margin-bottom:1rem; }
+    .stream-avatar {
+      width:40px; height:40px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-weight:600; font-size:.9rem; flex-shrink:0;
     }
+    .stream-name { font-weight:500; font-size:.95rem; color:var(--text); }
+    .stream-handle { font-size:.78rem; color:var(--muted); }
+    .stream-title { font-family:var(--display); font-size:1.1rem; color:var(--text); margin-bottom:.5rem; }
+    .stream-meta { display:flex; gap:1rem; }
+    .stream-stat { font-size:.78rem; color:var(--muted); display:flex; align-items:center; gap:.3rem; }
 
-    /* small decorative elements */
-    .quantum-badge {
-      position: absolute;
-      top: 30px;
-      right: 30px;
-      z-index: 5;
-      font-size: 0.7rem;
-      writing-mode: vertical-rl;
-      text-orientation: upright;
-      letter-spacing: -0.2em;
-      color: #aaffcf;
-      opacity: 0.5;
-      font-weight: 300;
+    /* Recent streams list */
+    .streams-list { display:flex; flex-direction:column; gap:1rem; }
+    .stream-row {
+      padding:1rem 1.25rem;
+      background:var(--panel); border:1px solid var(--border); border-radius:var(--radius-sm);
+      display:flex; align-items:center; gap:1rem;
+      transition:border-color .2s, transform .2s;
+      cursor:pointer;
+    }
+    .stream-row:hover { border-color:rgba(45,212,191,.2); transform:translateX(4px); }
+    .stream-row-thumb {
+      width:54px; height:40px; border-radius:6px; flex-shrink:0;
+      display:flex; align-items:center; justify-content:center; font-size:1.1rem;
+    }
+    .stream-row-info { flex:1; min-width:0; }
+    .stream-row-title { font-size:.88rem; color:var(--text); font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .stream-row-meta { font-size:.75rem; color:var(--muted); margin-top:.1rem; }
+    .stream-row-views { font-size:.78rem; color:var(--teal); font-weight:500; }
+
+    /* ─── CREATORS CAROUSEL ──────────────────── */
+    #creators { overflow:hidden; }
+    .carousel-outer { position:relative; }
+    .carousel-track-wrap {
+      overflow-x:auto; overflow-y:visible;
+      scrollbar-width:none; -ms-overflow-style:none;
+      padding:1rem .5rem 2rem;
+      cursor:grab;
+    }
+    .carousel-track-wrap::-webkit-scrollbar { display:none; }
+    .carousel-track-wrap.grabbing { cursor:grabbing; }
+    .carousel-track { display:flex; gap:1.25rem; width:max-content; }
+
+    .creator-card {
+      width:220px; flex-shrink:0;
+      background:var(--panel); border:1px solid var(--border); border-radius:var(--radius);
+      padding:1.5rem 1.25rem; text-align:center;
+      cursor:pointer; position:relative; overflow:hidden;
+      transition:transform .25s var(--ease), border-color .25s, box-shadow .25s;
+      user-select:none;
+    }
+    .creator-card::after {
+      content:''; position:absolute; inset:0; border-radius:var(--radius);
+      background:linear-gradient(to bottom, transparent 40%, rgba(45,212,191,.05));
+      opacity:0; transition:opacity .25s;
+    }
+    .creator-card:hover { transform:translateY(-6px); border-color:rgba(45,212,191,.25); box-shadow:0 12px 40px rgba(0,0,0,.4); }
+    .creator-card:hover::after { opacity:1; }
+    .creator-card:focus-visible { outline:2px solid var(--teal); outline-offset:3px; }
+
+    .creator-avatar {
+      width:72px; height:72px; border-radius:50%; margin:0 auto 1rem;
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.4rem; font-weight:700; letter-spacing:-.02em;
+      border:2px solid transparent; position:relative;
+    }
+    .creator-avatar::before {
+      content:''; position:absolute; inset:-3px; border-radius:50%;
+      background:conic-gradient(from 0deg, var(--teal), var(--lavender), var(--teal));
+      z-index:-1;
+    }
+    .creator-badge {
+      position:absolute; bottom:2px; right:2px;
+      width:18px; height:18px; border-radius:50%;
+      background:var(--ink); display:flex; align-items:center; justify-content:center;
+      font-size:.6rem; border:1px solid var(--border);
+    }
+    .creator-name { font-family:var(--display); font-size:1rem; color:var(--text); margin-bottom:.2rem; }
+    .creator-handle { font-size:.75rem; color:var(--teal); margin-bottom:.9rem; }
+    .creator-stats { display:flex; justify-content:center; gap:1.25rem; margin-bottom:1rem; }
+    .c-stat-val { font-family:var(--display); font-size:1rem; color:var(--text); font-weight:700; }
+    .c-stat-label { font-size:.65rem; color:var(--muted); margin-top:.1rem; }
+    .creator-tag {
+      display:inline-block; padding:.2rem .65rem; border-radius:3rem;
+      font-size:.68rem; font-weight:500;
+    }
+    .tag-rising  { background:rgba(45,212,191,.1);  color:var(--teal);    border:1px solid rgba(45,212,191,.2); }
+    .tag-top     { background:rgba(245,200,66,.1);  color:var(--gold);    border:1px solid rgba(245,200,66,.2); }
+    .tag-new     { background:rgba(180,164,245,.1); color:var(--lavender);border:1px solid rgba(180,164,245,.2); }
+    .tag-veteran { background:rgba(255,124,110,.1); color:var(--coral);   border:1px solid rgba(255,124,110,.2); }
+
+    /* Carousel arrows */
+    .carousel-arrows { display:flex; gap:.75rem; justify-content:center; margin-top:1rem; }
+    .arrow-btn {
+      width:44px; height:44px; border-radius:50%;
+      background:var(--panel); border:1px solid var(--border);
+      color:var(--text); font-size:1rem; cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      transition:.2s var(--ease);
+    }
+    .arrow-btn:hover { border-color:rgba(45,212,191,.3); color:var(--teal); }
+    .arrow-btn:focus-visible { outline:2px solid var(--teal); }
+
+    /* ─── STAFF ──────────────────────────────── */
+    #staff { background:linear-gradient(to bottom, transparent, rgba(13,22,40,.5), transparent); }
+    .staff-grid {
+      display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:1.25rem;
+    }
+    .staff-card {
+      padding:1.75rem; background:var(--panel); border:1px solid var(--border);
+      border-radius:var(--radius); display:flex; flex-direction:column; gap:1rem;
+      cursor:pointer; transition:transform .25s, border-color .25s;
+    }
+    .staff-card:hover { transform:translateY(-4px); border-color:rgba(180,164,245,.25); }
+    .staff-card:focus-visible { outline:2px solid var(--teal); outline-offset:3px; }
+    .staff-avatar {
+      width:58px; height:58px; border-radius:var(--radius-sm);
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.2rem; font-weight:700;
+    }
+    .staff-name { font-family:var(--display); font-size:1.05rem; color:var(--text); }
+    .staff-role { font-size:.78rem; color:var(--teal); font-weight:500; letter-spacing:.05em; text-transform:uppercase; margin-top:.15rem; }
+    .staff-bio { font-size:.85rem; color:var(--muted); line-height:1.6; }
+
+    /* ─── COMMUNITY ──────────────────────────── */
+    .community-bento {
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:1.25rem;
+    }
+    .cb { background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); padding:2rem; transition:transform .25s, border-color .25s; }
+    .cb:hover { transform:translateY(-3px); }
+    .cb-1 { grid-column:1/6;  background:linear-gradient(135deg, rgba(45,212,191,.07), rgba(13,22,40,.8)); border-color:rgba(45,212,191,.15); }
+    .cb-2 { grid-column:6/9;  text-align:center; }
+    .cb-3 { grid-column:9/13; }
+    .cb-4 { grid-column:1/5;  }
+    .cb-5 { grid-column:5/9;  }
+    .cb-6 { grid-column:9/13; background:linear-gradient(135deg, rgba(245,200,66,.06), rgba(13,22,40,.8)); border-color:rgba(245,200,66,.15); }
+    .cb h3 { font-family:var(--display); font-size:1.2rem; color:var(--text); margin-bottom:.5rem; }
+    .cb p  { font-size:.875rem; color:var(--muted); }
+    .big-num { font-family:var(--display); font-size:3.5rem; font-weight:700; line-height:1; }
+    .big-num.teal   { color:var(--teal); }
+    .big-num.gold   { color:var(--gold); }
+    .big-num.lavender { color:var(--lavender); }
+    .cb-icon { font-size:2rem; margin-bottom:.75rem; display:block; }
+
+    /* Wins ticker */
+    .wins-ticker { overflow:hidden; margin-top:1rem; }
+    .wins-track {
+      display:flex; flex-direction:column; gap:.5rem;
+      animation: tickUp 12s linear infinite;
+    }
+    @keyframes tickUp {
+      from { transform:translateY(0); }
+      to   { transform:translateY(-50%); }
+    }
+    .win-item {
+      padding:.5rem .75rem; border-radius:var(--radius-sm);
+      background:rgba(255,255,255,.04); border:1px solid var(--border);
+      font-size:.78rem; color:var(--muted); display:flex; align-items:center; gap:.5rem;
+    }
+    .win-item span { color:var(--teal); }
+
+    /* ─── SECONDARY LINKS ────────────────────── */
+    #join {
+      padding:5rem 0;
+    }
+    .join-cards {
+      display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;
+    }
+    .join-card {
+      padding:2.5rem; border-radius:var(--radius);
+      display:flex; flex-direction:column; gap:1rem;
+      text-decoration:none; transition:transform .25s, box-shadow .25s;
+      position:relative; overflow:hidden;
+    }
+    .join-card:hover { transform:translateY(-6px); box-shadow:0 20px 50px rgba(0,0,0,.5); }
+    .join-card:focus-visible { outline:2px solid var(--teal); outline-offset:3px; }
+    .join-card.about {
+      background:linear-gradient(135deg, rgba(180,164,245,.08), rgba(13,22,40,.9));
+      border:1px solid rgba(180,164,245,.2);
+    }
+    .join-card.recruit {
+      background:linear-gradient(135deg, rgba(45,212,191,.08), rgba(13,22,40,.9));
+      border:1px solid rgba(45,212,191,.2);
+    }
+    .join-card-icon { font-size:2.5rem; }
+    .join-card h3 { font-family:var(--display); font-size:1.5rem; color:var(--text); }
+    .join-card p  { font-size:.9rem; color:var(--muted); line-height:1.7; }
+    .join-card-arrow { font-size:1.2rem; color:var(--teal); margin-top:auto; }
+
+    /* ─── FOOTER ─────────────────────────────── */
+    footer { border-top:1px solid var(--border); padding:2.5rem 0; position:relative; z-index:1; }
+    .footer-row { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
+    .footer-copy { font-size:.8rem; color:var(--muted); }
+    .footer-links { display:flex; gap:1.5rem; list-style:none; }
+    .footer-links a { font-size:.8rem; color:var(--muted); text-decoration:none; transition:color .2s; }
+    .footer-links a:hover { color:var(--text); }
+    .footer-links a:focus-visible { outline:2px solid var(--teal); border-radius:2px; }
+
+    /* ─── MODAL ──────────────────────────────── */
+    .modal-overlay {
+      position:fixed; inset:0; z-index:500;
+      background:rgba(8,14,26,.85); backdrop-filter:blur(12px);
+      display:none; align-items:center; justify-content:center; padding:1.5rem;
+    }
+    .modal-overlay.open { display:flex; }
+    .modal {
+      background:var(--panel); border:1px solid var(--border); border-radius:var(--radius);
+      width:100%; max-width:540px; max-height:85vh; overflow-y:auto;
+      position:relative; animation:modalIn .25s var(--ease) both;
+    }
+    @keyframes modalIn {
+      from { opacity:0; transform:scale(.94) translateY(16px); }
+      to   { opacity:1; transform:scale(1) translateY(0); }
+    }
+    .modal-close {
+      position:absolute; top:1rem; right:1rem;
+      width:32px; height:32px; border-radius:50%;
+      background:rgba(255,255,255,.06); border:1px solid var(--border);
+      color:var(--muted); font-size:1rem; cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      transition:.2s;
+    }
+    .modal-close:hover { color:var(--text); background:rgba(255,255,255,.1); }
+    .modal-close:focus-visible { outline:2px solid var(--teal); }
+    .modal-header {
+      padding:2rem 2rem 1.25rem;
+      display:flex; align-items:center; gap:1.25rem;
+      border-bottom:1px solid var(--border);
+    }
+    .modal-avatar {
+      width:70px; height:70px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.5rem; font-weight:700; flex-shrink:0;
+    }
+    .modal-name { font-family:var(--display); font-size:1.4rem; color:var(--text); }
+    .modal-sub  { font-size:.82rem; color:var(--teal); margin-top:.2rem; }
+    .modal-body { padding:1.75rem 2rem; display:flex; flex-direction:column; gap:1.5rem; }
+    .modal-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
+    .m-stat { text-align:center; padding:.875rem; background:rgba(255,255,255,.04); border-radius:var(--radius-sm); }
+    .m-stat-val { font-family:var(--display); font-size:1.3rem; color:var(--text); }
+    .m-stat-label { font-size:.72rem; color:var(--muted); margin-top:.2rem; }
+    .modal-bio { font-size:.9rem; color:var(--muted); line-height:1.75; }
+    .modal-tags { display:flex; flex-wrap:wrap; gap:.5rem; }
+    .modal-tag {
+      padding:.25rem .7rem; border-radius:3rem; font-size:.72rem;
+      background:rgba(255,255,255,.05); border:1px solid var(--border); color:var(--muted);
+    }
+    .modal-links { display:flex; gap:.75rem; }
+    .modal-link-btn {
+      padding:.6rem 1.25rem; border-radius:3rem;
+      background:var(--teal-lo); border:1px solid var(--teal-mid);
+      color:var(--teal); font-size:.82rem; font-weight:500; text-decoration:none;
+      transition:.2s;
+    }
+    .modal-link-btn:hover { background:var(--teal-mid); }
+    .modal-link-btn:focus-visible { outline:2px solid var(--teal); }
+
+    /* ─── ANIMATIONS ─────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(24px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+    .reveal { opacity:0; transform:translateY(20px); transition:opacity .65s var(--ease), transform .65s var(--ease); }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+
+    /* ─── RESPONSIVE ─────────────────────────── */
+    @media(max-width:900px){
+      .hero-inner { grid-template-columns:1fr; }
+      .hero-right { display:none; }
+      .featured-grid { grid-template-columns:1fr; }
+      .join-cards { grid-template-columns:1fr; }
+      .cb-1,.cb-2,.cb-3,.cb-4,.cb-5,.cb-6 { grid-column:1/-1; }
+      .nav-links,.nav-actions { display:none; }
+      .hamburger { display:flex; }
+    }
+    @media(max-width:600px){
+      h1 { font-size:2.4rem; }
+      .staff-grid { grid-template-columns:1fr; }
+      .modal-stats { grid-template-columns:1fr 1fr; }
     }
   </style>
 </head>
 <body>
-  <div class="interface">
 
-    <!-- Canvas for particles + holographic grid (drawn dynamically) -->
-    <canvas id="bg-canvas"></canvas>
+<!-- Aurora bg -->
+<div class="aurora" aria-hidden="true">
+  <div class="aurora-blob"></div>
+  <div class="aurora-blob"></div>
+  <div class="aurora-blob"></div>
+</div>
 
-    <!-- additional CSS grid overlay for extra depth -->
-    <div class="grid-overlay"></div>
+<!-- Mobile Drawer -->
+<div class="mobile-drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Navigation">
+  <button class="drawer-close" id="drawerClose" aria-label="Close menu">✕</button>
+  <a href="#featured">Streams</a>
+  <a href="#creators">Creators</a>
+  <a href="#staff">Team</a>
+  <a href="#community">Community</a>
+  <a href="#join">Join Us</a>
+</div>
 
-    <!-- floating orbs (bio-luminescent dots) -->
-    <div class="orb" style="top: 23%; left: 12%;"></div>
-    <div class="orb" style="top: 77%; left: 88%; width: 12px; height: 12px; background: #ae9eff; box-shadow: 0 0 30px #9f7aff;"></div>
-    <div class="orb" style="top: 43%; left: 72%;"></div>
-    <div class="orb" style="top: 81%; left: 33%;"></div>
-
-    <!-- Neural pulse animations -->
-    <div class="neural-pulse"></div>
-    <div class="neural-pulse-vert"></div>
-
-    <!-- Asymmetric panels -->
-    <div class="panel panel-left">
-      <h2>◈ QUANTUM CORE</h2>
-      <div class="mono">
-        <div class="data-stream">
-          <p>FLUX <span class="glow-num">7.34 THz</span></p>
-          <p>RESONANCE <span class="glow-num">⚡ 0x9E4F</span></p>
-          <p>BIOMECH <span class="glow-num">92% SYNC</span></p>
-          <p>VOID HUM <span class="glow-num">infra-6</span></p>
-        </div>
-        <p style="margin-top: 2rem;">> QUANTUM ENTANGLEMENT<br/>> NEURAL LACE ACTIVE</p>
-      </div>
+<!-- NAV -->
+<nav id="mainNav" aria-label="Main navigation">
+  <div class="wrap nav-row">
+    <a href="#" class="logo" aria-label="Peacetime Agency">
+      <div class="logo-mark" aria-hidden="true">☮</div>
+      <span class="logo-name">Peacetime</span>
+    </a>
+    <ul class="nav-links" role="list">
+      <li><a href="#featured">Streams</a></li>
+      <li><a href="#creators">Creators</a></li>
+      <li><a href="#staff">Team</a></li>
+      <li><a href="#community">Community</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="#join" class="btn btn-ghost">About</a>
+      <a href="#join" class="btn btn-teal">Join Agency →</a>
     </div>
-
-    <div class="panel panel-center">
-      <h2 style="border: none; letter-spacing: 0.5em;">◈ ALIEN PRESENCE</h2>
-      <div style="width: 160px; height: 160px; border-radius: 50%; border: 1px solid #00ffe0; box-shadow: 0 0 60px #3a86ff, inset 0 0 40px #bf00ff; margin: 20px auto; background: radial-gradient(circle at 30% 30%, #00ffb3, #05060A 80%);"></div>
-      <div class="mono" style="font-size: 0.8rem;">
-        <p>ETHEREAL INDEX · 0.34˙⥊</p>
-        <p>NEBULA NODE · ACTIVE</p>
-      </div>
-      <div style="margin-top: 1.5rem; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, #00ffc3, #bf00ff, transparent);"></div>
-    </div>
-
-    <div class="panel panel-right">
-      <h2>◈ BIOMETRIC SYNC</h2>
-      <div class="mono">
-        <div class="data-stream">
-          <p>SYNAPSE <span class="glow-num">Δ 7.83 Hz</span></p>
-          <p>GLIAL CELL <span class="glow-num">⚡ 0.04 pA</span></p>
-          <p>QUANTUM BLOOM <span class="glow-num">86%</span></p>
-          <p>IRIDESCENCE <span class="glow-num">#4affb5</span></p>
-        </div>
-        <p style="margin-top: 2rem;">> EXTRADIMENSIONAL FEED<br/>> TRANSLATION: ACTIVE</p>
-      </div>
-    </div>
-
-    <!-- Quantum badge vertical -->
-    <div class="quantum-badge">◈ 0 0 1 ◈  void   ◈</div>
-
-    <!-- Cursor aura (follows mouse) -->
-    <div class="cursor-aura" id="aura"></div>
-
-    <!-- Optional audio toggle -->
-    <button class="audio-btn" id="audioToggle">◉ AMBIENT HUM</button>
+    <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </div>
+</nav>
 
-  <script>
-    (function() {
-      // -----------------------------------  particle + grid canvas  ---------------------------------
-      const canvas = document.getElementById('bg-canvas');
-      const ctx = canvas.getContext('2d');
-      let width, height;
-      let particles = [];
-      const PARTICLE_COUNT = 130;
-      let mouseX = -1000, mouseY = -1000; // offscreen initially
-      let mousePresent = false;
+<main>
 
-      // colors: iridescent greens, plasma blues, ultraviolet
-      const colors = ['#6affb5', '#3a86ff', '#bf00ff', '#00ffe0', '#b298ff'];
+  <!-- ═══ HERO ════════════════════════════════ -->
+  <section id="hero" aria-labelledby="hero-heading">
+    <div class="wrap">
+      <div class="hero-inner">
+        <div class="hero-text">
+          <span class="eyebrow">✦ Peacetime Agency</span>
+          <h1 id="hero-heading">
+            Creators who<br/><em>grow together.</em>
+          </h1>
+          <p>Meet the people behind Peacetime — a community of TikTok creators and the team supporting their growth. Real people. Real progress.</p>
+          <div class="hero-btns">
+            <a href="#creators" class="btn btn-teal">Meet Our Creators</a>
+            <a href="#join" class="btn btn-ghost">Join the Agency</a>
+          </div>
+          <div class="hero-pills">
+            <div class="pill"><span class="pill-dot"></span>No restrictive contracts</div>
+            <div class="pill"><span class="pill-dot"></span>TikTok official</div>
+            <div class="pill"><span class="pill-dot"></span>Community driven</div>
+          </div>
+        </div>
 
-      // particle class
-      class Particle {
-        constructor(x, y) {
-          this.x = x || Math.random() * width;
-          this.y = y || Math.random() * height;
-          this.vx = (Math.random() - 0.5) * 0.12;
-          this.vy = (Math.random() - 0.5) * 0.12;
-          this.radius = Math.random() * 2.2 + 1.2;
-          this.color = colors[Math.floor(Math.random() * colors.length)];
-          this.baseRadius = this.radius;
-        }
-        update() {
-          // subtle floating motion
-          this.x += this.vx;
-          this.y += this.vy;
+        <div class="hero-right" aria-label="Agency milestones">
 
-          // wrap around edges with padding
-          if (this.x < -20) this.x = width + 20;
-          if (this.x > width + 20) this.x = -20;
-          if (this.y < -20) this.y = height + 20;
-          if (this.y > height + 20) this.y = -20;
+          <div class="milestone-card">
+            <div class="milestone-icon teal" aria-hidden="true">👥</div>
+            <div>
+              <div class="milestone-num teal">47+</div>
+              <div class="milestone-label">Active creators in agency</div>
+            </div>
+          </div>
 
-          // mouse interaction (repel / aura effect)
-          if (mousePresent) {
-            const dx = this.x - mouseX;
-            const dy = this.y - mouseY;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < 150) {
-              const force = (150 - dist) / 150 * 0.3; // repel strength
-              const angle = Math.atan2(dy, dx);
-              const repelX = Math.cos(angle) * force;
-              const repelY = Math.sin(angle) * force;
-              this.x += repelX;
-              this.y += repelY;
-              // make them slightly brighter/smaller when near cursor?
-              this.radius = this.baseRadius * (1 + (150 - dist) / 150 * 0.8);
-            } else {
-              this.radius = this.baseRadius;
-            }
-          } else {
-            this.radius = this.baseRadius;
-          }
-        }
-        draw() {
-          ctx.beginPath();
-          ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-          ctx.fillStyle = this.color;
-          ctx.shadowColor = this.color;
-          ctx.shadowBlur = 12;
-          ctx.fill();
-        }
+          <div class="milestone-card">
+            <div class="milestone-icon gold" aria-hidden="true">🎬</div>
+            <div>
+              <div class="milestone-num gold">1,200+</div>
+              <div class="milestone-label">Streams completed by our creators</div>
+            </div>
+          </div>
+
+          <div class="milestone-card">
+            <div class="milestone-icon coral" aria-hidden="true">🌐</div>
+            <div>
+              <div class="milestone-num coral">Discord</div>
+              <div class="milestone-label">Private community hub — active daily</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FEATURED STREAMS ══════════════════════ -->
+  <section id="featured" aria-labelledby="streams-heading">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Featured Content</span>
+        <h2 id="streams-heading">Latest from our creators</h2>
+        <p>Highlights and recent streams from across the Peacetime roster.</p>
+        <div class="divider-line"></div>
+      </div>
+      <div class="featured-grid reveal">
+
+        <!-- Hero stream -->
+        <div class="stream-card">
+          <div class="stream-thumb">
+            <div class="stream-live-badge" aria-label="Live stream">
+              <span class="live-dot"></span> LIVE
+            </div>
+            <button class="stream-play" aria-label="Play stream">▶</button>
+          </div>
+          <div class="stream-info">
+            <div class="stream-creator">
+              <div class="stream-avatar" style="background:linear-gradient(135deg,#2dd4bf,#0d2035); color:#0d2035;">MK</div>
+              <div>
+                <div class="stream-name">Maya K.</div>
+                <div class="stream-handle">@mayak_creates</div>
+              </div>
+            </div>
+            <div class="stream-title">Late Night Q&A + Gift Goals 🎯</div>
+            <div class="stream-meta">
+              <span class="stream-stat">👁 2.4K viewers</span>
+              <span class="stream-stat">🎁 342 gifts</span>
+              <span class="stream-stat">⏱ 1h 24m</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar stream list -->
+        <div class="streams-list" role="list">
+
+          <div class="stream-row" role="listitem" tabindex="0" aria-label="Stream by Jordan R">
+            <div class="stream-row-thumb" style="background:linear-gradient(135deg,#1a0d3a,#0d2035);">🎮</div>
+            <div class="stream-row-info">
+              <div class="stream-row-title">Gaming Night — Road to 10K</div>
+              <div class="stream-row-meta">Jordan R. · @jordancreates · 3 hrs ago</div>
+            </div>
+            <div class="stream-row-views">8.1K</div>
+          </div>
+
+          <div class="stream-row" role="listitem" tabindex="0" aria-label="Stream by Theo C">
+            <div class="stream-row-thumb" style="background:linear-gradient(135deg,#0d2a1a,#0d2035);">🎵</div>
+            <div class="stream-row-info">
+              <div class="stream-row-title">Chill Beats + Creator Chat</div>
+              <div class="stream-row-meta">Theo C. · @theocontent · Yesterday</div>
+            </div>
+            <div class="stream-row-views">5.3K</div>
+          </div>
+
+          <div class="stream-row" role="listitem" tabindex="0" aria-label="Stream by Aria V">
+            <div class="stream-row-thumb" style="background:linear-gradient(135deg,#2a0d1a,#1a0d2a);">✨</div>
+            <div class="stream-row-info">
+              <div class="stream-row-title">Get Ready With Me + Gifting</div>
+              <div class="stream-row-meta">Aria V. · @ariavstreams · 2 days ago</div>
+            </div>
+            <div class="stream-row-views">12K</div>
+          </div>
+
+          <div class="stream-row" role="listitem" tabindex="0" aria-label="Stream by Cam D">
+            <div class="stream-row-thumb" style="background:linear-gradient(135deg,#2a1a0d,#1a0d2a);">🍳</div>
+            <div class="stream-row-info">
+              <div class="stream-row-title">Midnight Cook with the Chat</div>
+              <div class="stream-row-meta">Cam D. · @camcooks · 3 days ago</div>
+            </div>
+            <div class="stream-row-views">3.9K</div>
+          </div>
+
+          <div class="stream-row" role="listitem" tabindex="0" aria-label="Stream by Lexi M">
+            <div class="stream-row-thumb" style="background:linear-gradient(135deg,#0d1a2a,#2a0d1a);">💬</div>
+            <div class="stream-row-info">
+              <div class="stream-row-title">Story Time — Real Talk</div>
+              <div class="stream-row-meta">Lexi M. · @leximakes · 4 days ago</div>
+            </div>
+            <div class="stream-row-views">6.7K</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CREATORS CAROUSEL ═════════════════════ -->
+  <section id="creators" aria-labelledby="creators-heading">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Our Roster</span>
+        <h2 id="creators-heading">Meet the creators</h2>
+        <p>Tap any card to see their full profile, stats, and content focus. Drag to explore.</p>
+        <div class="divider-line"></div>
+      </div>
+    </div>
+
+    <div class="wrap carousel-outer reveal">
+      <div class="carousel-track-wrap" id="creatorTrack" role="region" aria-label="Creator roster carousel">
+        <div class="carousel-track" id="carouselInner">
+
+          <!-- CREATOR CARDS — each has data attributes for modal -->
+          <div class="creator-card" tabindex="0" role="button" aria-label="View Maya K profile"
+            data-name="Maya K." data-handle="@mayak_creates" data-initials="MK"
+            data-color="linear-gradient(135deg,#2dd4bf,#0d4035)" data-text="#0d2035"
+            data-followers="14.2K" data-streams="98" data-gifts="1,840"
+            data-bio="Maya streams nightly Q&As and lifestyle content. She joined Peacetime 8 months ago and has since tripled her follower count using analytics-backed strategies." 
+            data-tags="Lifestyle,Q&A,Night streams,Rising star" data-status="top">
+            <div class="creator-avatar" style="background:linear-gradient(135deg,#2dd4bf,#0d4035); color:#0d2035;">
+              MK
+              <div class="creator-badge">⭐</div>
+            </div>
+            <div class="creator-name">Maya K.</div>
+            <div class="creator-handle">@mayak_creates</div>
+            <div class="creator-stats">
+              <div><div class="c-stat-val">14.2K</div><div class="c-stat-label">Followers</div></div>
+              <div><div class="c-stat-val">98</div><div class="c-stat-label">Streams</div></div>
+            </div>
+            <span class="creator-tag tag-top">Top Creator</span>
+          </div>
+
+          <div class="creator-card" tabindex="0" role="button" aria-label="View Jordan R profile"
+            data-name="Jordan R." data-handle="@jordancreates" data-initials="JR"
+            data-color="linear-gradient(135deg,#b4a4f5,#1a0d3a)" data-text="#e8eef8"
+            data-followers="12.1K" data-streams="74" data-gifts="920"
+            data-bio="Jordan blends gaming streams with creator education. He's one of our most consistent streamers and actively mentors newer members in the Discord community."
+            data-tags="Gaming,Education,Community builder" data-status="veteran">
+            <div class="creator-avatar" style="background:linear-gradient(135deg,#b4a4f5,#1a0d3a); color:#e8eef8;">
+              JR
+              <div class="creator-badge">🎮</div>
+            </div>
+            <div class="creator-name">Jordan R.</div>
+            <div class="creator-handle">@jordancreates</div>
+            <div class="creator-stats">
+              <div><div class="c-stat-val">12.1K</div><div class="c-stat-label">Followers</div></div>
+              <div><div class="c-stat-val">74</div><div class="c-stat-label">Streams</div></div>
+            </div>
+            <span class="creator-tag tag-veteran">Veteran</span>
+          </div>
+
+          <div class="creator-card" tabindex="0" role="button" aria-label="View Theo C profile"
+            data-name="Theo C." data-handle="@theocontent" data-initials="TC"
+            data-color="linear-gradient(135deg,#f5c842,#2a1a0d)" data-text="#0d0d0d"
+            data-followers="22.4K" data-streams="130" data-gifts="3,100"
+            data-bio="Theo is our highest-follower creator, known for chill music streams and authentic community building. His retention metrics are among the strongest in the agency."
+            data-tags="Music,Chill vibes,High retention,Top earner" data-status="top">
+            <div class="creator-avatar" style="background:linear-gradient(135deg,#f5c842,#2a1a0d); color:#0d0d0d;">
+              TC
+              <div class="creator-badge">🏆</div>
+            </div>
+            <div class="creator-name">Theo C.</div>
+            <div class="creator-handle">@theocontent</div>
+            <div class="creator-stats">
+              <div><div class="c-stat-val">22.4K</div><div class="c-stat-label">Followers</div></div>
+              <div><div class="c-stat-val">130</div><div class="c-stat-label">Streams</div></div>
+            </div>
+            <span class="creator-tag tag-top">Top Creator</span>
+          </div>
+
+          <div class="creator-card" tabindex="0" role="button" aria-label="View Aria V profile"
+            data-name="Aria V." data-handle="@ariavstreams" data-initials="AV"
+            data-color="linear-gradient(135deg,#ff7c6e,#2a0d1a)" data-text="#e8eef8"
+            data-followers="8.9K" data-streams="55" data-gifts="710"
+            data-bio="Aria creates GRWM and lifestyle content with high engagement rates. She joined 5 months ago and has shown rapid growth in gifting metrics and live viewer retention."
+            data-tags="GRWM,Lifestyle,Beauty,Rising" data-status="rising">
+            <div class="creator-avatar" style="background:linear-gradient(135deg,#ff7c6e,#2a0d1a); color:#e8eef8;">
+              AV
+              <div class="creator-badge">💅</div>
+            </div>
+            <div class="creator-name">Aria V.</div>
+            <div class="creator-handle">@ariavstreams</div>
+            <div class="creator-stats">
+              <div><div class="c-stat-val">8.9K</div><div class="c-stat-label">Followers</div></div>
+              <div><div class="c-stat-val">55</div><div class="c-stat-label">Streams</div></div>
+            </div>
+            <span class="creator-tag tag-rising">Rising Star</span>
+          </div>
+
+          <div class="creator-card" tabindex="0" role="button" aria-label="View Cam D profile"
+            data-name="Cam D." data-handle="@camcooks" data-initials="CD"
+            data-color="linear-gradient(135deg,#2dd4bf,#2a1a0d)" data-text="#0d2035"
+            data-followers="5.3K" data-streams="40" data-gifts="380"
+            data-bio="Cam runs late-night cooking streams with a loyal community of regulars. A newer creator showing strong consistency and engagement growth across every session."
+            data-tags="Cooking,Late night,Community" data-status="rising">
+            <div class="creator-avatar" style="background:linear-gradient(135deg,#2dd4bf,#2a1a0d); color:#0d2035;">
+              CD
+              <div class="creator-badge">🍳</div>
+            </div>
+            <div class="creator-name">Cam D.</div>
+            <div class="creator-handle">@camcooks</div>
+            <div class="creator-stats">
+              <div><div class="c-stat-val">5.3K</div><div class="c-stat-label">Followers</div></div>
+              <div><div class="c-stat-val">40</div><div class="c-stat-label">Streams</div></div>
+            </div>
+            <span class="creator-tag tag-rising">Rising Star</span>
+          </div>
+
+          <div class="creator-card" tabindex="0" role="button" aria-label="View Lexi M profile"
+            data-name="Lexi M." data-handle="@leximakes" data-initials="LM"
+            data-color="linear-gradient(135deg,#b4a4f5,#0d1a2a)" data-text="#e8eef8"
+            data-followers="18.6K" data-streams="112" data-gifts="2,400"
+            data-bio="Lexi built her audience through story time and real-talk streams. She's one of the most engaged creators in our Discord and actively shapes agency culture."
+            data-tags="Story time,Real talk,High engagement,Community pillar" data-status="top">
+            <div class="creator-avatar" style="background:linear-gradient(135deg,#b4a4f5,#0d1a2a); color:#e8eef8;">
+              LM
+              <div class="creator-badge">💬</div>
+            </div>
+            <div class="creator-name">Lexi M.</div>
+            <div class="creator-handle">@leximakes</div>
+            <div class="creator-stats">
+              <div><div class="c-stat-val">18.6K</div><div class="c-stat-label">Followers</div></div>
+              <div><div class="c-stat-val">112</div><div class="c-stat-label">Streams</div></div>
+            </div>
+            <span class="creator-tag tag-top">Top Creator</span>
+          </div>
+
+          <div class="creator-card" tabindex="0" role="button" aria-label="View Sam P profile"
+            data-name="Sam P." data-handle="@sampfit" data-initials="SP"
+            data-color="linear-gradient(135deg,#22d3ee,#0d2035)" data-text="#0d2035"
+            data-followers="3.1K" data-streams="18" data-gifts="140"
+            data-bio="Sam recently joined the agency and is building a fitness-focused audience. Still early stage, but showing strong consistency in stream schedule and viewer retention."
+            data-tags="Fitness,Wellness,New creator" data-status="new">
+            <div class="creator-avatar" style="background:linear-gradient(135deg,#22d3ee,#0d2035); color:#0d2035;">
+              SP
+              <div class="creator-badge">💪</div>
+            </div>
+            <div class="creator-name">Sam P.</div>
+            <div class="creator-handle">@sampfit</div>
+            <div class="creator-stats">
+              <div><div class="c-stat-val">3.1K</div><div class="c-stat-label">Followers</div></div>
+              <div><div class="c-stat-val">18</div><div class="c-stat-label">Streams</div></div>
+            </div>
+            <span class="creator-tag tag-new">New Member</span>
+          </div>
+
+          <div class="creator-card" tabindex="0" role="button" aria-label="View Nadia O profile"
+            data-name="Nadia O." data-handle="@nadiaoart" data-initials="NO"
+            data-color="linear-gradient(135deg,#f472b6,#2a0d1a)" data-text="#e8eef8"
+            data-followers="9.7K" data-streams="67" data-gifts="880"
+            data-bio="Nadia streams art creation sessions with live commentary. Her audience is deeply loyal and her average viewer retention is well above agency benchmarks."
+            data-tags="Art,Creative,High retention" data-status="rising">
+            <div class="creator-avatar" style="background:linear-gradient(135deg,#f472b6,#2a0d1a); color:#e8eef8;">
+              NO
+              <div class="creator-badge">🎨</div>
+            </div>
+            <div class="creator-name">Nadia O.</div>
+            <div class="creator-handle">@nadiaoart</div>
+            <div class="creator-stats">
+              <div><div class="c-stat-val">9.7K</div><div class="c-stat-label">Followers</div></div>
+              <div><div class="c-stat-val">67</div><div class="c-stat-label">Streams</div></div>
+            </div>
+            <span class="creator-tag tag-rising">Rising Star</span>
+          </div>
+
+        </div><!-- /carousel-track -->
+      </div><!-- /track-wrap -->
+
+      <div class="carousel-arrows" aria-label="Carousel navigation">
+        <button class="arrow-btn" id="arrowLeft" aria-label="Scroll left">←</button>
+        <button class="arrow-btn" id="arrowRight" aria-label="Scroll right">→</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ STAFF ══════════════════════════════════ -->
+  <section id="staff" aria-labelledby="staff-heading">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">The Team</span>
+        <h2 id="staff-heading">People behind the agency</h2>
+        <p>The staff who keep Peacetime running, supportive, and creator-focused every single day.</p>
+        <div class="divider-line"></div>
+      </div>
+      <div class="staff-grid reveal">
+
+        <div class="staff-card" tabindex="0" role="button" aria-label="View Alex W profile"
+          data-name="Alex W." data-role="Founder & Agency Lead" data-initials="AW"
+          data-color="linear-gradient(135deg,#2dd4bf,#0d4035)" data-text="#0d2035"
+          data-bio="Alex founded Peacetime after watching too many creators get burned by predatory agencies. Their focus is building something ethical, transparent, and genuinely creator-first."
+          data-tags="Strategy,Community,Vision">
+          <div class="staff-avatar" style="background:linear-gradient(135deg,#2dd4bf,#0d4035); color:#0d2035;">AW</div>
+          <div>
+            <div class="staff-name">Alex W.</div>
+            <div class="staff-role">Founder & Agency Lead</div>
+          </div>
+          <div class="staff-bio">Oversees agency direction, creator partnerships, and community culture. Built Peacetime to be the alternative creators actually deserve.</div>
+        </div>
+
+        <div class="staff-card" tabindex="0" role="button" aria-label="View Riley S profile"
+          data-name="Riley S." data-role="Analytics & Growth Strategist" data-initials="RS"
+          data-color="linear-gradient(135deg,#f5c842,#2a1a0d)" data-text="#0d0d0d"
+          data-bio="Riley analyzes creator metrics daily — retention curves, gifting trends, engagement spikes — and turns raw data into actionable growth plans for every creator on the roster."
+          data-tags="Analytics,Data,Growth">
+          <div class="staff-avatar" style="background:linear-gradient(135deg,#f5c842,#2a1a0d); color:#0d0d0d;">RS</div>
+          <div>
+            <div class="staff-name">Riley S.</div>
+            <div class="staff-role">Analytics & Growth Strategist</div>
+          </div>
+          <div class="staff-bio">Deep-dives into performance data to help creators grow with intention, not guesswork. Personally reviews analytics for every active creator.</div>
+        </div>
+
+        <div class="staff-card" tabindex="0" role="button" aria-label="View Morgan L profile"
+          data-name="Morgan L." data-role="Community Manager" data-initials="ML"
+          data-color="linear-gradient(135deg,#b4a4f5,#1a0d3a)" data-text="#e8eef8"
+          data-bio="Morgan keeps the Discord alive, organized, and genuinely helpful. They moderate, welcome new creators, run community events, and make sure nobody feels lost or ignored."
+          data-tags="Community,Discord,Support">
+          <div class="staff-avatar" style="background:linear-gradient(135deg,#b4a4f5,#1a0d3a); color:#e8eef8;">ML</div>
+          <div>
+            <div class="staff-name">Morgan L.</div>
+            <div class="staff-role">Community Manager</div>
+          </div>
+          <div class="staff-bio">Keeps the community warm, active, and a place people actually want to be. Your first point of contact when you join.</div>
+        </div>
+
+        <div class="staff-card" tabindex="0" role="button" aria-label="View Dev K profile"
+          data-name="Dev K." data-role="Content Strategist" data-initials="DK"
+          data-color="linear-gradient(135deg,#ff7c6e,#2a0d1a)" data-text="#e8eef8"
+          data-bio="Dev helps creators plan their content calendars, refine their live structures, sharpen CTAs, and build streams that keep audiences engaged from start to finish."
+          data-tags="Content,Live strategy,CTAs">
+          <div class="staff-avatar" style="background:linear-gradient(135deg,#ff7c6e,#2a0d1a); color:#e8eef8;">DK</div>
+          <div>
+            <div class="staff-name">Dev K.</div>
+            <div class="staff-role">Content Strategist</div>
+          </div>
+          <div class="staff-bio">Helps creators craft compelling live structures and content plans that maximize retention, gifting, and audience growth.</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ COMMUNITY MILESTONES ══════════════════ -->
+  <section id="community" aria-labelledby="community-heading">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Community Stats</span>
+        <h2 id="community-heading">Growing together in real time</h2>
+        <div class="divider-line"></div>
+      </div>
+      <div class="community-bento reveal">
+
+        <div class="cb cb-1">
+          <span class="cb-icon" aria-hidden="true">👥</span>
+          <div class="big-num teal">47</div>
+          <h3>Active Creators</h3>
+          <p>And growing. Every creator joins on TikTok's standard agency agreement — no extra strings attached.</p>
+        </div>
+
+        <div class="cb cb-2">
+          <span class="cb-icon" aria-hidden="true">🎬</span>
+          <div class="big-num gold" style="font-size:3rem;">1,200+</div>
+          <h3>Streams Done</h3>
+          <p>Completed across the full roster since agency launch.</p>
+        </div>
+
+        <div class="cb cb-3">
+          <h3>Recent Wins 🏆</h3>
+          <div class="wins-ticker" aria-label="Recent community wins">
+            <div class="wins-track">
+              <div class="win-item"><span>🎯</span> Theo hit 20K followers</div>
+              <div class="win-item"><span>🎁</span> Maya's best gifting stream ever</div>
+              <div class="win-item"><span>📈</span> Jordan's retention up 40%</div>
+              <div class="win-item"><span>🌟</span> Lexi hit 100 streams</div>
+              <div class="win-item"><span>🚀</span> Aria doubled her avg viewers</div>
+              <div class="win-item"><span>🎉</span> Sam's first 1K followers</div>
+              <!-- duplicated for loop -->
+              <div class="win-item"><span>🎯</span> Theo hit 20K followers</div>
+              <div class="win-item"><span>🎁</span> Maya's best gifting stream ever</div>
+              <div class="win-item"><span>📈</span> Jordan's retention up 40%</div>
+              <div class="win-item"><span>🌟</span> Lexi hit 100 streams</div>
+              <div class="win-item"><span>🚀</span> Aria doubled her avg viewers</div>
+              <div class="win-item"><span>🎉</span> Sam's first 1K followers</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cb cb-4">
+          <span class="cb-icon" aria-hidden="true">💬</span>
+          <h3>Discord First</h3>
+          <p>Our private Discord is the heartbeat of the agency — resources, strategy sessions, and a community that actually responds.</p>
+        </div>
+
+        <div class="cb cb-5">
+          <span class="cb-icon" aria-hidden="true">📊</span>
+          <h3>Data-Backed Growth</h3>
+          <p>Every creator gets personal analytics reviews. We track retention, gifting, engagement, and build strategy from real numbers — not guesses.</p>
+        </div>
+
+        <div class="cb cb-6">
+          <span class="cb-icon" aria-hidden="true">☮</span>
+          <h3>Your Pace, Always</h3>
+          <p>No quotas. No rigid requirements. Whether you stream daily or casually, you belong here. Growth that fits your life.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ SECONDARY NAV — ABOUT & RECRUIT ═══════ -->
+  <section id="join" aria-labelledby="join-heading">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">What's Next</span>
+        <h2 id="join-heading">Learn more or come join us</h2>
+        <p>Dig deeper into who we are, or take the first step to joining the Peacetime family.</p>
+        <div class="divider-line"></div>
+      </div>
+      <div class="join-cards reveal">
+
+        <a href="peacetime-agency.html" class="join-card about" aria-label="Learn about Peacetime Agency">
+          <div class="join-card-icon" aria-hidden="true">☮</div>
+          <h3>About Peacetime</h3>
+          <p>Learn why we built this agency, how we operate, what makes us different from predatory TikTok agencies, and what you can expect as a creator here.</p>
+          <div class="join-card-arrow">→ Read our story</div>
+        </a>
+
+        <a href="peacetime-agency.html#apply" class="join-card recruit" aria-label="Apply to join Peacetime Agency">
+          <div class="join-card-icon" aria-hidden="true">✦</div>
+          <h3>Join the Agency</h3>
+          <p>Ready to grow with us? Apply through TikTok's official system. No restrictive contracts, no pressure, just a community that has your back.</p>
+          <div class="join-card-arrow">→ Apply now</div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="footer-row">
+      <span class="footer-copy">© 2025 Peacetime Agency — Built for creators, by creators.</span>
+      <ul class="footer-links" role="list">
+        <li><a href="peacetime-agency.html">About</a></li>
+        <li><a href="peacetime-agency.html#apply">Apply</a></li>
+        <li><a href="#">Discord</a></li>
+        <li><a href="#">Privacy</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══ MODAL ═══════════════════════════════════ -->
+<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-label="Profile details" aria-hidden="true">
+  <div class="modal" id="modal">
+    <button class="modal-close" id="modalClose" aria-label="Close profile">✕</button>
+    <div class="modal-header" id="modalHeader"></div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+  /* ─── NAV SCROLL ─────────────────────────── */
+  const nav = document.getElementById('mainNav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 50));
+
+  /* ─── HAMBURGER ──────────────────────────── */
+  const hamburger = document.getElementById('hamburger');
+  const drawer    = document.getElementById('drawer');
+  const drawerClose = document.getElementById('drawerClose');
+  hamburger.addEventListener('click', () => { drawer.classList.add('open'); hamburger.setAttribute('aria-expanded','true'); });
+  drawerClose.addEventListener('click', () => { drawer.classList.remove('open'); hamburger.setAttribute('aria-expanded','false'); });
+  drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { drawer.classList.remove('open'); hamburger.setAttribute('aria-expanded','false'); }));
+
+  /* ─── SCROLL REVEAL ──────────────────────── */
+  const reveals = document.querySelectorAll('.reveal');
+  const ro = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        e.target.style.transitionDelay = (i * 0.06) + 's';
+        e.target.classList.add('visible');
+        ro.unobserve(e.target);
       }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => ro.observe(el));
 
-      function initParticles() {
-        particles = [];
-        for (let i = 0; i < PARTICLE_COUNT; i++) {
-          particles.push(new Particle());
-        }
-      }
+  /* ─── DRAG CAROUSEL ──────────────────────── */
+  const track = document.getElementById('creatorTrack');
+  let isDragging = false, startX = 0, scrollLeft = 0;
+  track.addEventListener('mousedown', e => { isDragging=true; startX=e.pageX-track.offsetLeft; scrollLeft=track.scrollLeft; track.classList.add('grabbing'); });
+  track.addEventListener('mouseleave', () => { isDragging=false; track.classList.remove('grabbing'); });
+  track.addEventListener('mouseup', () => { isDragging=false; track.classList.remove('grabbing'); });
+  track.addEventListener('mousemove', e => { if(!isDragging) return; e.preventDefault(); const x=e.pageX-track.offsetLeft; track.scrollLeft=scrollLeft-(x-startX); });
+  // Touch
+  let touchStartX = 0;
+  track.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; scrollLeft = track.scrollLeft; }, {passive:true});
+  track.addEventListener('touchmove', e => { const dx = touchStartX - e.touches[0].clientX; track.scrollLeft = scrollLeft + dx; }, {passive:true});
 
-      function drawGrid() {
-        // holographic perspective grid (faint)
-        ctx.strokeStyle = '#00ffbb';
-        ctx.lineWidth = 0.4;
-        ctx.globalAlpha = 0.12;
-        // horizontal lines (converging)
-        const steps = 20;
-        const centerX = width / 2;
-        const centerY = height / 2;
-        for (let i = -steps; i <= steps; i++) {
-          const offset = i * 40;
-          ctx.beginPath();
-          ctx.moveTo(0, centerY + offset * 0.3);
-          ctx.lineTo(width, centerY + offset * 0.1);
-          ctx.strokeStyle = '#00ffc3';
-          ctx.stroke();
-        }
-        for (let i = -steps; i <= steps; i++) {
-          const offset = i * 50;
-          ctx.beginPath();
-          ctx.moveTo(centerX + offset * 0.2, 0);
-          ctx.lineTo(centerX + offset * 0.05, height);
-          ctx.strokeStyle = '#9f7aff';
-          ctx.stroke();
-        }
-        // extra precision lines (vertical faint)
-        ctx.globalAlpha = 0.08;
-        ctx.strokeStyle = '#6affb5';
-        for (let i = 0; i < 10; i++) {
-          ctx.beginPath();
-          ctx.moveTo(i * 120, 0);
-          ctx.lineTo(i * 80, height);
-          ctx.stroke();
-        }
-        ctx.globalAlpha = 1.0;
-        ctx.shadowBlur = 0;
-      }
+  // Arrow buttons
+  document.getElementById('arrowLeft').addEventListener('click', () => track.scrollBy({ left: -500, behavior:'smooth' }));
+  document.getElementById('arrowRight').addEventListener('click', () => track.scrollBy({ left: 500, behavior:'smooth' }));
 
-      function drawConnections() {
-        // draw lines between close particles (neural net)
-        ctx.strokeStyle = '#b0ffe0';
-        ctx.lineWidth = 0.4;
-        ctx.shadowBlur = 6;
-        ctx.shadowColor = '#80ffdb';
-        for (let i = 0; i < particles.length; i++) {
-          for (let j = i + 1; j < particles.length; j++) {
-            const dx = particles[i].x - particles[j].x;
-            const dy = particles[i].y - particles[j].y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < 90) {
-              ctx.globalAlpha = (90 - dist) / 90 * 0.25;
-              ctx.beginPath();
-              ctx.moveTo(particles[i].x, particles[i].y);
-              ctx.lineTo(particles[j].x, particles[j].y);
-              ctx.stroke();
-            }
-          }
-        }
-        ctx.shadowBlur = 0;
-        ctx.globalAlpha = 1.0;
-      }
+  /* ─── MODAL ──────────────────────────────── */
+  const overlay    = document.getElementById('modalOverlay');
+  const modalClose = document.getElementById('modalClose');
+  const modalHeader = document.getElementById('modalHeader');
+  const modalBody   = document.getElementById('modalBody');
 
-      function resizeCanvas() {
-        width = window.innerWidth;
-        height = window.innerHeight;
-        canvas.width = width;
-        canvas.height = height;
-        if (particles.length === 0) initParticles();
-      }
+  function openModal(data) {
+    const isStaff = !!data.role;
 
-      function animate() {
-        ctx.clearRect(0, 0, width, height);
-        // draw grid first
-        drawGrid();
-        // then particles & connections
-        for (let p of particles) {
-          p.update();
-        }
-        drawConnections();
-        for (let p of particles) {
-          p.draw();
-        }
-        requestAnimationFrame(animate);
-      }
+    // Header
+    modalHeader.innerHTML = `
+      <div class="modal-avatar" style="background:${data.color}; color:${data.text};">${data.initials}</div>
+      <div>
+        <div class="modal-name">${data.name}</div>
+        <div class="modal-sub">${isStaff ? data.role : data.handle}</div>
+      </div>
+    `;
 
-      // mouse tracking for aura and particles
-      document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-        mousePresent = true;
-        const aura = document.getElementById('aura');
-        aura.style.left = mouseX + 'px';
-        aura.style.top = mouseY + 'px';
-      });
+    // Body
+    let statsHTML = '';
+    if (!isStaff) {
+      statsHTML = `
+        <div class="modal-stats">
+          <div class="m-stat"><div class="m-stat-val">${data.followers}</div><div class="m-stat-label">Followers</div></div>
+          <div class="m-stat"><div class="m-stat-val">${data.streams}</div><div class="m-stat-label">Streams</div></div>
+          <div class="m-stat"><div class="m-stat-val">${data.gifts}</div><div class="m-stat-label">Gifts</div></div>
+        </div>`;
+    }
 
-      document.addEventListener('mouseleave', () => {
-        mousePresent = false;
-      });
+    const tags = data.tags.split(',').map(t => `<span class="modal-tag">${t.trim()}</span>`).join('');
 
-      window.addEventListener('resize', resizeCanvas);
+    modalBody.innerHTML = `
+      ${statsHTML}
+      <p class="modal-bio">${data.bio}</p>
+      <div class="modal-tags">${tags}</div>
+      ${!isStaff ? `<div class="modal-links"><a href="#" class="modal-link-btn">View TikTok →</a><a href="#" class="modal-link-btn">See Streams →</a></div>` : ''}
+    `;
 
-      // start canvas
-      resizeCanvas();
-      initParticles();
-      animate();
+    overlay.classList.add('open');
+    overlay.setAttribute('aria-hidden','false');
+    modalClose.focus();
+    document.body.style.overflow = 'hidden';
+  }
 
-      // ------------------------------  optional audio (ambient hum + blips) -------------------------
-      let audioCtx = null;
-      let oscillator = null;
-      let gainNode = null;
-      let audioEnabled = false;
-      const audioBtn = document.getElementById('audioToggle');
+  function closeModal() {
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden','true');
+    document.body.style.overflow = '';
+  }
 
-      function initAudio() {
-        if (audioCtx) return;
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        gainNode = audioCtx.createGain();
-        gainNode.gain.value = 0.012; // very subtle hum
-        gainNode.connect(audioCtx.destination);
+  modalClose.addEventListener('click', closeModal);
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-        // low frequency hum (extraterrestrial)
-        oscillator = audioCtx.createOscillator();
-        oscillator.type = 'sine';
-        oscillator.frequency.value = 48; // deep infra-like
-        oscillator.connect(gainNode);
-        oscillator.start();
+  // Creator cards
+  document.querySelectorAll('.creator-card').forEach(card => {
+    const open = () => openModal({
+      name: card.dataset.name, handle: card.dataset.handle,
+      initials: card.dataset.initials, color: card.dataset.color, text: card.dataset.text,
+      followers: card.dataset.followers, streams: card.dataset.streams, gifts: card.dataset.gifts,
+      bio: card.dataset.bio, tags: card.dataset.tags
+    });
+    card.addEventListener('click', open);
+    card.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' ') { e.preventDefault(); open(); } });
+  });
 
-        // add occasional blips (UI activation tone emulation)
-        // we can schedule random or just small beep on hover – we'll add hover listeners to panels
-        const panels = document.querySelectorAll('.panel');
-        panels.forEach(panel => {
-          panel.addEventListener('mouseenter', () => {
-            if (!audioCtx || audioCtx.state !== 'running') return;
-            const now = audioCtx.currentTime;
-            const blipGain = audioCtx.createGain();
-            blipGain.gain.setValueAtTime(0.008, now);
-            blipGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.2);
-            const osc2 = audioCtx.createOscillator();
-            osc2.frequency.value = 620; // plasma-like
-            osc2.type = 'sine';
-            osc2.connect(blipGain);
-            blipGain.connect(audioCtx.destination);
-            osc2.start(now);
-            osc2.stop(now + 0.15);
-          });
-        });
-      }
+  // Staff cards
+  document.querySelectorAll('.staff-card').forEach(card => {
+    const open = () => openModal({
+      name: card.dataset.name, role: card.dataset.role,
+      initials: card.dataset.initials, color: card.dataset.color, text: card.dataset.text,
+      bio: card.dataset.bio, tags: card.dataset.tags
+    });
+    card.addEventListener('click', open);
+    card.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' ') { e.preventDefault(); open(); } });
+  });
+</script>
 
-      audioBtn.addEventListener('click', () => {
-        if (!audioEnabled) {
-          if (!audioCtx) initAudio();
-          if (audioCtx.state === 'suspended') {
-            audioCtx.resume().then(() => {
-              audioEnabled = true;
-              audioBtn.textContent = '◯ AMBIENT HUM ON';
-              audioBtn.style.boxShadow = '0 0 30px #5effe0';
-            });
-          } else if (audioCtx.state === 'running') {
-            audioEnabled = true;
-          } else {
-            initAudio();
-            audioCtx.resume();
-            audioEnabled = true;
-            audioBtn.textContent = '◯ AMBIENT HUM ON';
-          }
-        } else {
-          // mute (suspend context)
-          if (audioCtx && audioCtx.state === 'running') {
-            audioCtx.suspend();
-            audioEnabled = false;
-            audioBtn.textContent = '◉ AMBIENT HUM';
-            audioBtn.style.boxShadow = '0 0 15px #00ffe0';
-          }
-        }
-      });
-
-      // initialize on first user interaction (hover or click) if needed, but we rely on button
-      // also if user moves mouse we could warm up, but button is clear.
-
-      // add extra atmosphere: floating aura particles react to mouse already.
-    })();
-  </script>
 </body>
 </html>
